@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users", schema = "public", catalog = "project")
+@Table(name = "user", schema = "public", catalog = "project")
 @NamedQueries({
         @NamedQuery(name = User.GET_ALL_QUERY, query = "SELECT u FROM User u ORDER BY u.fkPid")
 })
@@ -13,7 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "uid", nullable = false)
-    private Long uid;
+    private Integer uid;
     @Basic
     @Column(name = "username", nullable = false, length = -1)
     private String username;
@@ -27,11 +27,11 @@ public class User {
     @JoinColumn(name = "pid", referencedColumnName = "pid", nullable = false,insertable=false, updatable=false)
     private Profile profilesByPid;
 
-    public Long getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setUid(Long uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 
@@ -79,4 +79,5 @@ public class User {
     public void setProfilesByPid(Profile profilesByPid) {
         this.profilesByPid = profilesByPid;
     }
+
 }

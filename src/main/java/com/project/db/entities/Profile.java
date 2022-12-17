@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "profiles", schema = "public", catalog = "project")
+@Table(name = "profile", schema = "public", catalog = "project")
 @NamedQueries({
         @NamedQuery(name = Profile.GET_ALL_QUERY,query = "SELECT p FROM Profile p ORDER BY p.pid"),
 //        @NamedQuery(name = Profile.GET_BY_ID_QUERY, query = "SELECT p FROM Profile p WHERE p.pid=: pid ORDER BY p.pid")
@@ -15,7 +15,7 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "pid", nullable = false)
-    private Long pid;
+    private Integer pid;
     @Basic
     @Column(name = "email", nullable = false, length = -1)
     private String email;
@@ -25,14 +25,16 @@ public class Profile {
     @Basic
     @Column(name = "l_name", nullable = false, length = -1)
     private String lastname;
-    @OneToMany(mappedBy = "profilesByPid")
+    @OneToMany(mappedBy = "profileByPid")
     private Collection<User> usersByPid;
+    @OneToMany(mappedBy = "profileByProfileId")
+    private Collection<UserShift> userShiftsByPid;
 
-    public Long getPid() {
+    public Integer getPid() {
         return pid;
     }
 
-    public void setPid(Long pid) {
+    public void setPid(Integer pid) {
         this.pid = pid;
     }
 
@@ -79,5 +81,13 @@ public class Profile {
 
     public void setUsersByPid(Collection<User> usersByPid) {
         this.usersByPid = usersByPid;
+    }
+
+    public Collection<UserShift> getUserShiftsByPid() {
+        return userShiftsByPid;
+    }
+
+    public void setUserShiftsByPid(Collection<UserShift> userShiftsByPid) {
+        this.userShiftsByPid = userShiftsByPid;
     }
 }

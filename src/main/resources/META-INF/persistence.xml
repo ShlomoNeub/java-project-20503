@@ -4,6 +4,8 @@
         <jta-data-source>jdbc/UsersDB</jta-data-source>
         <class>com.project.db.entities.Profile</class>
         <class>com.project.db.entities.User</class>
+        <class>com.project.db.entities.Shift</class>
+        <class>com.project.db.entities.UserShift</class>
         <properties>
             <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/"/>
             <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>
