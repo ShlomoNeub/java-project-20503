@@ -5,12 +5,20 @@
         <class>com.project.db.entities.Profile</class>
         <class>com.project.db.entities.User</class>
         <properties>
+            <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/"/>
             <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="eclipselink.jdbc.user" value="postgres"/>
             <property name="eclipselink.jdbc.password" value="mysecretpassword"/>
-            <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/"/>
-            <property name="eclipselink.logging.level" value="FINEST"/>
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
         </properties>
+        <!--        <class>com.project.db.entities.Profile</class>-->
+<!--        <class>com.project.db.entities.User</class>-->
+<!--        <properties>-->
+<!--            <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>-->
+<!--            <property name="eclipselink.jdbc.user" value="postgres"/>-->
+<!--            <property name="eclipselink.jdbc.password" value="mysecretpassword"/>-->
+<!--            <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/"/>-->
+<!--            <property name="eclipselink.logging.level" value="FINEST"/>-->
+<!--            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>-->
+<!--        </properties>-->
     </persistence-unit>
 </persistence>

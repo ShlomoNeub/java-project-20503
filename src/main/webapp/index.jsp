@@ -8,7 +8,7 @@
 <h1><%= "Hello World!" %>
 </h1>
 <br/>
-<a href="./IndexServlet">Hello Servlet</a>
+<a href="./api/user">Hello Servlet</a>
 
 <p>
 </p>

@@ -12,10 +12,27 @@
     <title>Title</title>
 </head>
 <body>
-<ul>
-    <c:forEach items="${user}" var="user">
-        <li>${user.id}. ${user.name} ${user.lastName}</li>
+<table>
+    <thead>
+        <tr>
+            <th>uid</th>
+            <th>username</th>
+            <th>user name</th>
+        </tr>
+    </thead>
+    <tbody>
+    <c:forEach items="${users}" var="user">
+        <tr>
+            <td>${user.uid}</td>
+            <td>${user.username}</td>
+            <td> ${user.profilesByPid.firstname} ${user.profilesByPid.lastname}</td>
+        </tr>
     </c:forEach>
+    </tbody>
+
+</table>
+<ul>
+
 </ul>
 
 </body>

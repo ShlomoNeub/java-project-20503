@@ -1,40 +1,32 @@
 package com.project.db.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "profiles")
+@Table(name = "profiles", schema = "public", catalog = "project")
+@NamedQueries({
+        @NamedQuery(name = Profile.GET_ALL_QUERY,query = "SELECT p FROM Profile p ORDER BY p.pid"),
+//        @NamedQuery(name = Profile.GET_BY_ID_QUERY, query = "SELECT p FROM Profile p WHERE p.pid=: pid ORDER BY p.pid")
+})
 public class Profile {
+    public static final String GET_ALL_QUERY = "Profile.findAll";
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "pid")
+    @Column(name = "pid", nullable = false)
     private Long pid;
     @Basic
-    @Column(name = "email")
-    @Size(max = 255)
+    @Column(name = "email", nullable = false, length = -1)
     private String email;
     @Basic
-    @Column(name = "f_name")
-    @Size(max = 255)
-    private String firstName;
+    @Column(name = "f_name", nullable = false, length = -1)
+    private String firstname;
     @Basic
-    @Column(name = "l_name")
-    @Size(max = 255)
+    @Column(name = "l_name", nullable = false, length = -1)
     private String lastname;
-    @OneToMany(mappedBy = "profileByPid")
-    private Collection<User> userByPid;
-
-    public Profile() {
-    }
-
-    public Profile(String email, String firstName, String lastname) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastname = lastname;
-    }
+    @OneToMany(mappedBy = "profilesByPid")
+    private Collection<User> usersByPid;
 
     public Long getPid() {
         return pid;
@@ -52,12 +44,12 @@ public class Profile {
         this.email = email;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     public String getLastname() {
@@ -73,29 +65,19 @@ public class Profile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Profile profile = (Profile) o;
-        return Objects.equals(pid, profile.pid) && Objects.equals(email, profile.email) && Objects.equals(firstName, profile.firstName) && Objects.equals(lastname, profile.lastname);
+        return Objects.equals(pid, profile.pid) && Objects.equals(email, profile.email) && Objects.equals(firstname, profile.firstname) && Objects.equals(lastname, profile.lastname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pid, email, firstName, lastname);
+        return Objects.hash(pid, email, firstname, lastname);
     }
 
     public Collection<User> getUsersByPid() {
-        return userByPid;
+        return usersByPid;
     }
 
-    public void setUsersByPid(Collection<User> userByPid) {
-        this.userByPid = userByPid;
-    }
-
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "pid=" + pid +
-                ", email='" + email + '\'' +
-                ", fName='" + firstName + '\'' +
-                ", lName='" + lastname + '\'' +
-                '}';
+    public void setUsersByPid(Collection<User> usersByPid) {
+        this.usersByPid = usersByPid;
     }
 }

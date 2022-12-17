@@ -4,6 +4,10 @@
 package com.project.db.dao;
 
 
+import com.project.db.entities.User;
+import com.sun.istack.internal.Nullable;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -16,7 +20,10 @@ public interface DAO <T>{
 
     public void insert(T u);
 
-    public void update(T u);
+    public T update(T u);
 
     public void delete(T u);
+
+    @Nullable
+    public T getById(@NotNull long id);
 }

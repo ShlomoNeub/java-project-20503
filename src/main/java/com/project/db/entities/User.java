@@ -1,42 +1,31 @@
 package com.project.db.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
+@Table(name = "users", schema = "public", catalog = "project")
 @NamedQueries({
-
+        @NamedQuery(name = User.GET_ALL_QUERY, query = "SELECT u FROM User u ORDER BY u.fkPid")
 })
-@Table(name = "users")
 public class User {
+    public final static String GET_ALL_QUERY = "Users.findAll";
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "uid")
+    @Column(name = "uid", nullable = false)
     private Long uid;
     @Basic
-    @Size(max = 255)
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, length = -1)
     private String username;
     @Basic
-    @Size(max = 255)
-    @Column(name = "password")
+    @Column(name = "password", nullable = true, length = -1)
     private String password;
     @Basic
-    @Column(name = "pid")
-    private Long pid;
+    @Column(name = "pid", nullable = false)
+    private Long fkPid;
     @ManyToOne
-    @JoinColumn(name = "pid", referencedColumnName = "pid", nullable = false)
-    private Profile profileByPid;
-
-    public User() {
-    }
-
-    public User(String username, String password, Profile profileByPid) {
-        this.username = username;
-        this.password = password;
-        this.profileByPid = profileByPid;
-    }
+    @JoinColumn(name = "pid", referencedColumnName = "pid", nullable = false,insertable=false, updatable=false)
+    private Profile profilesByPid;
 
     public Long getUid() {
         return uid;
@@ -62,12 +51,12 @@ public class User {
         this.password = password;
     }
 
-    public Long getPid() {
-        return pid;
+    public Long getFkPid() {
+        return fkPid;
     }
 
-    public void setPid(Long pid) {
-        this.pid = pid;
+    public void setFkPid(Long fkPid) {
+        this.fkPid = fkPid;
     }
 
     @Override
@@ -75,30 +64,19 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(uid, user.uid) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(pid, user.pid);
+        return Objects.equals(uid, user.uid) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(fkPid, user.fkPid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, username, password, pid);
+        return Objects.hash(uid, username, password, fkPid);
     }
 
     public Profile getProfilesByPid() {
-        return profileByPid;
+        return profilesByPid;
     }
 
-    public void setProfilesByPid(Profile profileByPid) {
-        this.profileByPid = profileByPid;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "uid=" + uid +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", pid=" + pid +
-                ", profileByPid=" + profileByPid +
-                '}';
+    public void setProfilesByPid(Profile profilesByPid) {
+        this.profilesByPid = profilesByPid;
     }
 }

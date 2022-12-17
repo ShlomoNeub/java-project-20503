@@ -14,18 +14,24 @@
 <body>
 <table>
     <thead>
-        <tr>
-            <th>uid</th>
-            <th>username</th>
-            <th>user name</th>
-        </tr>
+    <tr>
+        <th>pid</th>
+        <th>user name</th>
+        <th>users</th>
+    </tr>
     </thead>
     <tbody>
-    <c:forEach items="${users}" var="user">
+    <c:forEach items="${profiles}" var="p">
         <tr>
-            <td>${user.uid}</td>
-            <td>${user.username}</td>
-            <td> ${user.profilesByPid.firstname} ${user.profilesByPid.lastname}</td>
+            <td>${p.pid}</td>
+            <td> ${p.firstname} ${p.lastname}</td>
+            <td>
+                <ul>
+                    <c:forEach items="${p.usersByPid}" var="u">
+                        <li>${u.username}</li>
+                    </c:forEach>
+                </ul>
+            </td>
         </tr>
     </c:forEach>
     </tbody>
