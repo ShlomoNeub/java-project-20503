@@ -1,7 +1,6 @@
 package com.project.db.services;
 
 import com.project.db.entities.Profile;
-import com.project.db.entities.User;
 
 import javax.ejb.Local;
 import java.util.List;

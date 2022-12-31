@@ -1,12 +1,11 @@
 package com.project.db.dao;
 
-import com.project.db.entities.Profile;
-import com.project.db.entities.User;
-
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import com.project.db.entities.*;
 import java.util.List;
+
 
 @Stateless
 public class ProfileDaoImpl implements ProfileDao {
@@ -15,7 +14,7 @@ public class ProfileDaoImpl implements ProfileDao {
     @Override
     public List<Profile> getAll() {
         return entityManager
-                .createNamedQuery(Profile.GET_ALL_QUERY,Profile.class)
+                .createNamedQuery(Queries.ProfileQueries.GET_ALL,Profile.class)
                 .getResultList();
     }
 

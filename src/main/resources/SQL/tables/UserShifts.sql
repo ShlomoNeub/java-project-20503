@@ -1,17 +1,16 @@
-
 create table public.user_shift
 (
-    id          integer default nextval('user_shifts_id_seq'::regclass) not null
-        constraint user_shifts_pk
+    id          integer
+        constraint user_shift_pk
             primary key,
-    "profileId" integer                                                 not null
-        constraint user_shifts_profiles_pid_fk
+    "profileId" integer
+        constraint user_shift_profile_pid_fk
             references public.profile,
-    timestamp   integer                                                 not null,
+    timestamp   integer,
     "shiftId"   integer
-        constraint user_shifts_shifts_id_fk
+        constraint user_shift_shift_id_fk
             references public.shift
 );
 
-alter table public.user_shift
-    owner to postgres;
+create index user_shift_timestamp_index
+    on public.user_shift (timestamp);

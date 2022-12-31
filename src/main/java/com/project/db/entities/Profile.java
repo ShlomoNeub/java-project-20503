@@ -1,17 +1,20 @@
 package com.project.db.entities;
 
+
+import com.project.db.dao.Queries;
+
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "profile", schema = "public", catalog = "project")
 @NamedQueries({
-        @NamedQuery(name = Profile.GET_ALL_QUERY,query = "SELECT p FROM Profile p ORDER BY p.pid"),
-//        @NamedQuery(name = Profile.GET_BY_ID_QUERY, query = "SELECT p FROM Profile p WHERE p.pid=: pid ORDER BY p.pid")
+        @NamedQuery(name = Queries.ProfileQueries.GET_ALL, query = "SELECT p FROM Profile p"),
 })
+@Table(schema = "public")
 public class Profile {
-    public static final String GET_ALL_QUERY = "Profile.findAll";
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "pid", nullable = false)
@@ -19,16 +22,15 @@ public class Profile {
     @Basic
     @Column(name = "email", nullable = false, length = -1)
     private String email;
+
     @Basic
     @Column(name = "f_name", nullable = false, length = -1)
     private String firstname;
     @Basic
     @Column(name = "l_name", nullable = false, length = -1)
     private String lastname;
-    @OneToMany(mappedBy = "profileByPid")
-    private Collection<User> usersByPid;
     @OneToMany(mappedBy = "profileByProfileId")
-    private Collection<UserShift> userShiftsByPid;
+    private Collection<User> usersByPid;
 
     public Integer getPid() {
         return pid;
@@ -44,6 +46,19 @@ public class Profile {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profile profile = (Profile) o;
+        return Objects.equals(pid, profile.pid) && Objects.equals(email, profile.email) && Objects.equals(firstname, profile.firstname) && Objects.equals(lastname, profile.lastname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pid, email, firstname, lastname);
     }
 
     public String getFirstname() {
@@ -62,32 +77,12 @@ public class Profile {
         this.lastname = lastname;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Profile profile = (Profile) o;
-        return Objects.equals(pid, profile.pid) && Objects.equals(email, profile.email) && Objects.equals(firstname, profile.firstname) && Objects.equals(lastname, profile.lastname);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pid, email, firstname, lastname);
-    }
-
+    @JsonbTransient
     public Collection<User> getUsersByPid() {
         return usersByPid;
     }
 
     public void setUsersByPid(Collection<User> usersByPid) {
         this.usersByPid = usersByPid;
-    }
-
-    public Collection<UserShift> getUserShiftsByPid() {
-        return userShiftsByPid;
-    }
-
-    public void setUserShiftsByPid(Collection<UserShift> userShiftsByPid) {
-        this.userShiftsByPid = userShiftsByPid;
     }
 }
