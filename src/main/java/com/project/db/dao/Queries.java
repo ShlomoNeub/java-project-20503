@@ -16,6 +16,9 @@ public class Queries {
     }
 
     public static class ProfileQueries{
+        /**
+         * Get all profiles
+         */
         public final static String GET_ALL = "Profile.GetAll";
 
     }

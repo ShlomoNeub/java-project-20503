@@ -1,10 +1,15 @@
 package com.project.db.entities;
 
+import com.project.db.dao.Queries;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = Queries.ProfileQueries.GET_ALL,query = "select p from Profile p")
+})
 public class Profile {
     @Basic
     @Column(name = "email", nullable = false, length = -1)
