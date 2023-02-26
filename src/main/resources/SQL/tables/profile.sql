@@ -1,15 +1,10 @@
-create table public.profiles
+create table "Profile"
 (
-    pid    integer generated always as identity
-        constraint profiles_pk
-            primary key,
-    email  varchar not null
-        constraint profiles_pk2
-            unique,
-    f_name varchar not null,
-    l_name varchar not null
+    email        varchar not null,
+    first_name   varchar not null,
+    last_name    varchar not null,
+    phone_number varchar not null,
+    pid          integer generated always as identity
+        constraint "Profile_pk"
+            primary key
 );
-
-alter table public.profiles
-    owner to postgres;
-
