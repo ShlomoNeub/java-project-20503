@@ -16,10 +16,8 @@ alter table "Constrains"
         foreign key (uid) references "User";
 
 alter table "Constrains"
-    add constraint "Constrains___fk"
+    add constraint "Constrains_Constraint_type_type_id_fk"
         foreign key (type_id) references "Constraint_type";
 
-alter table "Constrains"
-    rename constraint "Constrains___fk" to "Constrains_Constraint_type_type_id_fk";
 
 
