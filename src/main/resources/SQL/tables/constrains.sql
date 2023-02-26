@@ -5,7 +5,7 @@ create table "Constrains"
             primary key,
     type_id        integer not null,
     uid            integer not null,
-    data           integer,
+    data           integer not null,
     permanent_flag boolean not null,
     week_number    integer not null,
     start_date     integer not null,
