@@ -11,4 +11,15 @@ create table "Constrains"
     start_date     integer not null,
     end_date       integer not null
 );
+alter table "Constrains"
+    add constraint "Constrains_User_uid_fk"
+        foreign key (uid) references "User";
+
+alter table "Constrains"
+    add constraint "Constrains___fk"
+        foreign key (type_id) references "Constraint_type";
+
+alter table "Constrains"
+    rename constraint "Constrains___fk" to "Constrains_Constraint_type_type_id_fk";
+
 
