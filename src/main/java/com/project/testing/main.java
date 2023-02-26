@@ -1,7 +1,5 @@
 package com.project.testing;
 
-import com.project.db.entities.User;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
