@@ -12,6 +12,9 @@ public class Queries {
          * notice this query need id of the user
          */
         public static final String GET_PROFILE_BY_ID = "User.GetProfile";
+        /**
+         * Retrieve user by id
+         */
         public static final String GET_BY_ID = "User.GetById";
     }
 
