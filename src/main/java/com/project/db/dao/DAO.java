@@ -15,14 +15,44 @@ import java.util.List;
  */
 public interface DAO <T>{
 
+    /**
+     * Get all entire of type T from the database
+     * @return all the entries of type T
+     */
     public List<T> getAll();
 
-    public void insert(T u);
+    /**
+     * Insert entry of type T to the database
+     * @param entry to insert
+     */
+    public void insert(T entry);
 
-    public T update(T u);
+    /**
+     * Update entry of type T in the database
+     * @param entry to update
+     * @return the updated entry
+     */
+    public T update(T entry);
 
-    public void delete(T u);
+    /**
+     * Deletes an entry
+     * @param entry to be deleted
+     */
+    public void delete(T entry);
 
+    /**
+     * Validate an entry
+     * @param entry to validate
+     * @return if the entry is valid
+     */
+    public boolean validate(T entry);
+
+
+    /**
+     * Get entry of type T from the database by its id
+     * @param id of the entry
+     * @return the entry requested or null if not found
+     */
     @Nullable
     public T getById(@NotNull long id);
 }
