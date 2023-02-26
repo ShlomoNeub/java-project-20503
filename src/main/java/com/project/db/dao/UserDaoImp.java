@@ -3,10 +3,9 @@
  */
 package com.project.db.dao;
 
-import com.project.db.entities.User;
-
 import javax.ejb.Stateless;
 import javax.persistence.*;
+import com.project.db.entities.*;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class UserDaoImp implements UserDao{
     @Override
     public List<User> getAll() {
         return entityManager
-                .createNamedQuery(User.GET_ALL_QUERY, User.class)
+                .createNamedQuery(Queries.UserQueries.GET_ALL, User.class)
                 .getResultList();
     }
 
@@ -43,10 +42,17 @@ public class UserDaoImp implements UserDao{
     @Override
     public User getById(long id) {
         return entityManager
-                .createQuery("SELECT u FROM User u WHERE u.uid=: uid ORDER BY u.fkPid",User.class)
-                .setParameter("uid",id)
+                .createNamedQuery(Queries.UserQueries.GET_BY_ID,User.class)
+                .setParameter("id",id)
                 .getSingleResult();
     }
 
 
+    @Override
+    public Profile getUserProfile(User user) {
+        return entityManager
+                .createNamedQuery(Queries.UserQueries.GET_PROFILE_BY_ID,Profile.class)
+                .setParameter("id",user.getId())
+                .getSingleResult();
+    }
 }

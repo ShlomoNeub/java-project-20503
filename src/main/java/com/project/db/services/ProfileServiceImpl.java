@@ -1,10 +1,10 @@
 package com.project.db.services;
 
 import com.project.db.dao.ProfileDao;
-import com.project.db.entities.Profile;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import com.project.db.entities.*;
 import java.util.List;
 
 @Stateless

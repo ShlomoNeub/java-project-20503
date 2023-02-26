@@ -4,7 +4,6 @@
 package com.project.db.dao;
 
 
-import com.project.db.entities.User;
 import com.sun.istack.internal.Nullable;
 
 import javax.validation.constraints.NotNull;

@@ -1,10 +1,10 @@
 package com.project.db.services;
 
 import com.project.db.dao.UserDao;
-import com.project.db.entities.User;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import com.project.db.entities.*;
 import java.util.List;
 
 
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserById(User u) {
-        return dao.getById(u.getUid());
+        return dao.getById(u.getId());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User AddUser(User u) {
+    public User addUser(User u) {
         dao.insert(u);
         return u;
     }
@@ -48,4 +48,6 @@ public class UserServiceImpl implements UserService{
         User u  = dao.getById(id);
         if(u != null) dao.delete(u);
     }
+
+
 }

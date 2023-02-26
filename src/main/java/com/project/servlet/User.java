@@ -1,4 +1,4 @@
-package com.project.servlet.api;
+package com.project.servlet;
 
 import com.project.db.dao.UserDao;
 
