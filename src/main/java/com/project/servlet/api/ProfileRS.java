@@ -1,6 +1,7 @@
 package com.project.servlet.api;
 
 import com.project.db.dao.ProfileDao;
+import com.project.db.entities.Profile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

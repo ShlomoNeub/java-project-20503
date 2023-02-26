@@ -1,6 +1,7 @@
 package com.project.servlet.api;
 
 import com.project.db.dao.ProfileDao;
+import com.project.db.entities.User;
 import com.project.db.services.UserService;
 
 import javax.ejb.Stateless;
