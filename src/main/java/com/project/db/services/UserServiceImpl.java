@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserById(User u) {
-        return dao.getById(u.getId());
+        return dao.getById(u.getUid());
     }
 
     @Override

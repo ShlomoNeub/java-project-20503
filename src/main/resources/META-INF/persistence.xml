@@ -6,6 +6,12 @@
         <class>com.project.db.entities.User</class>
         <class>com.project.db.entities.Shift</class>
         <class>com.project.db.entities.UserShift</class>
+        <class>com.project.db.entities.AvailableShifts</class>
+        <class>com.project.db.entities.Constrains</class>
+        <class>com.project.db.entities.ConstraintType</class>
+        <class>com.project.db.entities.Roles</class>
+        <class>com.project.db.entities.Schedule</class>
+        <class>com.project.db.entities.ShiftsRequests</class>
         <properties>
             <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/"/>
             <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>

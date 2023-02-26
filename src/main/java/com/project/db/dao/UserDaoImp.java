@@ -52,7 +52,7 @@ public class UserDaoImp implements UserDao{
     public Profile getUserProfile(User user) {
         return entityManager
                 .createNamedQuery(Queries.UserQueries.GET_PROFILE_BY_ID,Profile.class)
-                .setParameter("id",user.getId())
+                .setParameter("id",user.getUid())
                 .getSingleResult();
     }
 }
