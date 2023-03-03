@@ -32,10 +32,20 @@ public class User {
     @OneToMany(mappedBy = "userByUid")
     private Collection<ShiftsRequests> shiftsRequestsByUid;
     @ManyToOne
-    @JoinColumn(name = "pid", referencedColumnName = "pid", nullable = false)
+    @JoinColumn(
+            name = "pid",
+            referencedColumnName = "pid",
+            nullable = false,
+            updatable = false,
+            insertable = false)
     private Profile profileByPid;
     @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
+    @JoinColumn(
+            name = "role_id",
+            referencedColumnName = "role_id",
+            nullable = false,
+            updatable = false,
+            insertable = false)
     private Roles rolesByRoleId;
 
     public String getUsername() {
