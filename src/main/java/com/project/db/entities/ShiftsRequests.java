@@ -24,10 +24,18 @@ public class ShiftsRequests {
     @OneToMany(mappedBy = "shiftsRequestsByRequestId")
     private Collection<Schedule> schedulesByRequestId;
     @ManyToOne
-    @JoinColumn(name = "shift_id", referencedColumnName = "shifts_id", nullable = false)
+    @JoinColumn(name = "shift_id",
+            referencedColumnName = "shifts_id",
+            nullable = false,
+            insertable = false,
+            updatable = false)
     private AvailableShifts availableShiftsByShiftId;
     @ManyToOne
-    @JoinColumn(name = "uid", referencedColumnName = "uid", nullable = false)
+    @JoinColumn(name = "uid",
+            referencedColumnName = "uid",
+            nullable = false,
+            insertable = false,
+            updatable = false)
     private User userByUid;
 
     public Integer getRequestId() {

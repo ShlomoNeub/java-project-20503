@@ -16,7 +16,12 @@ public class Schedule {
     @Column(name = "request_id", nullable = false)
     private Integer requestId;
     @ManyToOne
-    @JoinColumn(name = "request_id", referencedColumnName = "Request_id", nullable = false)
+    @JoinColumn(
+            name = "request_id",
+            referencedColumnName = "Request_id",
+            nullable = false,
+            updatable = false,
+            insertable = false)
     private ShiftsRequests shiftsRequestsByRequestId;
 
     public Integer getScheduleId() {
