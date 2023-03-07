@@ -22,6 +22,10 @@ public class UserController extends RestApiAbstract<Users,UserRepo> {
         return repo;
     }
 
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
 
 
     private boolean validatePassword(String password){

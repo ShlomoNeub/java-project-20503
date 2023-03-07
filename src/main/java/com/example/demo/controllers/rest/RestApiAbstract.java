@@ -12,13 +12,13 @@ public abstract class RestApiAbstract
         <Entity,Repo extends CrudRepository<Entity,Integer>>
         implements CrudAPI<Entity>,Validatable<Entity> {
 
-    protected Repo repo;
 
     public RestApiAbstract() {
     }
 
     @Override
     public Collection<Entity> getAll() {
+        getLogger().info("Get all has been called");
         ArrayList<Entity> entities = new ArrayList<>();
         for (Entity e : getRepo().findAll()) {
             entities.add(e);
@@ -28,6 +28,7 @@ public abstract class RestApiAbstract
 
     @Override
     public Entity createNewEntity(Entity entity) {
+        getLogger().info("Create new was called with "+ entity);
         if(isValid(entity)){
             return getRepo().save(entity);
         }
@@ -36,6 +37,7 @@ public abstract class RestApiAbstract
 
     @Override
     public Entity getById(Integer id) {
+        getLogger().info("Get entity by id was called with id:"+id);
         Optional<Entity> e= getRepo().findById(id);
         return e.orElse(null);
     }
@@ -49,7 +51,10 @@ public abstract class RestApiAbstract
     public boolean deleteByID(Integer id) {
         return false;
     }
-
+    @Nullable
     public abstract Repo getRepo();
+    public Logger getLogger(){
+        return  LogManager.getLogger(UserController.class);
+    }
 
 }
