@@ -2,13 +2,9 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.db.entities.Users;
 import com.example.demo.db.repo.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.*;
 
-import java.util.Collection;
-import java.util.List;
 
 
 @RestController

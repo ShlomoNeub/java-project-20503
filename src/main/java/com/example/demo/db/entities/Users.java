@@ -1,15 +1,8 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
-import com.example.demo.db.repo.ProfileRepo;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 

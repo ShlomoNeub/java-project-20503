@@ -1,12 +1,11 @@
 package com.example.demo.controllers.rest;
 
 import com.example.demo.db.Validatable;
+import jakarta.annotation.*;
+import org.apache.logging.log4j.*;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public abstract class RestApiAbstract
