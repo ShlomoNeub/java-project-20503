@@ -1,29 +1,33 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
+import com.example.demo.db.entities.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import com.example.demo.db.entities.Users;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
-public class Profile implements Serializable {
+public class Profile implements Serializable, IEntity<Profile,Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(nullable = false)
     private String firstName;
 
+
+    @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String phoneNumber;
 
     @OneToMany(mappedBy = "profile")
@@ -80,7 +84,33 @@ public class Profile implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isValid() {
-        return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Profile profile)) return false;
+        return getFirstName().equals(profile.getFirstName()) && getLastName().equals(profile.getLastName()) && getEmail().equals(profile.getEmail()) && getPhoneNumber().equals(profile.getPhoneNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFirstName(), getLastName(), getEmail(), getPhoneNumber());
+    }
+    private boolean isValid() {
+        boolean retVal = this.firstName != null;
+        retVal &= this.lastName != null;
+        retVal &= this.phoneNumber != null;
+        return retVal;
+    }
+    public boolean isValid(Profile toValidate) {
+        return toValidate.isValid();
+    }
+
+    @Override
+    public int compareTo(@NotNull Profile o) {
+        try {
+            return this.equals(o)?0:-1;
+        }catch (Exception e){
+            return 1;
+        }
     }
 }
