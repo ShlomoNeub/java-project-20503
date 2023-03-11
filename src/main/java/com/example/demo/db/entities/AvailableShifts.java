@@ -1,6 +1,5 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -31,7 +30,8 @@ public class AvailableShifts implements Serializable {
         return id;
     }
 
-    public void setId(@NotNull Integer id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -77,4 +77,15 @@ public class AvailableShifts implements Serializable {
 
         return retVal;
     }
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AvailableShifts that)) return false;
+        return weekNumber.equals(that.weekNumber) && dayNumber.equals(that.dayNumber) && getStartHour().equals(that.getStartHour()) && getDuration().equals(that.getDuration());
+    }
+
+
 }

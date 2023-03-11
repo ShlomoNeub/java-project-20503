@@ -1,6 +1,5 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
 import jakarta.persistence.*;
 
 import java.io.Serializable;

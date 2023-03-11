@@ -1,6 +1,5 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,5 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;

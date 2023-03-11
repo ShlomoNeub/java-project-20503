@@ -1,6 +1,5 @@
 package com.example.demo.db.entities;
 
-import com.example.demo.db.Validatable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
