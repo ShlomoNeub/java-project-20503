@@ -15,16 +15,23 @@ public class Users implements Serializable, IEntity<Users,Integer> {
     public static final int PASSWORD_MAX_LENGTH = 16;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Basic
     @Column(name = "pid",nullable = false)
     private Integer pid;
+    @Basic
+    @Column(name = "role_id",nullable = false)
+    private Integer roleId;
 
-    @Size(min = 8,max=16)
+    @Size(min = PASSWORD_MIN_LENGTH,max=PASSWORD_MAX_LENGTH)
     @Column(nullable = false)
     private String password;
+
+
+    @Column(nullable = false)
+    private String username;
 
     @ManyToOne
     @JoinColumn(name = "pid",
@@ -34,7 +41,11 @@ public class Users implements Serializable, IEntity<Users,Integer> {
     private Profile profile;
 
     @ManyToOne
-    @JoinColumn(name = "role_id",referencedColumnName = "id")
+    @JoinColumn(name = "role_id",
+            referencedColumnName = "id",
+            columnDefinition="role_id",
+            insertable = false,
+            updatable = false)
     Role role;
 
 
@@ -82,7 +93,12 @@ public class Users implements Serializable, IEntity<Users,Integer> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Users users)) return false;
-        return getId().equals(users.getId()) && getPid().equals(users.getPid()) && getPassword().equals(users.getPassword()) && getProfile().equals(users.getProfile()) && Objects.equals(getRole(), users.getRole());
+        return getId().equals(
+                users.getId()) &&
+                getPid().equals(users.getPid()) &&
+                getPassword().equals(users.getPassword()) &&
+                getProfile().equals(users.getProfile()) &&
+                getRoleId().equals(users.roleId);
     }
 
     @Override
@@ -108,11 +124,35 @@ public class Users implements Serializable, IEntity<Users,Integer> {
     public int compareTo(Users o) {
         if (o != null) {
             try{
-                return equals(o)?0:-1;
+                return equals(o)?0:this.getId().compareTo(o.getId());
             }catch (Exception e){
                 return 1;
             }
         }
         else return 1;
+    }
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRole_id(Integer roleId) {
+        this.roleId = roleId;
+    }
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", pid=" + pid +
+                ", roleId=" + roleId +
+                '}';
+    }
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
