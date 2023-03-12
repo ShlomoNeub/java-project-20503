@@ -2,9 +2,7 @@ package com.example.demo.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -17,6 +15,7 @@ public class ConstraintType implements Serializable {
     public static final int MIN_CONSTRAINT_LEVEL = 1;
     public static final int MAX_CONSTRAINT_LEVEL = 5;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(min = MIN_CONSTRAINT_LEVEL, max = MAX_CONSTRAINT_LEVEL)
