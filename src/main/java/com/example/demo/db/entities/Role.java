@@ -1,15 +1,17 @@
 package com.example.demo.db.entities;
 
+import com.example.demo.db.entities.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class Role implements Serializable {
+public class Role implements Serializable, IEntity<Role,Integer> {
     // TODO: Think about making it Enum
     public static final int STANDARD_ROLE_LEVEL = 1;
     public static final int MANAGER_ROLE_LEVEL = 2;
@@ -19,9 +21,9 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    @Column(nullable = false)
     private String roleName;
-
+    @Column(nullable = false)
     private Integer roleLevel;
 
     @OneToMany(mappedBy = "role")
@@ -42,6 +44,11 @@ public class Role implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    @Nullable
+    public Collection<Users> getUsers() {
+        return users;
     }
 
     public Integer getRoleLevel() {
@@ -68,8 +75,38 @@ public class Role implements Serializable {
         return retVal;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role role)) return false;
+        return getRoleName().equals(role.getRoleName()) && getRoleLevel().equals(role.getRoleLevel());
+    }
 
-    public boolean isValid() {
-        return  this.validateRoleInfo(roleName, roleLevel);
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRoleName(), getRoleLevel());
+    }
+
+    @Override
+    public boolean isValid(Role toValidate) {
+        return this.validateRoleInfo(toValidate.getRoleName(), toValidate.getRoleLevel());
+    }
+
+    @Override
+    public int compareTo(@NotNull Role o) {
+        try {
+            return this.equals(o)?0:this.id.compareTo(o.id);
+        }catch (Exception e){
+            return 1;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", roleName='" + roleName + '\'' +
+                ", roleLevel='" + roleLevel + '\'' +
+                '}';
     }
 }

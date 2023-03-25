@@ -1,6 +1,7 @@
 package com.example.demo.db.repo;
 
 import com.example.demo.db.entities.Schedule;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface ScheduleRepo extends CrudRepository<Schedule,Integer> {
      * @param week
      * @return List
      */
+    @Query("SELECT s FROM Schedule s WHERE s.weekNumber = ?1")
     List<Schedule> getSchedulesByWeekNumber(Integer week);
 
     /**
@@ -19,5 +21,6 @@ public interface ScheduleRepo extends CrudRepository<Schedule,Integer> {
      * @param request
      * @return List
      */
+    @Query("SELECT s FROM Schedule s WHERE s.requestId = ?1 ORDER BY s.requestId")
     Schedule getScheduleByRequestId(int request);
 }
