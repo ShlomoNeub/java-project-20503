@@ -9,6 +9,7 @@ import java.util.Objects;
 @Entity
 public class ShiftsRequests implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
     @Column(name = "shift_id",insertable = false,updatable = false)

@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Profile implements Serializable, IEntity<Profile,Integer> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
@@ -108,9 +108,23 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     @Override
     public int compareTo(@NotNull Profile o) {
         try {
-            return this.equals(o)?0:-1;
+            return this.equals(o)?0:this.id.compareTo(o.id);
         }catch (Exception e){
             return 1;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
+
+
+
 }

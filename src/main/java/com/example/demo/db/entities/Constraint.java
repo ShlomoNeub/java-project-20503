@@ -11,6 +11,7 @@ import java.sql.Date;
 @Table(name = "constraints")
 public class Constraint implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Basic

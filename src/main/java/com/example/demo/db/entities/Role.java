@@ -2,10 +2,7 @@ package com.example.demo.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -20,7 +17,7 @@ public class Role implements Serializable {
     public static final String STANDARD_ROLE_NAME = "STANDARD";
     public static final String MANAGER_ROLE_NAME = "MANAGER";
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String roleName;
