@@ -26,6 +26,7 @@ public class UserController extends RestApiAbstract<Users,UserRepo,Integer> {
         this.repo = repo;
     }
 
+    //
     @RequestMapping(path = "/{id}/user-profiles",method = RequestMethod.GET)
     public Collection<String> getProfiles(@PathVariable Integer id){
         Optional<Users> user = repo.findById(id);
@@ -39,6 +40,7 @@ public class UserController extends RestApiAbstract<Users,UserRepo,Integer> {
 
         return usersStrings;
     }
+
 
 
     @Override
