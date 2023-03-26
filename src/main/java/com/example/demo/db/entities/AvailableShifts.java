@@ -1,5 +1,7 @@
 package com.example.demo.db.entities;
 
+import com.example.demo.db.entities.interfaces.IEntity;
+import com.example.demo.db.entities.interfaces.Validatable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,9 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Objects;
 
 @Entity
-public class AvailableShifts implements Serializable {
+public class AvailableShifts implements Serializable , Comparable<AvailableShifts>, IEntity<AvailableShifts,Integer> , Validatable<AvailableShifts> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +30,22 @@ public class AvailableShifts implements Serializable {
     Integer employeeCount;
 
     Integer mangerCount;
+
+    public Integer getWeekNumber() {
+        return weekNumber;
+    }
+
+    public void setWeekNumber(Integer weekNumber) {
+        this.weekNumber = weekNumber;
+    }
+
+    public Integer getDayNumber() {
+        return dayNumber;
+    }
+
+    public void setDayNumber(Integer dayNumber) {
+        this.dayNumber = dayNumber;
+    }
 
     public Integer getId() {
         return id;
@@ -79,13 +99,66 @@ public class AvailableShifts implements Serializable {
     }
 
 
+    @Override
+    public boolean isValid(AvailableShifts toValidate) {
+        return toValidate.isValid();
+    }
+
+    @Override
+    public String toString() {
+        return "AvailableShifts{" +
+                "id=" + id +
+                ", weekNumber=" + weekNumber +
+                ", dayNumber=" + dayNumber +
+                ", startHour=" + startHour +
+                ", duration=" + duration +
+                ", employeeCount=" + employeeCount +
+                ", mangerCount=" + mangerCount +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AvailableShifts that)) return false;
-        return weekNumber.equals(that.weekNumber) && dayNumber.equals(that.dayNumber) && getStartHour().equals(that.getStartHour()) && getDuration().equals(that.getDuration());
+        if (o == null || getClass() != o.getClass()) return false;
+        AvailableShifts that = (AvailableShifts) o;
+        return Objects.equals(id, that.id) && Objects.equals(weekNumber, that.weekNumber) && Objects.equals(dayNumber, that.dayNumber) && Objects.equals(startHour, that.startHour) && Objects.equals(duration, that.duration) && Objects.equals(employeeCount, that.employeeCount) && Objects.equals(mangerCount, that.mangerCount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, weekNumber, dayNumber, startHour, duration, employeeCount, mangerCount);
+    }
+
+    @Override
+    public int compareTo(@NotNull AvailableShifts o) {
+        try {
+            if (this.weekNumber < o.weekNumber) {
+                return -1;
+            } else if (this.weekNumber > o.weekNumber) {
+                return 1;
+            } else {
+                if (this.dayNumber < o.dayNumber) {
+                    return -1;
+                } else if (this.dayNumber > o.dayNumber) {
+                    return 1;
+                } else {
+                    if (this.startHour < o.startHour) {
+                        return -1;
+                    } else if (this.startHour > o.startHour) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            return 1;
+        }
     }
 
 
 }
+
+
