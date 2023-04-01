@@ -2,12 +2,16 @@ package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.InvalidPropertyException;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.MissingFormatArgumentException;
 import java.util.Objects;
 
 @Entity
@@ -29,6 +33,16 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
 
     @Column(nullable = false)
     private String phoneNumber;
+
+    public Profile() {
+    }
+
+    public Profile(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
     @OneToMany(mappedBy = "profile")
     @JsonBackReference
@@ -125,6 +139,20 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
                 '}';
     }
 
+    public static Profile fromJson(JsonObject object) throws InvalidPropertyException{
+        JsonElement _firstName = object.get("firstName");
+        JsonElement _lastName = object.get("lastName");
+        JsonElement _email = object.get("email");
+        JsonElement _phoneNumber = object.get("phoneNumber");
 
+        if(_firstName == null || _lastName == null ||_email == null || _phoneNumber == null)
+            throw  new MissingFormatArgumentException("Missing argument");
 
+        String firstName = _firstName.getAsString();
+        String lastName = _lastName.getAsString();
+        String email = _email.getAsString();
+        String phoneNumber = _phoneNumber.getAsString();
+        return new Profile(firstName, lastName, email, phoneNumber
+        );
+    }
 }

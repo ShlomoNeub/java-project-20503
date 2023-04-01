@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface UserRepo extends CrudRepository<Users,Integer>{
+    Users findFirstByUsernameAndPasswordOrderByUsernameAsc(String username, String password);
 
     @Query("FROM Users u where u.pid= :pid")
     List<Users> findByProfile(Integer pid);

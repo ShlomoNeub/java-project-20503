@@ -1,5 +1,6 @@
 package com.example.demo.controllers.rest;
 
+import com.example.demo.config.interfaces.Auth;
 import com.example.demo.db.entities.interfaces.IEntity;
 import jakarta.annotation.*;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public abstract class RestApiAbstract
 {
 
     @Override
+    @Auth
     public Collection<Entity> getAll() {
         getLogger().info("Get all has been called");
         ArrayList<Entity> entities = new ArrayList<>();

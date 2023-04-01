@@ -48,6 +48,15 @@ public class Users implements Serializable, IEntity<Users,Integer> {
             updatable = false)
     Role role;
 
+    public Users() {
+    }
+
+    public Users(Integer pid, Integer roleId, String password, String username) {
+        this.pid = pid;
+        this.roleId = roleId;
+        this.password = password;
+        this.username = username;
+    }
 
     public Profile getProfile() {
         return profile;
@@ -89,6 +98,14 @@ public class Users implements Serializable, IEntity<Users,Integer> {
         this.role = role;
     }
 
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,11 +165,5 @@ public class Users implements Serializable, IEntity<Users,Integer> {
     }
 
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
