@@ -1,6 +1,6 @@
 package com.example.demo.config.interceptor;
 
-import com.example.demo.config.interfaces.Auth;
+import com.example.demo.config.annotation.Auth;
 import com.example.demo.db.entities.JsonWebToken;
 import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.UserRepo;
@@ -58,7 +58,7 @@ public class MiddlewareSystem {
         String[] authSplit = authHeader != null ? authHeader.split(":") : new String[0];
 
 
-        logger.debug("Executing @Auth" + methodName + " in " + controllerName);
+        logger.debug("Executing @Auth on " + methodName + " in " + controllerName);
 
         if (authSplit.length != 2) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -75,13 +75,12 @@ public class MiddlewareSystem {
                 HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE, WebRequest.SCOPE_REQUEST);
         boolean error = false;
         if (handlerMethod != null) {
-            Annotation annotation = handlerMethod.getMethodAnnotation(Auth.class);
             for (Map.Entry<Class<? extends Annotation>, Method> entry : validators.entrySet()) {
-                Class<? extends Annotation> key = entry.getKey();
-                Method value = entry.getValue();
-                if (handlerMethod.getMethodAnnotation(key) != null) {
+                Class<? extends Annotation> annotation = entry.getKey();
+                Method method = entry.getValue();
+                if (handlerMethod.getMethodAnnotation(annotation) != null) {
                     try {
-                        value.invoke(this, request);
+                        method.invoke(this, request);
                     } catch (InvocationTargetException e) {
                         if (e.getTargetException() instanceof ResponseStatusException)
                             throw e;

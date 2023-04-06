@@ -1,13 +1,15 @@
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.example.demo.db.entities.validator.EmailValidator;
+import com.example.demo.db.entities.validator.PhoneValidator;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.InvalidPropertyException;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -28,10 +30,12 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
+    @EmailValidator.Validate
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
+    @PhoneValidator.Validate
     private String phoneNumber;
 
     public Profile() {
@@ -67,36 +71,24 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
         return firstName;
     }
 
-    public void setFirstName(@NotNull  String firstName) {
-        this.firstName = firstName;
-    }
 
     @Nullable
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(@NotNull String lastName) {
-        this.lastName = lastName;
-    }
 
     @Nullable
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(@NotNull  String email) {
-        this.email = email;
-    }
 
     @Nullable
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(@NotNull String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -120,7 +112,7 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     }
 
     @Override
-    public int compareTo(@NotNull Profile o) {
+    public int compareTo(@NonNull Profile o) {
         try {
             return this.equals(o)?0:this.id.compareTo(o.id);
         }catch (Exception e){
