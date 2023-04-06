@@ -1,4 +1,4 @@
-package com.example.demo.config.interfaces;
+package com.example.demo.config.annotation;
 
 import java.lang.annotation.*;
 
