@@ -1,7 +1,7 @@
 package com.example.demo.controllers.rest;
 
-import com.example.demo.config.interfaces.Auth;
-import com.example.demo.config.interfaces.AuthPayload;
+import com.example.demo.config.annotation.AuthPayload;
+import com.example.demo.config.records.AuthInfo;
 import com.example.demo.db.entities.JsonWebToken;
 import com.example.demo.db.entities.Profile;
 import com.example.demo.db.entities.Role;
@@ -10,7 +10,6 @@ import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -38,7 +38,7 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
     final JwtRepo jwtRepo;
 
     final RoleRepo roleRepo;
-    final Gson gson = new Gson();
+
 
     public UserController(UserRepo repo, JwtRepo jwtRepo, ProfileRepo profileRepo, RoleRepo roleRepo) {
         this.userRepo = repo;
@@ -110,7 +110,7 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
 
             profile = profileRepo.save(profile);
             user.setPid(profile.getId());
-            user = userRepo.save(user);
+            userRepo.save(user);
         } catch (Exception e) {
             logger.error(e);
             if (profile != null && profile.getId() != null) profileRepo.delete(profile);
@@ -127,10 +127,17 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
         return response.toString();
     }
 
-    @Auth
+
     @RequestMapping(path = "/logout", method = RequestMethod.GET, produces = "application/json")
-    public String logout(@AuthPayload String jwt, @AuthPayload(jwt = false) String uid) {
+    public String logout(@AuthPayload AuthInfo authInfo) {
         JsonObject object = new JsonObject();
+        if (authInfo == null || !Objects.equals(authInfo.user(), authInfo.token().getUser()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        long count = jwtRepo.deleteByUid(authInfo.user().getId());
+        if (count == 0) {
+            logger.warn("Can not log out from logged out user");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already logged out");
+        }
         object.addProperty("logout", true);
         return object.toString();
     }
