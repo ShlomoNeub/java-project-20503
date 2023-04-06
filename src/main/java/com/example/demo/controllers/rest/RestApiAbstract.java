@@ -1,6 +1,6 @@
 package com.example.demo.controllers.rest;
 
-import com.example.demo.config.interfaces.Auth;
+import com.example.demo.config.annotation.Auth;
 import com.example.demo.db.entities.interfaces.IEntity;
 import jakarta.annotation.*;
 import jakarta.validation.constraints.NotNull;
@@ -39,6 +39,7 @@ public abstract class RestApiAbstract
         return entities;
     }
     @Override
+    @Auth
     public Entity createNewEntity(Entity entity) {
         getLogger().info("Create new was called with "+ entity);
         entity.setId(null);
@@ -49,6 +50,7 @@ public abstract class RestApiAbstract
     }
 
     @Override
+    @Auth
     public Entity getById(IndexType id) {
         getLogger().info("Get entity by id was called with id:"+id);
         Optional<Entity> e= getRepo().findById(id);
@@ -60,6 +62,7 @@ public abstract class RestApiAbstract
     }
 
     @Override
+    @Auth
     public Entity updateById(IndexType id, Entity entity) {
         getLogger().info("Update entity by id was called with id:"+id+" With:"+entity);
         Optional<Entity> entity1 = getRepo().findById(id);
@@ -72,6 +75,7 @@ public abstract class RestApiAbstract
     }
 
     @Override
+    @Auth
     public void deleteByID(IndexType id) {
         getLogger().info("Delete entity by id was called with id:"+id);
         Optional<Entity> entity1 = getRepo().findById(id);
