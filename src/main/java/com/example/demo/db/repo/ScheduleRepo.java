@@ -13,7 +13,8 @@ public interface ScheduleRepo extends CrudRepository<Schedule,Integer> {
      * @param week
      * @return List
      */
-            List<Schedule> getSchedulesByWeekNumber(Integer weekNumber);
+    @Query("SELECT s FROM Schedule s WHERE s.weekNumber = ?1")
+    List<Schedule> getSchedulesByWeekNumber(Integer week);
 
     /**
      * Gets Roles by Request
