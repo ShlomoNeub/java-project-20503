@@ -1,3 +1,6 @@
+/**
+ * This file implements the JWT entities that holds the login tokens
+ */
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
@@ -12,6 +15,9 @@ import java.util.UUID;
 @Entity
 public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer> {
 
+    /**
+     * The duration of the token
+     */
     static  final long VALID_DURATION = 5*60*1000; // 5 Minutes
 
     @Id
@@ -39,7 +45,7 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
     @ManyToOne
     @JoinColumn(name = "uid",referencedColumnName = "id",columnDefinition = "uid",insertable = false,
             updatable = false)
-    private Users user;
+    private User user;
 
     public JsonWebToken() {
         this.jwt = UUID.randomUUID();
@@ -84,7 +90,7 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
         return timestamp;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 

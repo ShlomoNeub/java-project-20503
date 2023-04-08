@@ -1,3 +1,6 @@
+/**
+ * This file implement a custom constrain to jakarta
+ */
 package com.example.demo.db.entities.validator;
 
 import jakarta.validation.Constraint;
@@ -8,11 +11,19 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 public class EmailValidator implements ConstraintValidator<EmailValidator.Validate, String> {
+    /**
+     * @param constraintAnnotation annotation instance for a given constraint declaration
+     */
     @Override
     public void initialize(Validate constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
+    /**
+     * Method for validation if given mail is from a valid format
+     * @param email string ti be tested
+     * @return {@code true} if valid {@code false} otherwise
+     */
     public static boolean isValidEmail(String email) {
         String regex = "^[\\w.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
         java.util.regex.Pattern pattern =
@@ -21,11 +32,21 @@ public class EmailValidator implements ConstraintValidator<EmailValidator.Valida
         return matcher.matches();
     }
 
+    /**
+     *
+     * @param value object to validate
+     * @param context context in which the constraint is evaluated
+     *
+     * @return if the constraint is valid
+     */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         return isValidEmail(value);
     }
 
+    /**
+     * The validation annotation
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @Constraint(validatedBy = EmailValidator.class)

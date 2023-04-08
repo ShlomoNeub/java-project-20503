@@ -1,8 +1,8 @@
 package com.example.demo.db.entities.interfaces;
 
 /**
- * Make sure that the object can be validate using is valud
- * @param <T>
+ * Make sure that the object can be validated using his instaces
+ * @param <T> of the object to be validated
  */
 public interface Validatable<T> {
     /**
