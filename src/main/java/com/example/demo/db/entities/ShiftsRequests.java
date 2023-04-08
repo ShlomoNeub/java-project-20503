@@ -12,29 +12,29 @@ public class ShiftsRequests implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "shift_id",insertable = false,updatable = false)
+    @Column(name = "shift_id", insertable = false, updatable = false)
     private Integer shiftId;
 
     @Basic
-    @Column(name = "uid",insertable = false,updatable = false)
+    @Column(name = "uid", insertable = false, updatable = false)
     private Integer uid;
 
     @ManyToOne
-    @JoinColumn(name = "uid",referencedColumnName = "id")
-    private Users user;
+    @JoinColumn(name = "uid", referencedColumnName = "id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "shift_id",referencedColumnName = "id")
+    @JoinColumn(name = "shift_id", referencedColumnName = "id")
     private AvailableShifts shift;
     @Basic
-    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     java.sql.Timestamp timestamp;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ShiftsRequests that)) return false;
-        return  getId().equals(that.getId()) &&
+        return getId().equals(that.getId()) &&
                 getUser().equals(that.getUser()) &&
                 getShift().equals(that.getShift()) &&
                 getTimestamp().equals(that.getTimestamp());
@@ -69,11 +69,11 @@ public class ShiftsRequests implements Serializable {
         this.id = id;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

@@ -1,7 +1,7 @@
 package com.example.demo.controllers.rest;
 
 import com.example.demo.db.entities.Profile;
-import com.example.demo.db.entities.Users;
+import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.ProfileRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +42,7 @@ public class ProfileController extends RestApiAbstract<Profile, ProfileRepo, Int
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile with id" + id);
         }
         ArrayList<String> usersStrings = new ArrayList<>();
-        for (Users _user : profile.get().getUsers()) {
+        for (User _user : profile.get().getUsers()) {
             usersStrings.add(_user.getUsername());
         }
 

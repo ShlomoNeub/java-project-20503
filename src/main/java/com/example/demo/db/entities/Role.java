@@ -27,7 +27,7 @@ public class Role implements Serializable {
     @OneToMany(mappedBy = "role")
     @JsonBackReference
     @Nullable
-    private Collection<Users> users;
+    private Collection<User> users;
     public Integer getId() {
         return id;
     }

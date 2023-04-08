@@ -8,7 +8,7 @@ package com.example.demo.config.interceptor;
 import com.example.demo.config.annotation.AuthPayload;
 import com.example.demo.config.records.AuthInfo;
 import com.example.demo.db.entities.JsonWebToken;
-import com.example.demo.db.entities.Users;
+import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.UserRepo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,7 +58,7 @@ public class AuthPayloadArgumentResolver implements HandlerMethodArgumentResolve
      *                      have returned {@code true}.
      * @param mavContainer  the ModelAndViewContainer for the current request
      * @param webRequest    the current request
-     * @param binderFactory a factory for creating {@link WebDataBinder} instances
+     * @param binderFactory a factory for creating instances
      * @return The populated {@code AuthInfo} otherwise {@code null}
      */
     @Override
@@ -80,7 +80,7 @@ public class AuthPayloadArgumentResolver implements HandlerMethodArgumentResolve
                 return null;
             }
             String uid = token[0], uuid = token[1];
-            Users user = userRepo.findById(Integer.parseInt(uid)).orElse(null);
+            User user = userRepo.findById(Integer.parseInt(uid)).orElse(null);
             JsonWebToken jwt = jwtRepo.findByUUID(UUID.fromString(uuid)).orElse(null);
 
             if (user == null || jwt == null) {

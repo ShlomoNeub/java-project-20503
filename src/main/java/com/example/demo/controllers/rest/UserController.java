@@ -5,7 +5,7 @@ import com.example.demo.config.records.AuthInfo;
 import com.example.demo.db.entities.JsonWebToken;
 import com.example.demo.db.entities.Profile;
 import com.example.demo.db.entities.Role;
-import com.example.demo.db.entities.Users;
+import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
@@ -19,19 +19,16 @@ import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Controller that implements the Users REST API
  */
 @RestController
 @RequestMapping(path = "/users")
-public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
+public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
     final static private String USERNAME_KEY = "username";
-    final static private String PASSWORD_KEY = "passowrd";
+    final static private String PASSWORD_KEY = "password";
 
     final Logger logger = LogManager.getLogger(UserController.class);
     final UserRepo userRepo;
@@ -65,7 +62,7 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
 
         String username = jsonRequest.get(USERNAME_KEY).getAsString();
         String password = jsonRequest.get(PASSWORD_KEY).getAsString();
-        Users u = userRepo.findFirstByUsernameAndPasswordOrderByUsernameAsc(username, password);
+        User u = userRepo.findFirstByUsernameAndPasswordOrderByUsernameAsc(username, password);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
@@ -104,10 +101,10 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
         String username;
         String password;
         Profile profile = null;
-        Users user = null;
+        User user = null;
         try {
             jsonRequest = JsonParser.parseString(request).getAsJsonObject();
-            user = new Users();
+            user = new User();
             profile = new Gson().fromJson(jsonRequest,Profile.class);
 //            profile = Profile.fromJson(jsonRequest);
             username = jsonRequest.get(USERNAME_KEY).getAsString();

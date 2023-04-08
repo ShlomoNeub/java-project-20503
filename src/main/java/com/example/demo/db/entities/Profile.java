@@ -1,3 +1,6 @@
+/**
+ * This file implements the Profile entities that the user unique information
+ */
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
@@ -17,7 +20,7 @@ import java.util.MissingFormatArgumentException;
 import java.util.Objects;
 
 @Entity
-public class Profile implements Serializable, IEntity<Profile,Integer> {
+public class Profile implements Serializable, IEntity<Profile, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +33,11 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     @EmailValidator.Validate
     private String email;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     @PhoneValidator.Validate
     private String phoneNumber;
 
@@ -51,7 +54,7 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     @OneToMany(mappedBy = "profile")
     @JsonBackReference
     @Nullable
-    Collection<Users> users;
+    Collection<User> users;
 
     @Nullable
     public Integer getId() {
@@ -61,8 +64,9 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     public void setId(Integer id) {
         this.id = id;
     }
+
     @Nullable
-    public Collection<Users> getUsers() {
+    public Collection<User> getUsers() {
         return users;
     }
 
@@ -94,19 +98,24 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Profile profile)) return false;
-        return getFirstName().equals(profile.getFirstName()) && getLastName().equals(profile.getLastName()) && getEmail().equals(profile.getEmail()) && getPhoneNumber().equals(profile.getPhoneNumber());
+        return getFirstName().equals(profile.getFirstName()) &&
+                getLastName().equals(profile.getLastName()) &&
+                getEmail().equals(profile.getEmail()) &&
+                getPhoneNumber().equals(profile.getPhoneNumber());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getFirstName(), getLastName(), getEmail(), getPhoneNumber());
     }
+
     private boolean isValid() {
         boolean retVal = this.firstName != null;
         retVal &= this.lastName != null;
         retVal &= this.phoneNumber != null;
         return retVal;
     }
+
     public boolean isValid(Profile toValidate) {
         return toValidate.isValid();
     }
@@ -114,8 +123,8 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
     @Override
     public int compareTo(@NonNull Profile o) {
         try {
-            return this.equals(o)?0:this.id.compareTo(o.id);
-        }catch (Exception e){
+            return this.equals(o) ? 0 : this.id.compareTo(o.id);
+        } catch (Exception e) {
             return 1;
         }
     }
@@ -131,14 +140,14 @@ public class Profile implements Serializable, IEntity<Profile,Integer> {
                 '}';
     }
 
-    public static Profile fromJson(JsonObject object) throws InvalidPropertyException{
+    public static Profile fromJson(JsonObject object) throws InvalidPropertyException {
         JsonElement _firstName = object.get("firstName");
         JsonElement _lastName = object.get("lastName");
         JsonElement _email = object.get("email");
         JsonElement _phoneNumber = object.get("phoneNumber");
 
-        if(_firstName == null || _lastName == null ||_email == null || _phoneNumber == null)
-            throw  new MissingFormatArgumentException("Missing argument");
+        if (_firstName == null || _lastName == null || _email == null || _phoneNumber == null)
+            throw new MissingFormatArgumentException("Missing argument");
 
         String firstName = _firstName.getAsString();
         String lastName = _lastName.getAsString();
