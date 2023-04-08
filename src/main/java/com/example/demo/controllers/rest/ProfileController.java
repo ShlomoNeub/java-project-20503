@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/profiles")
-public class ProfileController extends RestApiAbstract<Profile, ProfileRepo,Integer>{
+public class ProfileController extends RestApiAbstract<Profile, ProfileRepo, Integer> {
     final Logger logger = LogManager.getLogger(ProfileController.class);
 
     final ProfileRepo repo;
@@ -26,11 +26,20 @@ public class ProfileController extends RestApiAbstract<Profile, ProfileRepo,Inte
     public ProfileController(ProfileRepo repo) {
         this.repo = repo;
     }
-    @RequestMapping(path = "/{id}/users",method = RequestMethod.GET)
-    public Collection<String> getProfiles(@PathVariable Integer id){
+
+    /**
+     * <b>GET /{id}/users</b>
+     * <p>Gets all user name of given profile</p>
+     *
+     * @param id of the profile
+     * @return the newly updated object
+     * @throws ResponseStatusException when cannot execute correctly
+     */
+    @RequestMapping(path = "/{id}/users", method = RequestMethod.GET)
+    public Collection<String> getProfiles(@PathVariable Integer id) {
         Optional<Profile> profile = repo.findById(id);
-        if(profile.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No profile with id"+id);
+        if (profile.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile with id" + id);
         }
         ArrayList<String> usersStrings = new ArrayList<>();
         for (Users _user : profile.get().getUsers()) {
@@ -39,6 +48,7 @@ public class ProfileController extends RestApiAbstract<Profile, ProfileRepo,Inte
 
         return usersStrings;
     }
+
     @Override
     public Logger getLogger() {
         return logger;

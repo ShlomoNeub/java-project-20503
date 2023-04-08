@@ -10,6 +10,7 @@ import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,7 +31,7 @@ import java.util.Optional;
 @RequestMapping(path = "/users")
 public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
     final static private String USERNAME_KEY = "username";
-    final static private String PASSWORD_KEY = "username";
+    final static private String PASSWORD_KEY = "passowrd";
 
     final Logger logger = LogManager.getLogger(UserController.class);
     final UserRepo userRepo;
@@ -47,10 +48,13 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
         this.roleRepo = roleRepo;
     }
 
+
     /**
-     * Login route
-     * @param request expects JsonString with the keys username and passwrod
-     * @return JsonString with jwt,id,role;
+     * <b>Post /login</b>
+     * <p>Login route</p>
+     * @param request stringified json with username and password
+     * @return Json stringified with role,jwt,id
+     * @throws ResponseStatusException when cannot execute correctly
      */
     @RequestMapping(method = RequestMethod.POST, path = "/login", produces = "application/json")
     public String login(@RequestBody String request) {
@@ -59,8 +63,8 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing username or password");
         }
 
-        String username = jsonRequest.get("username").getAsString();
-        String password = jsonRequest.get("password").getAsString();
+        String username = jsonRequest.get(USERNAME_KEY).getAsString();
+        String password = jsonRequest.get(PASSWORD_KEY).getAsString();
         Users u = userRepo.findFirstByUsernameAndPasswordOrderByUsernameAsc(username, password);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -87,10 +91,13 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
     }
 
     /**
-     * signup route for the system
-     * @param request JsonString with flat representation of {@link Profile} and username and password
-     * @return JsonString with username and created flag
+     * <b>Post /signup</b>
+     * <p>signup route for the system</p>
+     * @param request stringified json with flattened profile and user
+     * @return Json stringified with username, nad if it was created.
+     * @throws ResponseStatusException when cannot execute correctly
      */
+
     @RequestMapping(method = RequestMethod.POST, path = "/signup", produces = "application/json")
     public String signup(@RequestBody String request) {
         JsonObject jsonRequest;
@@ -101,9 +108,10 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
         try {
             jsonRequest = JsonParser.parseString(request).getAsJsonObject();
             user = new Users();
-            profile = Profile.fromJson(jsonRequest);
-            username = jsonRequest.get("username").getAsString();
-            password = jsonRequest.get("password").getAsString();
+            profile = new Gson().fromJson(jsonRequest,Profile.class);
+//            profile = Profile.fromJson(jsonRequest);
+            username = jsonRequest.get(USERNAME_KEY).getAsString();
+            password = jsonRequest.get(PASSWORD_KEY).getAsString();
             user.setUsername(username);
             user.setPassword(password);
             user.setRole_id(roleRepo.getRoleByLevel(0).orElse(new Role()).getId());
@@ -127,7 +135,13 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
         return response.toString();
     }
 
-
+    /**
+     * <b>GET /logout</b>
+     * <p>logout route for the system</p>
+     * @param authInfo the information of the user that enter to this call
+     * @return Json stringified with logout flag {@code true} if success otherwise {@code false}
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @RequestMapping(path = "/logout", method = RequestMethod.GET, produces = "application/json")
     public String logout(@AuthPayload AuthInfo authInfo) {
         JsonObject object = new JsonObject();
@@ -142,20 +156,6 @@ public class UserController extends RestApiAbstract<Users, UserRepo, Integer> {
         return object.toString();
     }
 
-
-    @RequestMapping(path = "/{id}/user-profiles", method = RequestMethod.GET)
-    public Collection<String> getProfiles(@PathVariable Integer id) {
-        Optional<Users> user = userRepo.findById(id);
-        if (user.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with id" + id);
-        }
-        ArrayList<String> usersStrings = new ArrayList<>();
-        for (Users _user : user.get().getProfile().getUsers()) {
-            usersStrings.add(_user.getUsername());
-        }
-
-        return usersStrings;
-    }
 
 
     @Override

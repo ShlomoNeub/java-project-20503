@@ -1,3 +1,6 @@
+/**
+ * Here we implement a layer in the calls flow were handle all custom annotations
+ */
 package com.example.demo.config.interceptor;
 
 import com.example.demo.config.annotation.Auth;
@@ -23,7 +26,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-//@ControllerAdvice(assignableTypes = LoginController.class)
+/**
+ * Basic middleware
+ */
 @RestControllerAdvice
 public class MiddlewareSystem {
     final Logger logger = LogManager.getLogger(MiddlewareSystem.class);
@@ -38,6 +43,9 @@ public class MiddlewareSystem {
         this.userRepo = userRepo;
     }
 
+    /**
+     * Hash of all the annotation and the methode used for the annotation
+     */
     HashMap<Class<? extends Annotation>, Method> validators = new HashMap<>() {{
         try {
             put(Auth.class, MiddlewareSystem.class.getMethod("doAuth", WebRequest.class));
@@ -46,7 +54,13 @@ public class MiddlewareSystem {
         }
     }};
 
-    public void doAuth(WebRequest request) {
+    /**
+     * This methode validates that the request Auth is valid in the database
+     *
+     * @param request that is being made to the server
+     * @throws ResponseStatusException on Authorization error
+     */
+    public void doAuth(WebRequest request) throws ResponseStatusException {
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(
                 HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE, WebRequest.SCOPE_REQUEST);
 
@@ -69,21 +83,30 @@ public class MiddlewareSystem {
 
     }
 
+    /**
+     * @param request that is being made to the server
+     * @throws ResponseStatusException on any error
+     */
     @ModelAttribute
-    public void handler(WebRequest request) throws Throwable {
+    public void handler(WebRequest request) throws ResponseStatusException {
+        // gets the methode that will be executed
+        boolean error = false;
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(
                 HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE, WebRequest.SCOPE_REQUEST);
-        boolean error = false;
+
         if (handlerMethod != null) {
+            // iterate on all the validator and check if the need to be run;
             for (Map.Entry<Class<? extends Annotation>, Method> entry : validators.entrySet()) {
-                Class<? extends Annotation> annotation = entry.getKey();
+                Class<? extends Annotation> testAnnotation = entry.getKey();
                 Method method = entry.getValue();
-                if (handlerMethod.getMethodAnnotation(annotation) != null) {
+                // check if the target is annotated with testAnnotation
+                if (handlerMethod.getMethodAnnotation(testAnnotation) != null) {
                     try {
+                        // invoke the validation function
                         method.invoke(this, request);
                     } catch (InvocationTargetException e) {
                         if (e.getTargetException() instanceof ResponseStatusException)
-                            throw e;
+                            throw (ResponseStatusException) e.getTargetException();
                         else {
                             logger.error(e);
                             error = true;
@@ -99,13 +122,21 @@ public class MiddlewareSystem {
         }
     }
 
+    /**
+     * Authenticated the user with his id and jwt
+     *
+     * @param userID of the target user
+     * @param jwt    of the user to access
+     * @param level  the minimal level that user must have
+     * @return if the user is authenticated
+     */
     public boolean authUser(Integer userID, String jwt, @Nullable Integer level) {
         Optional<JsonWebToken> tokenOptional = jwtRepo.getTokenByUser(userID);
 
-        return tokenOptional.isPresent() &&
-                tokenOptional.get().getValid() &&
-                tokenOptional.get().getJwt().toString().equals(jwt) &&
-                tokenOptional.get().getUser().getRole().getRoleLevel() >= level;
+        return tokenOptional.isPresent() && // token exsists
+                tokenOptional.get().getValid() && // not expired
+                tokenOptional.get().getJwt().toString().equals(jwt) && // same as given jwt
+                tokenOptional.get().getUser().getRole().getRoleLevel() >= level; // have higher or equal access
     }
 
 

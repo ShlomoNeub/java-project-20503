@@ -1,3 +1,8 @@
+/**
+ * This file contains the implantation of the AuthInfo resolver.
+ * Based on HandlerMethodArgumentResolver
+ *
+ */
 package com.example.demo.config.interceptor;
 
 import com.example.demo.config.annotation.AuthPayload;
@@ -35,12 +40,27 @@ public class AuthPayloadArgumentResolver implements HandlerMethodArgumentResolve
         this.jwtRepo = jwtRepo;
     }
 
+    /**
+     * @param parameter the method parameter to check
+     * @return {@code true} if this resolver supports the supplied parameter;
+     * {@code false} otherwise
+     */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterAnnotation(AuthPayload.class) != null &&
                 parameter.getParameterType() == AuthInfo.class;
     }
 
+
+    /**
+     * @param parameter     the method parameter to resolve. This parameter must
+     *                      have previously been passed to {@link #supportsParameter} which must
+     *                      have returned {@code true}.
+     * @param mavContainer  the ModelAndViewContainer for the current request
+     * @param webRequest    the current request
+     * @param binderFactory a factory for creating {@link WebDataBinder} instances
+     * @return The populated {@code AuthInfo} otherwise {@code null}
+     */
     @Override
     public Object resolveArgument(@NonNull MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
