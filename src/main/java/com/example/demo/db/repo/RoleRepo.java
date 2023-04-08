@@ -3,8 +3,10 @@ package com.example.demo.db.repo;
 import com.example.demo.db.entities.Role;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.lang.NonNull;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
 public interface RoleRepo extends CrudRepository<Role,Integer> {
 
@@ -13,16 +15,19 @@ public interface RoleRepo extends CrudRepository<Role,Integer> {
      * @param level to search for
      * @return List of roles with role_level equal to level
      */
-    @Query("SELECT r FROM Role r WHERE r.roleLevel=?1")
-    List<Role> getRolesByRoleLevel(Integer level);
+    Collection<Role> getRolesByRoleLevel(Integer level);
 
     /**
      * Gets all roles with role_name same as name
      * @param name to search for
      * @return List of roles with role_name == name
      */
-    @Query("SELECT r FROM Role r WHERE r.roleName=?1")
-    List<Role> getRolesByRoleName(String name);
+    Collection<Role> getRolesByRoleName(String name);
+
+    @Query("select r from Role r where r.roleLevel = ?1 order by r.id")
+    Optional<Role> getRoleByLevel(@NonNull Integer roleLevel);
+
+
 
 
 }
