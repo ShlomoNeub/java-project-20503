@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -25,7 +26,7 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     @Column(nullable = false)
     private String roleName=STANDARD_ROLE_NAME;
     @Column(nullable = false)
-    private Integer roleLevel=STANDARD_ROLE_LEVEL;;
+    private Integer roleLevel=STANDARD_ROLE_LEVEL;
 
     @OneToMany(mappedBy = "role")
     @JsonBackReference
@@ -42,7 +43,7 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     public String getRoleName() {
         return roleName;
     }
-
+    
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
