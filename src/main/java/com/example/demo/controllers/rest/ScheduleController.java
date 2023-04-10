@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller that implements the Schedule REST API
- * @return all the schedules from table
+ *
  */
 @RestController
 @RequestMapping(path = "/schedules")
-public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo,Integer>{
+public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, Integer> {
 
     final Logger logger = LogManager.getLogger(ScheduleController.class);
     final ScheduleRepo repo;
