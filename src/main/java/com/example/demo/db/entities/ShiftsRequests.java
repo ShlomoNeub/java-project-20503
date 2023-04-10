@@ -1,5 +1,6 @@
 package com.example.demo.db.entities;
 
+import com.example.demo.db.entities.interfaces.IEntity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -7,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-public class ShiftsRequests implements Serializable {
+public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -85,8 +86,28 @@ public class ShiftsRequests implements Serializable {
         this.shift = shift;
     }
 
-    public boolean isValid() {
-
+    @Override
+    public boolean isValid(ShiftsRequests toValidate) {
+        // TODO: Think about what really needs to be validate when adding entry to schedule
         return true;
+    }
+
+    @Override
+    public int compareTo(ShiftsRequests o) {
+        try {
+            return this.equals(o)?0:this.id.compareTo(o.id);
+        }catch (Exception e){
+            return 1;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ShiftsRequests{" +
+                "id=" + id +
+                ", shiftId='" + shiftId + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                ", uid='" + uid + '\'' +
+                '}';
     }
 }
