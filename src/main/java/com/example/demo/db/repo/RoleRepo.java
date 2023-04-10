@@ -13,7 +13,6 @@ public interface RoleRepo extends CrudRepository<Role,Integer> {
      * @param level to search for
      * @return List of roles with role_level equal to level
      */
-    @Query("SELECT r FROM Role r WHERE r.roleLevel=?1")
     List<Role> getRolesByRoleLevel(Integer level);
 
     /**
@@ -21,7 +20,6 @@ public interface RoleRepo extends CrudRepository<Role,Integer> {
      * @param name to search for
      * @return List of roles with role_name == name
      */
-    @Query("SELECT r FROM Role r WHERE r.roleName=?1")
     List<Role> getRolesByRoleName(String name);
 
 

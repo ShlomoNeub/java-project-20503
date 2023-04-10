@@ -28,6 +28,12 @@ public class RoleController extends RestApiAbstract<Role, RoleRepo,Integer> {
         this.repo = repo;
     }
 
+    /**
+     * get all the user names with this role related to the given role-id
+     * @param id of the desired role
+     * @return users with this role
+     * @throws ResponseStatusException if could not find any users with the role
+     */
     @RequestMapping(path = "/{id}/role",method = RequestMethod.GET)
     public Collection<String> getProfiles(@PathVariable Integer id){
         Optional<Role> role = repo.findById(id);
