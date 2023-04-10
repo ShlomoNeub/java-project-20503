@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller that implements the Schedule REST API
+ * @return all the shifts requests from table
  */
 @RestController
 @RequestMapping(path = "/shiftsrequests")

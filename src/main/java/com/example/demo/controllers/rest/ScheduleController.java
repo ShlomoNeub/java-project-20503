@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller that implements the Schedule REST API
+ * @return all the schedules from table
  */
 @RestController
 @RequestMapping(path = "/schedules")
