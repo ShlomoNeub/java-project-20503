@@ -4,32 +4,33 @@ import com.example.demo.db.entities.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Objects;
 
 @Entity
 public class Role implements Serializable, IEntity<Role,Integer> {
     // TODO: Think about making it Enum
-    public static final int STANDARD_ROLE_LEVEL = 1;
-    public static final int MANAGER_ROLE_LEVEL = 2;
+    public static final int STANDARD_ROLE_LEVEL = 0;
+    public static final int MANAGER_ROLE_LEVEL = 1;
 
     public static final String STANDARD_ROLE_NAME = "STANDARD";
     public static final String MANAGER_ROLE_NAME = "MANAGER";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+
     @Column(nullable = false)
-    private String roleName;
+    private String roleName=STANDARD_ROLE_NAME;
     @Column(nullable = false)
-    private Integer roleLevel;
+    private Integer roleLevel=STANDARD_ROLE_LEVEL;;
 
     @OneToMany(mappedBy = "role")
     @JsonBackReference
     @Nullable
-    private Collection<Users> users;
+    private Collection<User> users;
     public Integer getId() {
         return id;
     }
@@ -47,7 +48,7 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     }
 
     @Nullable
-    public Collection<Users> getUsers() {
+    public Collection<User> getUsers() {
         return users;
     }
 
@@ -93,7 +94,7 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     }
 
     @Override
-    public int compareTo(@NotNull Role o) {
+    public int compareTo(@NonNull Role o) {
         try {
             return this.equals(o)?0:this.id.compareTo(o.id);
         }catch (Exception e){
