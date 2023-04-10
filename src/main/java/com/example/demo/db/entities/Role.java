@@ -11,8 +11,8 @@ import java.util.Objects;
 @Entity
 public class Role implements Serializable {
     // TODO: Think about making it Enum
-    public static final int STANDARD_ROLE_LEVEL = 1;
-    public static final int MANAGER_ROLE_LEVEL = 2;
+    public static final int STANDARD_ROLE_LEVEL = 0;
+    public static final int MANAGER_ROLE_LEVEL = 1;
 
     public static final String STANDARD_ROLE_NAME = "STANDARD";
     public static final String MANAGER_ROLE_NAME = "MANAGER";
@@ -20,14 +20,14 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String roleName;
+    private String roleName=STANDARD_ROLE_NAME;
 
-    private Integer roleLevel;
+    private Integer roleLevel=STANDARD_ROLE_LEVEL;
 
     @OneToMany(mappedBy = "role")
     @JsonBackReference
     @Nullable
-    private Collection<Users> users;
+    private Collection<User> users;
     public Integer getId() {
         return id;
     }

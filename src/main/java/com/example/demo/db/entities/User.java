@@ -1,3 +1,6 @@
+/**
+ * This file implements the User entities that login credentials
+ */
 package com.example.demo.db.entities;
 
 
@@ -6,13 +9,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class Users implements Serializable, IEntity<Users,Integer> {
+@Table(name="users")
+public class User implements Serializable, IEntity<User,Integer> {
 
     public static final int PASSWORD_MIN_LENGTH = 8;
     public static final int PASSWORD_MAX_LENGTH = 16;
@@ -57,6 +62,15 @@ public class Users implements Serializable, IEntity<Users,Integer> {
             updatable = false)
     Role role;
 
+    public User() {
+    }
+
+    public User(Integer pid, Integer roleId, String password, String username) {
+        this.pid = pid;
+        this.roleId = roleId;
+        this.password = password;
+        this.username = username;
+    }
 
     public Profile getProfile() {
         return profile;
@@ -98,16 +112,24 @@ public class Users implements Serializable, IEntity<Users,Integer> {
         this.role = role;
     }
 
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Users users)) return false;
+        if (!(o instanceof User user)) return false;
         return getId().equals(
-                users.getId()) &&
-                getPid().equals(users.getPid()) &&
-                getPassword().equals(users.getPassword()) &&
-                getProfile().equals(users.getProfile()) &&
-                getRoleId().equals(users.roleId);
+                user.getId()) &&
+                getPid().equals(user.getPid()) &&
+                getPassword().equals(user.getPassword()) &&
+                getProfile().equals(user.getProfile()) &&
+                getRoleId().equals(user.roleId);
     }
 
     @Override
@@ -118,19 +140,18 @@ public class Users implements Serializable, IEntity<Users,Integer> {
 
     private boolean validatePassword(String password){
         boolean retVal = true;
-        retVal &= password.length() > Users.PASSWORD_MIN_LENGTH;
-        retVal &= password.length() <  Users.PASSWORD_MAX_LENGTH;
+        retVal &= password.length() > User.PASSWORD_MIN_LENGTH;
+        retVal &= password.length() <  User.PASSWORD_MAX_LENGTH;
         return retVal;
     }
 
     @Override
-    public boolean isValid(Users user) {
-        boolean isValidPassword =validatePassword(user.getPassword());
-        return isValidPassword;
+    public boolean isValid(User user) {
+        return validatePassword(user.getPassword());
     }
 
     @Override
-    public int compareTo(Users o) {
+    public int compareTo(@NonNull User o) {
         if (o != null) {
             try{
                 return equals(o)?0:this.getId().compareTo(o.getId());
@@ -157,11 +178,5 @@ public class Users implements Serializable, IEntity<Users,Integer> {
     }
 
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
