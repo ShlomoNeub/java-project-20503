@@ -20,6 +20,10 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
     @JoinColumn(name = "request_id",referencedColumnName = "id")
     ShiftsRequests request;
 
+    public ShiftsRequests getRequest() {
+        return request;
+    }
+
     public Integer getWeekNumber() {
         return weekNumber;
     }
