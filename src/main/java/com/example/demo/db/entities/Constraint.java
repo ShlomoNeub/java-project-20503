@@ -39,7 +39,7 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     }
     @ManyToOne
     @JoinColumn(name = "userId",referencedColumnName = "id", columnDefinition = "user_id")
-    Users users;
+    User users;
 
     /////////////////////////////////////////////////////////////////
     private boolean isPermanent;
@@ -48,11 +48,11 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
 
     private java.sql.Date endDate;
 
-    public Users getUsers() {
+    public User getUsers() {
         return users;
     }
 
-    public void setUsers(Users users) {
+    public void setUsers(User users) {
         this.users = users;
     }
 

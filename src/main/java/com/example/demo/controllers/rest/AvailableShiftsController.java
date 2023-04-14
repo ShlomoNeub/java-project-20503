@@ -2,12 +2,17 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.db.entities.AvailableShifts;
 import com.example.demo.db.repo.AvailableShiftsRepo;
+import com.example.demo.db.repo.ScheduleRepo;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,10 +23,26 @@ import java.util.List;
 public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, AvailableShiftsRepo, Integer> {
     final Logger logger = LogManager.getLogger(AvailableShiftsController.class);
     final AvailableShiftsRepo repo;
+    final ScheduleRepo sRepo;
 
-    public AvailableShiftsController(AvailableShiftsRepo repo) {
+    public AvailableShiftsController(AvailableShiftsRepo repo, ScheduleRepo sRepo) {
         this.repo = repo;
+        this.sRepo = sRepo;
     }
+
+    @GetMapping("/test")
+    public String getAvailableShiftsStr(){
+        Collection<AvailableShifts> availableShifts = getAll();
+        JsonArray jsonOutput = new JsonArray();
+
+        for(AvailableShifts as:availableShifts){
+            JsonObject o = JsonParser.parseString(new Gson().toJson(as)).getAsJsonObject();
+            o.addProperty("numOfScheduledWorkers",sRepo.findByRequestShiftId(as.getId()).size());
+            jsonOutput.add(o);
+        }
+        return jsonOutput.toString();
+    }
+
 
     @Override
     public AvailableShiftsRepo getRepo() {
