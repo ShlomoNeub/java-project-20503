@@ -54,6 +54,12 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
 
     }
 
+    public void touch(){
+        if(getValid()) {
+            timestamp = new java.sql.Timestamp(System.currentTimeMillis());
+        }
+    }
+
     public boolean getValid() {
         boolean stillValid = timestamp == null ||
                 new Timestamp(System.currentTimeMillis()).before(new Timestamp(timestamp.getTime()+VALID_DURATION));

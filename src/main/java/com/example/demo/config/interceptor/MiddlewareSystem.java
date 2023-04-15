@@ -132,9 +132,15 @@ public class MiddlewareSystem {
      */
     public boolean authUser(Integer userID, String jwt, @Nullable Integer level) {
         Optional<JsonWebToken> tokenOptional = jwtRepo.getTokenByUser(userID);
-
-        return tokenOptional.isPresent() && // token exsists
-                tokenOptional.get().getValid() && // not expired
+        if(!tokenOptional.isPresent()) return false;
+        JsonWebToken jsonWebToken = tokenOptional.get();
+        boolean validJwt = jsonWebToken.getValid();
+        if(validJwt){
+            jsonWebToken.touch();
+            jwtRepo.save(jsonWebToken);
+        }
+        return  // token exsists
+                 jwtRepo.save(tokenOptional.get()) != null&&// not expired
                 tokenOptional.get().getJwt().toString().equals(jwt) && // same as given jwt
                 tokenOptional.get().getUser().getRole().getRoleLevel() >= level; // have higher or equal access
     }
