@@ -11,9 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Controller that implements the AvailableShifts REST API
@@ -57,10 +56,10 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
     /**
      * Find all available shifts for a specific week number
      * @param weekNumber the week number to search for
-     * @return a list of available shifts for the given week number
+     * @return a Collection of available shifts for the given week number
      */
     @GetMapping("/week/{weekNumber}")
-    public List<AvailableShifts> findByWeekNumber(@PathVariable Integer weekNumber) {
+    public Collection<AvailableShifts> findByWeekNumber(@PathVariable Integer weekNumber) {
         return repo.findByWeekNumber(weekNumber);
     }
 
@@ -69,10 +68,10 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
      * @param weekNumber the week number to search for
      * @param startDay the start day number to search for
      * @param endDay the end day number to search for
-     * @return a list of available shifts between the given start and end days in the specified week
+     * @return a Collection of available shifts between the given start and end days in the specified week
      */
     @GetMapping("/week/{weekNumber}/days/{startDay}/{endDay}")
-    public List<AvailableShifts> findShiftsBetweenDaysInWeek(@PathVariable Integer weekNumber,
+    public Collection<AvailableShifts> findShiftsBetweenDaysInWeek(@PathVariable Integer weekNumber,
                                                              @PathVariable Integer startDay,
                                                              @PathVariable Integer endDay) {
         return repo.findShiftsBetweenDaysInWeek(weekNumber, startDay, endDay);
@@ -82,11 +81,11 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
      * Find the shifts with the longest duration for a given day and week
      * @param weekNumber the week number to search for
      * @param dayNumber the day number to search for
-     * @return a list of available shifts with the longest duration for the given day and week
+     * @return a Collection of available shifts with the longest duration for the given day and week
      */
     @GetMapping("/week/{weekNumber}/day/{dayNumber}/longest-duration")
-    public List<AvailableShifts> findShiftWithLongestDuration(@PathVariable Integer weekNumber,
+    public Collection<AvailableShifts> findShiftWithLongestDuration(@PathVariable Integer weekNumber,
                                                               @PathVariable Integer dayNumber) {
-        return repo.findShiftWithLongestDuration(weekNumber, dayNumber);
+        return repo.findByWeekNumberAndDayNumberOrderByDurationDesc(weekNumber, dayNumber);
     }
 }
