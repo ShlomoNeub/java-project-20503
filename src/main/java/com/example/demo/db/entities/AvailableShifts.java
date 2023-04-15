@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -29,7 +30,8 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
 
     Integer employeeCount;
 
-    Integer mangerCount;
+//    Integer mangerCount;
+    Integer year;
 
     public Integer getWeekNumber() {
         return weekNumber;
@@ -79,22 +81,30 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
         this.employeeCount = employeeCount;
     }
 
-    public Integer getMangerCount() {
-        return mangerCount;
+//    public Integer getMangerCount() {
+//        return mangerCount;
+//    }
+//
+//    public void setMangerCount(@NotNull Integer mangerCount) {
+//        this.mangerCount = mangerCount;
+//    }
+
+    public Integer getYear(){
+        return year;
     }
 
-    public void setMangerCount(@NotNull Integer mangerCount) {
-        this.mangerCount = mangerCount;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public boolean isValid() {
         boolean retVal = true;
         retVal &= 0 <= this.startHour ; // min is 0
         retVal &= this.startHour < 24; // max is 23
-        retVal &= this.getEmployeeCount() > 0 || this.getMangerCount() > 0; // at least 1 manger or 1 employee
+        retVal &= this.getEmployeeCount() > 0;//|| this.getMangerCount() > 0; // at least 1 manger or 1 employee
         retVal &= this.getDuration() > 0; // min is
         retVal &= this.weekNumber >= 0; // min is 0
-
+        retVal &= this.year == Calendar.YEAR;
         return retVal;
     }
 
@@ -108,13 +118,15 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
     public String toString() {
         return "AvailableShifts{" +
                 "id=" + id +
+                ", year=" + year +
                 ", weekNumber=" + weekNumber +
                 ", dayNumber=" + dayNumber +
                 ", startHour=" + startHour +
                 ", duration=" + duration +
                 ", employeeCount=" + employeeCount +
-                ", mangerCount=" + mangerCount +
                 '}';
+//                ", mangerCount=" + mangerCount +
+//                '}';
     }
 
     @Override
@@ -122,33 +134,42 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AvailableShifts that = (AvailableShifts) o;
-        return Objects.equals(id, that.id) && Objects.equals(weekNumber, that.weekNumber) && Objects.equals(dayNumber, that.dayNumber) && Objects.equals(startHour, that.startHour) && Objects.equals(duration, that.duration) && Objects.equals(employeeCount, that.employeeCount) && Objects.equals(mangerCount, that.mangerCount);
+        return Objects.equals(id, that.id) && Objects.equals(weekNumber, that.weekNumber) && Objects.equals(dayNumber, that.dayNumber)
+                && Objects.equals(startHour, that.startHour) && Objects.equals(duration, that.duration)
+                && Objects.equals(employeeCount, that.employeeCount) && Objects.equals(year, that.year);
+//                && Objects.equals(mangerCount, that.mangerCount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, weekNumber, dayNumber, startHour, duration, employeeCount, mangerCount);
+        return Objects.hash(id, weekNumber, dayNumber, startHour, duration, employeeCount, year);//, mangerCount);
     }
 
     @Override
     public int compareTo(@NotNull AvailableShifts o) {
         try {
-            if (this.weekNumber < o.weekNumber) {
+            if (this.year < o.year) {
                 return -1;
-            } else if (this.weekNumber > o.weekNumber) {
+            } else if (this.year > o.year) {
                 return 1;
             } else {
-                if (this.dayNumber < o.dayNumber) {
+                if (this.weekNumber < o.weekNumber) {
                     return -1;
-                } else if (this.dayNumber > o.dayNumber) {
+                } else if (this.weekNumber > o.weekNumber) {
                     return 1;
                 } else {
-                    if (this.startHour < o.startHour) {
+                    if (this.dayNumber < o.dayNumber) {
                         return -1;
-                    } else if (this.startHour > o.startHour) {
+                    } else if (this.dayNumber > o.dayNumber) {
                         return 1;
                     } else {
-                        return 0;
+                        if (this.startHour < o.startHour) {
+                            return -1;
+                        } else if (this.startHour > o.startHour) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
                     }
                 }
             }

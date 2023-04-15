@@ -1,6 +1,7 @@
 package com.example.demo.db.repo;
 
 import com.example.demo.db.entities.AvailableShifts;
+import com.example.demo.db.entities.Profile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -29,17 +30,15 @@ public interface AvailableShiftsRepo extends CrudRepository<AvailableShifts,Inte
     List<AvailableShifts> findEmployeeCountGreaterThanEqual(Integer employeeCount);
 
     // Find all available shifts with a specific number of managers or more
-    @Query ("SELECT a FROM AvailableShifts a WHERE a.mangerCount >=?1")
-    List<AvailableShifts> findMangerCountGreaterThanEqual(Integer managerCount);
+//    @Query ("SELECT a FROM AvailableShifts a WHERE a.mangerCount >=?1")
+//    List<AvailableShifts> findMangerCountGreaterThanEqual(Integer managerCount);
+
+    List<AvailableShifts> getAvailableShiftsByYear(Integer year);
 
     //find the shifts with the longest duration  given a day and a week
     @Query ("SELECT a FROM AvailableShifts a WHERE a.weekNumber =?1 AND a.dayNumber =?2 ORDER BY a.duration DESC")
     List<AvailableShifts> findShiftWithLongestDuration(Integer weekNumber, Integer dayNumber);
 
-
-
-
-    //
 
 
 }

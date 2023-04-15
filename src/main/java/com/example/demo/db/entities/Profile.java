@@ -3,12 +3,14 @@
  */
 package com.example.demo.db.entities;
 
+import com.example.demo.config.annotation.ExcludeGson;
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.example.demo.db.entities.validator.EmailValidator;
 import com.example.demo.db.entities.validator.PhoneValidator;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import org.springframework.beans.InvalidPropertyException;
@@ -54,6 +56,7 @@ public class Profile implements Serializable, IEntity<Profile, Integer> {
     @OneToMany(mappedBy = "profile")
     @JsonBackReference
     @Nullable
+    @ExcludeGson
     Collection<User> users;
 
     @Nullable

@@ -49,6 +49,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
     /**
      * <b>Post /login</b>
      * <p>Login route</p>
+     *
      * @param request stringified json with username and password
      * @return Json stringified with role,jwt,id
      * @throws ResponseStatusException when cannot execute correctly
@@ -90,6 +91,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
     /**
      * <b>Post /signup</b>
      * <p>signup route for the system</p>
+     *
      * @param request stringified json with flattened profile and user
      * @return Json stringified with username, nad if it was created.
      * @throws ResponseStatusException when cannot execute correctly
@@ -105,7 +107,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         try {
             jsonRequest = JsonParser.parseString(request).getAsJsonObject();
             user = new User();
-            profile = new Gson().fromJson(jsonRequest,Profile.class);
+            profile = new Gson().fromJson(jsonRequest, Profile.class);
 //            profile = Profile.fromJson(jsonRequest);
             username = jsonRequest.get(USERNAME_KEY).getAsString();
             password = jsonRequest.get(PASSWORD_KEY).getAsString();
@@ -135,6 +137,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
     /**
      * <b>GET /logout</b>
      * <p>logout route for the system</p>
+     *
      * @param authInfo the information of the user that enter to this call
      * @return Json stringified with logout flag {@code true} if success otherwise {@code false}
      * @throws ResponseStatusException when cannot execute correctly
@@ -152,8 +155,6 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         object.addProperty("logout", true);
         return object.toString();
     }
-
-
 
 
     @Override
