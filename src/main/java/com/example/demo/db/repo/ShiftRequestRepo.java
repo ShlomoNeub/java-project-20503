@@ -1,5 +1,6 @@
 package com.example.demo.db.repo;
 
+import com.example.demo.db.entities.Profile;
 import com.example.demo.db.entities.ShiftsRequests;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -29,7 +30,6 @@ public interface ShiftRequestRepo extends CrudRepository<ShiftsRequests,Integer>
      * @return ShiftsRequests
      */
     List<ShiftsRequests> getShiftsRequestsByTimestamp(java.sql.Timestamp timestamp);
-
 
 
 }

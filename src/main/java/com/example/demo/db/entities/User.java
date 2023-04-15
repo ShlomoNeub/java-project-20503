@@ -5,11 +5,14 @@ package com.example.demo.db.entities;
 
 
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +36,12 @@ public class User implements Serializable, IEntity<User,Integer> {
     @Size(min = PASSWORD_MIN_LENGTH,max=PASSWORD_MAX_LENGTH)
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "users")
+    @JsonBackReference
+    @Nullable
+    private Collection<Constraint> constraints;
+
 
 
     @Column(nullable = false)
