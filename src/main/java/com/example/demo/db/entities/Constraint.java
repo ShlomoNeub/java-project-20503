@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "constraints")
-public class Constraint implements Serializable , Comparable<Constraint>, IEntity<Constraint,Integer>, Validatable<Constraint> {
+public class Constraint implements IEntity<Constraint, Integer>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,11 +21,9 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     private String data;
 
     @Basic
-    @Column(insertable = false,updatable = false)
     private Integer typeId;
 
     @Basic
-    @Column(insertable = false,updatable = false)
     private Integer userId;
 
     public Integer getUserId() {
@@ -35,9 +33,6 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    @ManyToOne
-    @JoinColumn(name = "userId",referencedColumnName = "id", columnDefinition = "user_id")
-    User users;
 
 
     private boolean isPermanent;
@@ -46,18 +41,20 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
 
     private java.sql.Date endDate;
 
-    public User getUsers() {
-        return users;
-    }
 
-    public void setUsers(User users) {
-        this.users = users;
-    }
 
     @ManyToOne
-    @JoinColumn(name = "typeId",referencedColumnName = "id", columnDefinition = "type_id")
-    ConstraintType constraintType;
+    @JoinColumn(
+            name = "userId",
+            referencedColumnName = "id",
+            columnDefinition = "user_id",
+            insertable = false,
+            updatable = false)
+    User users;
 
+    @ManyToOne
+    @JoinColumn(name = "typeId", referencedColumnName = "id", columnDefinition = "type_id")
+    ConstraintType constraintType;
 
     @Nullable
     public Integer getId() {
@@ -66,16 +63,15 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
 
     @Override
     public void setId(Integer id) {
-
+        this.id = id;
     }
-
 
     @Nullable
     public Integer getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(@NotNull  Integer typeId) {
+    public void setTypeId(@NotNull Integer typeId) {
         this.typeId = typeId;
     }
 
@@ -93,7 +89,7 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
         return startDate;
     }
 
-    public void setStartDate(@NotNull  Date startDate) {
+    public void setStartDate(@NotNull Date startDate) {
         this.startDate = startDate;
     }
 
@@ -106,14 +102,6 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
         this.endDate = endDate;
     }
 
-
-    public boolean isValid() {
-        boolean retVal = true;
-        retVal &= this.startDate.before(this.endDate);
-
-        return retVal;
-    }
-
     public Integer getWeekNumber() {
         return weekNumber;
     }
@@ -121,8 +109,6 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     public void setWeekNumber(Integer weekNumber) {
         this.weekNumber = weekNumber;
     }
-
-
 
     public String getData() {
         return data;
@@ -135,19 +121,25 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     public ConstraintType getConstraintType() {
         return constraintType;
     }
+    public User getUsers() {
+        return users;
+    }
 
-    public void setConstraintType(ConstraintType constraintType) {
-        this.constraintType = constraintType;
+    public boolean isValid() {
+        boolean retVal = true;
+        retVal &= this.startDate.before(this.endDate);
+
+        return retVal;
     }
 
     @Override
-        public int compareTo(@NotNull Constraint o) {
-            try {
-                return this.constraintType.getConstraintLevel().compareTo(o.constraintType.getConstraintLevel());
-            } catch (NullPointerException e) {
-                return 1;
-            }
+    public int compareTo(@NotNull Constraint o) {
+        try {
+            return this.constraintType.getConstraintLevel().compareTo(o.constraintType.getConstraintLevel());
+        } catch (NullPointerException e) {
+            return 1;
         }
+    }
 
     @Override
     public boolean isValid(Constraint toValidate) {
