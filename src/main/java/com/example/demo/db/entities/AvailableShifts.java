@@ -30,7 +30,6 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
 
     Integer employeeCount;
 
-//    Integer mangerCount;
     Integer year;
 
     public Integer getWeekNumber() {
@@ -81,13 +80,6 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
         this.employeeCount = employeeCount;
     }
 
-//    public Integer getMangerCount() {
-//        return mangerCount;
-//    }
-//
-//    public void setMangerCount(@NotNull Integer mangerCount) {
-//        this.mangerCount = mangerCount;
-//    }
 
     public Integer getYear(){
         return year;
@@ -101,7 +93,7 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
         boolean retVal = true;
         retVal &= 0 <= this.startHour ; // min is 0
         retVal &= this.startHour < 24; // max is 23
-        retVal &= this.getEmployeeCount() > 0;//|| this.getMangerCount() > 0; // at least 1 manger or 1 employee
+        retVal &= this.getEmployeeCount() > 0;
         retVal &= this.getDuration() > 0; // min is
         retVal &= this.weekNumber >= 0; // min is 0
         retVal &= this.year == Calendar.YEAR;
@@ -125,8 +117,6 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
                 ", duration=" + duration +
                 ", employeeCount=" + employeeCount +
                 '}';
-//                ", mangerCount=" + mangerCount +
-//                '}';
     }
 
     @Override
@@ -137,46 +127,31 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
         return Objects.equals(id, that.id) && Objects.equals(weekNumber, that.weekNumber) && Objects.equals(dayNumber, that.dayNumber)
                 && Objects.equals(startHour, that.startHour) && Objects.equals(duration, that.duration)
                 && Objects.equals(employeeCount, that.employeeCount) && Objects.equals(year, that.year);
-//                && Objects.equals(mangerCount, that.mangerCount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, weekNumber, dayNumber, startHour, duration, employeeCount, year);//, mangerCount);
+        return Objects.hash(id, weekNumber, dayNumber, startHour, duration, employeeCount, year);
     }
 
     @Override
     public int compareTo(@NotNull AvailableShifts o) {
-        try {
-            if (this.year < o.year) {
-                return -1;
-            } else if (this.year > o.year) {
-                return 1;
-            } else {
-                if (this.weekNumber < o.weekNumber) {
-                    return -1;
-                } else if (this.weekNumber > o.weekNumber) {
-                    return 1;
-                } else {
-                    if (this.dayNumber < o.dayNumber) {
-                        return -1;
-                    } else if (this.dayNumber > o.dayNumber) {
-                        return 1;
-                    } else {
-                        if (this.startHour < o.startHour) {
-                            return -1;
-                        } else if (this.startHour > o.startHour) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e){
-            return 1;
-        }
+        if(this.equals(o)) return 0;
+        if(!this.year.equals(o.year))
+            return this.year.compareTo(o.year);
+        if(!this.weekNumber.equals(o.weekNumber))
+            return this.weekNumber.compareTo(o.weekNumber);
+        if(!this.dayNumber.equals(o.dayNumber))
+            return dayNumber.compareTo(o.dayNumber);
+        if(!this.startHour.equals(o.startHour))
+            return this.startHour.compareTo(o.startHour);
+        if(!this.duration.equals(o.duration))
+            return this.duration.compareTo(o.duration);
+        if(!this.employeeCount.equals(o.employeeCount))
+            return this.employeeCount.compareTo(o.employeeCount);
+        if(!this.id.equals(o.id))
+            return this.id.compareTo(o.id);
+        return 1;
     }
 
 
