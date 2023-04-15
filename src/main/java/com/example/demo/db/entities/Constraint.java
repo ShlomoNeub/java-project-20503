@@ -24,8 +24,6 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     @Column(insertable = false,updatable = false)
     private Integer typeId;
 
-
-    //////////////////////////////////////////////////////////////
     @Basic
     @Column(insertable = false,updatable = false)
     private Integer userId;
@@ -41,7 +39,7 @@ public class Constraint implements Serializable , Comparable<Constraint>, IEntit
     @JoinColumn(name = "userId",referencedColumnName = "id", columnDefinition = "user_id")
     User users;
 
-    /////////////////////////////////////////////////////////////////
+
     private boolean isPermanent;
 
     private java.sql.Date startDate;
