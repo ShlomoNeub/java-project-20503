@@ -53,10 +53,10 @@ public class Profile implements Serializable, IEntity<Profile, Integer> {
         this.phoneNumber = phoneNumber;
     }
 
+    @ExcludeGson
     @OneToMany(mappedBy = "profile")
     @JsonBackReference
     @Nullable
-    @ExcludeGson
     Collection<User> users;
 
     @Nullable

@@ -21,10 +21,9 @@ public interface AvailableShiftsRepo extends CrudRepository<AvailableShifts,Inte
     // find shifts between days in a given week
     @Query ("SELECT a FROM AvailableShifts a WHERE a.weekNumber =?1 AND a.dayNumber >=?2 AND a.dayNumber <=?3")
     Collection<AvailableShifts> findShiftsBetweenDaysInWeek(Integer weekNumber, Integer startDay, Integer endDay);
-    
 
-    // Find all available shifts with a specific number of employees or more
-    Collection<AvailableShifts> findEmployeeCountGreaterThanEqual(Integer employeeCount);
+    Collection<AvailableShifts> findByEmployeeCountGreaterThanEqual(Integer employeeCount);
+
 
     Collection<AvailableShifts> getAvailableShiftsByYear(Integer year);
 
