@@ -2,15 +2,11 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.AuthPayload;
 import com.example.demo.config.records.AuthInfo;
-import com.example.demo.db.entities.JsonWebToken;
-import com.example.demo.db.entities.Profile;
-import com.example.demo.db.entities.Role;
-import com.example.demo.db.entities.User;
+import com.example.demo.db.entities.*;
 import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
-import com.example.demo.scheduler.ScheduleJob;
 import com.example.demo.scheduler.AutoScheduleMonitor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
