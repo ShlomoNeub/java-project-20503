@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ScheduleRepo extends CrudRepository<Schedule,Integer> {
+    @Query("select s from Schedule s where s.request.shift.id in ?1")
+    Collection<Schedule> findByRequest_Shift_IdIn(Collection<Integer> ids);
 
     /**
      * Gets Schedule by week
@@ -36,6 +38,10 @@ public interface ScheduleRepo extends CrudRepository<Schedule,Integer> {
 
     @Query("select s from Schedule s where s.request.shiftId = ?1")
     Collection<Schedule> findByRequestShiftId(Integer shiftId);
+
+
+    @Query("select s from Schedule s where s.request.shiftId = ?1")
+    Collection<Schedule> findByShiftId(Integer shiftId);
 
 
 }
