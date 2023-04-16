@@ -2,10 +2,9 @@ package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.example.demo.db.entities.interfaces.Validatable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
@@ -31,6 +30,16 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
     Integer employeeCount;
 
     Integer year;
+
+
+    @OneToMany(mappedBy = "shift")
+    @JsonBackReference
+    @Nullable
+    Collection<ShiftsRequests> requests;
+
+    public Collection<ShiftsRequests> getRequests() {
+        return requests;
+    }
 
     public Integer getWeekNumber() {
         return weekNumber;
