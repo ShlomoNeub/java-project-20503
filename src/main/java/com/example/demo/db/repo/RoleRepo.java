@@ -24,6 +24,11 @@ public interface RoleRepo extends CrudRepository<Role,Integer> {
      */
     Collection<Role> getRolesByRoleName(String name);
 
+    /**
+     * Get role that have the same level given
+     * @param roleLevel to search for
+     * @return a role  {@code if } found {@code   else null}
+     */
     @Query("select r from Role r where r.roleLevel = ?1 order by r.id")
     Optional<Role> getRoleByLevel(@NonNull Integer roleLevel);
 
