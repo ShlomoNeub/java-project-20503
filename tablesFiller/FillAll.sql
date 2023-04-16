@@ -32,16 +32,16 @@ values (DEFAULT, '12345678', 1, 2, 'Dani'),
        (DEFAULT, '12345678', 10, 1, 'danit');
 /*AVAILABLE_SHIFTS FILLER*/
 insert into available_shifts (id, day_number, duration, employee_count, start_hour, week_number, year)
-values (DEFAULT, 99, 4, 4, 7, 14, 2023),
-       (DEFAULT, 99, 4, 4, 11, 14, 2023),
-       (DEFAULT, 100, 6, 5, 9, 15, 2023),
-       (DEFAULT, 101, 3, 3, 7, 15, 2023),
-       (DEFAULT, 101, 3, 3, 10, 15, 2023),
-       (DEFAULT, 101, 3, 3, 13, 15, 2023),
-       (DEFAULT, 102, 6, 5, 9, 15, 2023),
-       (DEFAULT, 103, 6, 5, 9, 15, 2023),
-       (DEFAULT, 104, 6, 5, 9, 15, 2023),
-       (DEFAULT, 105, 6, 5, 9, 15, 2023);
+values (DEFAULT, 1, 4, 4, 7, 14, 2023),
+       (DEFAULT, 0, 4, 4, 11, 14, 2023),
+       (DEFAULT, 1, 6, 5, 9, 15, 2023),
+       (DEFAULT, 2, 3, 3, 7, 15, 2023),
+       (DEFAULT, 3, 3, 3, 10, 15, 2023),
+       (DEFAULT, 4, 3, 3, 13, 15, 2023),
+       (DEFAULT, 5, 6, 5, 9, 15, 2023),
+       (DEFAULT, 6, 6, 5, 9, 15, 2023),
+       (DEFAULT, 7, 6, 5, 9, 15, 2023),
+       (DEFAULT, 1, 6, 5, 9, 15, 2023);
 /*CONSTRAINT_TYPE FILLER*/
 insert into constraint_type (id, constraint_level, description)
 values (DEFAULT, 1, 'PERSONAL REASON'),
