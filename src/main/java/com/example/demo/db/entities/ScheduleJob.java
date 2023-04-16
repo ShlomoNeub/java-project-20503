@@ -1,20 +1,12 @@
-package com.example.demo.scheduler;
+package com.example.demo.db.entities;
 
-import com.example.demo.db.entities.AvailableShifts;
-import com.example.demo.db.entities.Constraint;
-import com.example.demo.db.entities.Schedule;
-import com.example.demo.db.entities.User;
 import com.example.demo.db.entities.interfaces.IEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Entity
-@Table(name = "JobStorage")
-public class Job implements IEntity<Job, Integer> {
+public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -59,12 +51,12 @@ public class Job implements IEntity<Job, Integer> {
 
 
     @Override
-    public boolean isValid(Job toValidate) {
+    public boolean isValid(ScheduleJob toValidate) {
         return false;
     }
 
     @Override
-    public int compareTo(Job o) {
+    public int compareTo(ScheduleJob o) {
         return 0;
     }
 }

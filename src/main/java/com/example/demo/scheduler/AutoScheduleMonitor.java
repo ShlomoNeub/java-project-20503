@@ -2,37 +2,36 @@ package com.example.demo.scheduler;
 
 import com.example.demo.db.entities.*;
 import com.example.demo.db.repo.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.*;
 
 @Component
-public class Manager {
+public class AutoScheduleMonitor {
 
-    final Logger logger = LogManager.getLogger(Manager.class);
+    final Logger logger = LogManager.getLogger(AutoScheduleMonitor.class);
 
-    ArrayList<Worker> workers = new ArrayList<>();
-    Queue<Job> jobs = new LinkedList<>();
+    ArrayList<AutoScheduler> workers = new ArrayList<>();
+    Queue<ScheduleJob> scheduleJobs = new LinkedList<>();
 
-    final JobRepo jobRepo;
+    final ScheduleJobRepo scheduleJobRepo;
     final AvailableShiftsRepo availableShiftsRepo;
     final ScheduleRepo scheduleRepo;
     final UserRepo userRepo;
     private final ShiftRequestRepo shiftRequestRepo;
 
-    public Manager(JobRepo repo, AvailableShiftsRepo availableShiftsRepo, ScheduleRepo scheduleRepo, UserRepo userRepo,
-                   ShiftRequestRepo shiftRequestRepo) {
-        this.jobRepo = repo;
+    public AutoScheduleMonitor(ScheduleJobRepo repo, AvailableShiftsRepo availableShiftsRepo, ScheduleRepo scheduleRepo, UserRepo userRepo,
+                               ShiftRequestRepo shiftRequestRepo) {
+        this.scheduleJobRepo = repo;
         this.availableShiftsRepo = availableShiftsRepo;
         this.scheduleRepo = scheduleRepo;
         this.userRepo = userRepo;
-        jobs.addAll(repo.findByNotDone());
+        scheduleJobs.addAll(repo.findByNotDone());
         int processor = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
         for (int i = 0; i < processor; i++) {
-            Worker worker = new Worker(i, this);
+            AutoScheduler worker = new AutoScheduler(i, this);
             workers.add(worker);
         }
         workers.forEach(Thread::start);
@@ -40,33 +39,33 @@ public class Manager {
         this.shiftRequestRepo = shiftRequestRepo;
     }
 
-    synchronized public void addJob(Job job) {
-        jobRepo.save(job);
-        jobs.add(job);
+    synchronized public void addJob(ScheduleJob scheduleJob) {
+        scheduleJobRepo.save(scheduleJob);
+        scheduleJobs.add(scheduleJob);
         notify();
     }
 
-    synchronized public Job getJob(Worker worker) throws InterruptedException {
-        while (jobs.isEmpty()) {
+    synchronized public ScheduleJob getJob(AutoScheduler worker) throws InterruptedException {
+        while (scheduleJobs.isEmpty()) {
             logger.info("%s start waiting".formatted(worker));
             Date date = Date.from(Instant.now());
             wait();
             long waitedFor = Date.from(Instant.now()).getTime() - date.getTime();
             logger.info("%s finished waiting (waited for %s ms)".formatted(worker, waitedFor));
         }
-        return jobs.poll();
+        return scheduleJobs.poll();
     }
 
 
-    synchronized public void finishJob(Job result) {
+    synchronized public void finishJob(ScheduleJob result) {
         result.setDone(true);
-        jobRepo.save(result);
+        scheduleJobRepo.save(result);
     }
 
 
-    private int[] getDates(Job job) {
-        Date startDate = new java.util.Date(job.getStartDate().getTime());
-        Date endDate = new java.util.Date(job.getEndDate().getTime());
+    private int[] getDates(ScheduleJob scheduleJob) {
+        Date startDate = new java.util.Date(scheduleJob.getStartDate().getTime());
+        Date endDate = new java.util.Date(scheduleJob.getEndDate().getTime());
         Calendar calendar = java.util.Calendar.getInstance();
 
         calendar.setTime(startDate);
@@ -78,8 +77,8 @@ public class Manager {
         return new int[]{startWeek, endWeek, startDay, endDay};
     }
 
-    synchronized public Collection<AvailableShifts> getShiftsInRange(Job job) {
-        int[] dateValues = getDates(job);
+    synchronized public Collection<AvailableShifts> getShiftsInRange(ScheduleJob scheduleJob) {
+        int[] dateValues = getDates(scheduleJob);
         int startWeek = dateValues[0];
         int endWeek = dateValues[1];
         int startDay = dateValues[2];
@@ -88,8 +87,8 @@ public class Manager {
         return availableShiftsRepo.findShiftsInRange(startWeek, endWeek, startDay, endDay);
     }
 
-    synchronized public Collection<Integer> getShiftsIdInRange(Job job) {
-        int[] dateValues = getDates(job);
+    synchronized public Collection<Integer> getShiftsIdInRange(ScheduleJob scheduleJob) {
+        int[] dateValues = getDates(scheduleJob);
         int startWeek = dateValues[0];
         int startDay = dateValues[1];
         int endWeek = dateValues[2];
@@ -98,8 +97,8 @@ public class Manager {
         return availableShiftsRepo.findShiftsIdInRange(startWeek, endWeek, startDay, endDay);
     }
 
-    synchronized public Collection<User> getUsers(Job job) {
-        return userRepo.findUsersFreeAt(job.getStartDate(), job.getEndDate());
+    synchronized public Collection<User> getUsers(ScheduleJob scheduleJob) {
+        return userRepo.findUsersFreeAt(scheduleJob.getStartDate(), scheduleJob.getEndDate());
     }
 
     synchronized public Collection<User> getUsers(AvailableShifts shifts) {
@@ -112,7 +111,7 @@ public class Manager {
         return userRepo.findUsersFreeAt(startDate, endDate);
     }
 
-    synchronized public Collection<Schedule> getSchedules(Job j) {
+    synchronized public Collection<Schedule> getSchedules(ScheduleJob j) {
         return scheduleRepo.findByRequest_Shift_IdIn(getShiftsIdInRange(j));
     }
 

@@ -10,11 +10,10 @@ import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
-import com.example.demo.scheduler.Job;
-import com.example.demo.scheduler.Manager;
+import com.example.demo.scheduler.ScheduleJob;
+import com.example.demo.scheduler.AutoScheduleMonitor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,14 +39,14 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
 
     final RoleRepo roleRepo;
 
-    final Manager manager;
+    final AutoScheduleMonitor autoScheduleMonitor;
 
-    public UserController(UserRepo repo, JwtRepo jwtRepo, ProfileRepo profileRepo, RoleRepo roleRepo, Manager manager) {
+    public UserController(UserRepo repo, JwtRepo jwtRepo, ProfileRepo profileRepo, RoleRepo roleRepo, AutoScheduleMonitor autoScheduleMonitor) {
         this.userRepo = repo;
         this.jwtRepo = jwtRepo;
         this.profileRepo = profileRepo;
         this.roleRepo = roleRepo;
-        this.manager = manager;
+        this.autoScheduleMonitor = autoScheduleMonitor;
     }
 
 
@@ -163,7 +162,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
 
     @GetMapping(path = "/jobs")
     public String schdule(){
-        Job j = new Job();
+        ScheduleJob j = new ScheduleJob();
         j.setStartDate(new Date(0){{
             this.setYear(123);
             this.setMonth(4-1);
@@ -174,7 +173,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
             this.setMonth(4-1);
             this.setDate(9);
         }});
-        manager.addJob(j);
+        autoScheduleMonitor.addJob(j);
         return  "";
     }
 

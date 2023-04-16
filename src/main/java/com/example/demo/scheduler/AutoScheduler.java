@@ -1,9 +1,6 @@
 package com.example.demo.scheduler;
 
-import com.example.demo.db.entities.AvailableShifts;
-import com.example.demo.db.entities.Schedule;
-import com.example.demo.db.entities.ShiftsRequests;
-import com.example.demo.db.entities.User;
+import com.example.demo.db.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,25 +8,25 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Worker extends Thread {
-    final Logger logger = LogManager.getLogger(Worker.class);
+public class AutoScheduler extends Thread {
+    final Logger logger = LogManager.getLogger(AutoScheduler.class);
     private final int id;
 
     private boolean stop = false;
-    private final Manager manager;
+    private final AutoScheduleMonitor autoScheduleMonitor;
 
-    public Worker(int id, Manager manager) {
+    public AutoScheduler(int id, AutoScheduleMonitor autoScheduleMonitor) {
         this.id = id;
-        this.manager = manager;
+        this.autoScheduleMonitor = autoScheduleMonitor;
     }
 
     @Override
     public void run() {
         while (!isStop()) {
             try {
-                Job job = manager.getJob(this);
-                Job result = doJob(job);
-                manager.finishJob(result);
+                ScheduleJob scheduleJob = autoScheduleMonitor.getJob(this);
+                ScheduleJob result = doJob(scheduleJob);
+                autoScheduleMonitor.finishJob(result);
             } catch (InterruptedException e) {
                 logger.error(e.getCause());
             }
@@ -56,9 +53,9 @@ public class Worker extends Thread {
     }
 
     private Collection<Schedule> scheduleShift(Queue<User> userQueue, AvailableShifts shift) {
-        Collection<Schedule> schedules = manager.getSchedulesByShift(shift.getId());
+        Collection<Schedule> schedules = autoScheduleMonitor.getSchedulesByShift(shift.getId());
         Collection<Schedule> resultSchedules = new ArrayList<>();
-        long workerCount = manager.getWorkersInShift(shift.getId());
+        long workerCount = autoScheduleMonitor.getWorkersInShift(shift.getId());
         for (int i = 0; i < Math.max(0, shift.getEmployeeCount() - workerCount); i++) {
             User user = nextUser(userQueue,schedules);
             if(user == null) logger.warn("No user can schedule for %s".formatted(shift));
@@ -66,7 +63,7 @@ public class Worker extends Thread {
             request.setUser(user);
             request.setShift(shift);
             request.setTimestamp(new Timestamp(System.currentTimeMillis()));
-            Schedule s = manager.createSchedule(request);
+            Schedule s = autoScheduleMonitor.createSchedule(request);
             schedules.add(s);
             resultSchedules.add(s);
         }
@@ -74,12 +71,12 @@ public class Worker extends Thread {
     }
 
 
-    private Job doJob(Job job) {
-        Collection<AvailableShifts> shifts = manager.getShiftsInRange(job);
+    private ScheduleJob doJob(ScheduleJob scheduleJob) {
+        Collection<AvailableShifts> shifts = autoScheduleMonitor.getShiftsInRange(scheduleJob);
         Set<User> noScheduledUsers = new HashSet<>();
         for (AvailableShifts shift : shifts) {
             Queue<User> userQueue = new LinkedList<>();
-            Set<User> freeUsers = new HashSet<>(manager.getUsers(shift));
+            Set<User> freeUsers = new HashSet<>(autoScheduleMonitor.getUsers(shift));
             if(!noScheduledUsers.isEmpty()){
                 userQueue.addAll(noScheduledUsers.stream().filter(freeUsers::contains).collect(Collectors.toSet()));
                 userQueue.forEach(freeUsers::remove);
@@ -91,7 +88,7 @@ public class Worker extends Thread {
             noScheduledUsers.clear();
             noScheduledUsers.addAll(userQueue.stream().toList());
         }
-        return job;
+        return scheduleJob;
     }
 
     synchronized public boolean isStop() {

@@ -1,13 +1,14 @@
-package com.example.demo.scheduler;
+package com.example.demo.db.repo;
 
+import com.example.demo.db.entities.ScheduleJob;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Collection;
 
-public interface JobRepo extends CrudRepository<Job,Integer> {
-    @Query("select j from Job j where j.done = false")
-    Collection<Job> findByNotDone();
+public interface ScheduleJobRepo extends CrudRepository<ScheduleJob,Integer> {
+    @Query("select j from ScheduleJob j where j.done = false")
+    Collection<ScheduleJob> findByNotDone();
 
 
 
