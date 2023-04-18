@@ -2,7 +2,6 @@ package com.example.demo.controllers.rest;
 
 
 import com.example.demo.config.annotation.Auth;
-import com.example.demo.config.interceptor.GsonExclude;
 import com.example.demo.db.entities.Profile;
 import com.example.demo.db.entities.Schedule;
 import com.example.demo.db.repo.ScheduleRepo;
@@ -48,11 +47,9 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         Collection<Schedule> schedules = repo.findByRequestShiftId(id);
         JsonArray res = new JsonArray();
 
-        Gson g = new GsonBuilder()
-                .setExclusionStrategies(new GsonExclude()).create();
         for (Schedule s : schedules) {
             Profile p = s.getRequest().getUser().getProfile();
-            JsonObject object = JsonParser.parseString(g.toJson(p)).getAsJsonObject();
+            JsonObject object = JsonParser.parseString(privateGson.toJson(p)).getAsJsonObject();
             res.add(object);
         }
 

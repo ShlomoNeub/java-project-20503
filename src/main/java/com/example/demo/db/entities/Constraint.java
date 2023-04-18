@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "constraints")
-public class Constraint implements IEntity<Constraint, Integer>{
+public class Constraint implements IEntity<Constraint, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -42,7 +42,6 @@ public class Constraint implements IEntity<Constraint, Integer>{
     private java.sql.Date endDate;
 
 
-
     @ManyToOne
     @JoinColumn(
             name = "userId",
@@ -53,7 +52,11 @@ public class Constraint implements IEntity<Constraint, Integer>{
     User users;
 
     @ManyToOne
-    @JoinColumn(name = "typeId", referencedColumnName = "id", columnDefinition = "type_id")
+    @JoinColumn(name = "typeId",
+            referencedColumnName = "id",
+            columnDefinition = "type_id",
+            insertable = false,
+            updatable = false)
     ConstraintType constraintType;
 
     @Nullable
@@ -121,6 +124,7 @@ public class Constraint implements IEntity<Constraint, Integer>{
     public ConstraintType getConstraintType() {
         return constraintType;
     }
+
     public User getUsers() {
         return users;
     }

@@ -1,7 +1,11 @@
 package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.Auth;
+import com.example.demo.config.interceptor.GsonExcludeStrategy;
+import com.example.demo.config.interceptor.GsonPrivateStrategy;
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.annotation.*;
 import jakarta.validation.constraints.NotNull;
 import org.apache.logging.log4j.*;
@@ -22,6 +26,16 @@ public abstract class RestApiAbstract
                 IndexType extends Serializable
                 >
         implements CrudAPI<Entity, IndexType> {
+
+
+    protected static Gson gson = new GsonBuilder()
+            .setExclusionStrategies(new GsonExcludeStrategy()).create();
+    ;
+    protected static Gson privateGson = new GsonBuilder()
+            .setExclusionStrategies(
+                    new GsonExcludeStrategy(),
+                    new GsonPrivateStrategy()
+            ).create();
 
     @Override
     @Auth

@@ -35,7 +35,7 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
         JsonArray jsonOutput = new JsonArray();
 
         for(AvailableShifts as:availableShifts){
-            JsonObject o = JsonParser.parseString(new Gson().toJson(as)).getAsJsonObject();
+            JsonObject o = JsonParser.parseString(privateGson.toJson(as)).getAsJsonObject();
             o.addProperty("numOfScheduledWorkers",sRepo.findByRequestShiftId(as.getId()).size());
             jsonOutput.add(o);
         }

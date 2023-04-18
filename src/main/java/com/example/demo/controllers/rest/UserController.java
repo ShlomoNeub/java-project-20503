@@ -10,7 +10,6 @@ import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -107,8 +106,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         try {
             jsonRequest = JsonParser.parseString(request).getAsJsonObject();
             user = new User();
-            profile = new Gson().fromJson(jsonRequest, Profile.class);
-//            profile = Profile.fromJson(jsonRequest);
+            profile = gson.fromJson(jsonRequest, Profile.class);
             username = jsonRequest.get(USERNAME_KEY).getAsString();
             password = jsonRequest.get(PASSWORD_KEY).getAsString();
             user.setUsername(username);
