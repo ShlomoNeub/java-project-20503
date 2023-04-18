@@ -27,16 +27,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Basic middleware
+ * Basic middleware.
+ * This middleware is global interceptor.
+ * It will parse the target if their any annotation as describe in the validator object.
  */
 @RestControllerAdvice
 public class MiddlewareSystem {
     final Logger logger = LogManager.getLogger(MiddlewareSystem.class);
-    final
-    JwtRepo jwtRepo;
-
-    final
-    UserRepo userRepo;
+    final JwtRepo jwtRepo;
+    final UserRepo userRepo;
 
     public MiddlewareSystem(JwtRepo jwtRepo, UserRepo userRepo) {
         this.jwtRepo = jwtRepo;
@@ -131,18 +130,17 @@ public class MiddlewareSystem {
      * @return if the user is authenticated
      */
     public boolean authUser(Integer userID, String jwt, @Nullable Integer level) {
-        Optional<JsonWebToken> tokenOptional = jwtRepo.getTokenByUser(userID);
-        if(!tokenOptional.isPresent()) return false;
-        JsonWebToken jsonWebToken = tokenOptional.get();
-        boolean validJwt = jsonWebToken.getValid();
-        if(validJwt){
-            jsonWebToken.touch();
-            jwtRepo.save(jsonWebToken);
+        JsonWebToken token = jwtRepo.getTokenByUser(userID).orElse(null);
+        if (token == null || token.getJwt() == null) return false;
+
+        boolean isValidToUse =  token.getJwt().toString().equals(jwt) &&
+                token.getUser().getRole().getRoleLevel() >= level &&
+                token.getUser().getId().equals(userID); // have higher or equal access
+        if (isValidToUse) {
+            token.touch();
+            jwtRepo.save(token);
         }
-        return  // token exsists
-                 jwtRepo.save(tokenOptional.get()) != null&&// not expired
-                tokenOptional.get().getJwt().toString().equals(jwt) && // same as given jwt
-                tokenOptional.get().getUser().getRole().getRoleLevel() >= level; // have higher or equal access
+        return isValidToUse;
     }
 
 

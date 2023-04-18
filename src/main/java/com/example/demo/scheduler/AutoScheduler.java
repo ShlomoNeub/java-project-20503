@@ -39,8 +39,6 @@ public class AutoScheduler extends Thread {
 
     }
 
-
-
     synchronized public boolean isStop() {
         return stop;
     }

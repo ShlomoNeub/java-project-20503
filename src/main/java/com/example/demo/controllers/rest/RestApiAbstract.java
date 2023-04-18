@@ -1,8 +1,8 @@
 package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.Auth;
+import com.example.demo.config.annotation.PrivateGson;
 import com.example.demo.config.interceptor.GsonExcludeStrategy;
-import com.example.demo.config.interceptor.GsonPrivateStrategy;
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,7 +34,7 @@ public abstract class RestApiAbstract
     protected static Gson privateGson = new GsonBuilder()
             .setExclusionStrategies(
                     new GsonExcludeStrategy(),
-                    new GsonPrivateStrategy()
+                    new GsonExcludeStrategy(PrivateGson.class)
             ).create();
 
     @Override

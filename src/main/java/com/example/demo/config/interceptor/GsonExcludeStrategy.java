@@ -4,11 +4,24 @@ import com.example.demo.config.annotation.ExcludeGson;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 
+import java.lang.annotation.Annotation;
+
 public class GsonExcludeStrategy implements ExclusionStrategy {
+
+    private final Class<? extends Annotation> clazz;
+
+    public GsonExcludeStrategy() {
+        this.clazz = ExcludeGson.class;
+    }
+
+    public GsonExcludeStrategy(Class clazz) {
+        this.clazz = clazz;
+    }
+
     @Override
     public boolean shouldSkipField(FieldAttributes f) {
 
-        return f.getAnnotation(ExcludeGson.class) != null ;
+        return f.getAnnotation(clazz) != null ;
     }
 
     @Override

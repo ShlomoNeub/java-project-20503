@@ -1,11 +1,11 @@
-/**
- * Annotation that tells to system middleware
- * that it should be authenticated
- */
 package com.example.demo.config.annotation;
 import java.lang.annotation.*;
 
 
+/**
+ * Annotation that tells to system middleware
+ * that it should be authenticated
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Inherited
