@@ -2,14 +2,12 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.AuthPayload;
 import com.example.demo.config.records.AuthInfo;
-import com.example.demo.db.entities.JsonWebToken;
-import com.example.demo.db.entities.Profile;
-import com.example.demo.db.entities.Role;
-import com.example.demo.db.entities.User;
+import com.example.demo.db.entities.*;
 import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
+import com.example.demo.scheduler.AutoScheduleMonitor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
 import java.util.Objects;
 
 /**
@@ -36,12 +35,14 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
 
     final RoleRepo roleRepo;
 
+    final AutoScheduleMonitor autoScheduleMonitor;
 
-    public UserController(UserRepo repo, JwtRepo jwtRepo, ProfileRepo profileRepo, RoleRepo roleRepo) {
+    public UserController(UserRepo repo, JwtRepo jwtRepo, ProfileRepo profileRepo, RoleRepo roleRepo, AutoScheduleMonitor autoScheduleMonitor) {
         this.userRepo = repo;
         this.jwtRepo = jwtRepo;
         this.profileRepo = profileRepo;
         this.roleRepo = roleRepo;
+        this.autoScheduleMonitor = autoScheduleMonitor;
     }
 
 
@@ -154,6 +155,23 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         return object.toString();
     }
 
+
+    @GetMapping(path = "/jobs")
+    public String schdule(){
+        ScheduleJob j = new ScheduleJob();
+        j.setStartDate(new Date(0){{
+            this.setYear(123);
+            this.setMonth(4-1);
+            this.setDate(9);
+        }});
+        j.setEndDate(new Date(0){{
+            this.setYear(123);
+            this.setMonth(4-1);
+            this.setDate(9);
+        }});
+        autoScheduleMonitor.addJob(j);
+        return  "";
+    }
 
     @Override
     public UserRepo getRepo() {

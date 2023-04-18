@@ -23,6 +23,9 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
     public ShiftsRequests getRequest() {
         return request;
     }
+    public void setRequest(ShiftsRequests request){
+        this.request=request;
+    }
 
     public Integer getWeekNumber() {
         return weekNumber;
@@ -86,6 +89,9 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
                 "id=" + id +
                 ", requestId='" + requestId + '\'' +
                 ", weekNumber='" + weekNumber + '\'' +
+                ", user='" + request.getUser() + '\'' +
+                ", shift='" + request.getShift() + '\'' +
+
                 '}';
     }
 }

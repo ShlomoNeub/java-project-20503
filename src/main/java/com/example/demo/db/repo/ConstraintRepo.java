@@ -7,10 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Date;
 import java.util.List;
 
-public interface ConstraintRepo extends CrudRepository<Constraint,Integer> {
+public interface ConstraintRepo extends CrudRepository<Constraint, Integer> {
     // Find all constraints with a specific type
-@Query  ("SELECT c FROM Constraint c WHERE c.typeId=?1")
-List<Constraint> findByTypeId(Integer typeId);
+    @Query("SELECT c FROM Constraint c WHERE c.typeId=?1")
+    List<Constraint> findByTypeId(Integer typeId);
 
 
     //find all constraints with a specific user in a given week
@@ -45,7 +45,6 @@ List<Constraint> findByTypeId(Integer typeId);
     // Find all constraints that overlap with a date range
     @Query("SELECT c FROM Constraint c WHERE c.startDate<=?2 OR c.endDate>=?1")
     List<Constraint> findConstraintsOverlapInRange(Date startDate, Date endDate);
-
 
 
 }
