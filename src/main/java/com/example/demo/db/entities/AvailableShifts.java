@@ -1,5 +1,6 @@
 package com.example.demo.db.entities;
 
+import com.example.demo.config.annotation.ExcludeGson;
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.example.demo.db.entities.interfaces.Validatable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -35,6 +36,7 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
     @OneToMany(mappedBy = "shift")
     @JsonBackReference
     @Nullable
+    @ExcludeGson
     Collection<ShiftsRequests> requests;
 
     public Collection<ShiftsRequests> getRequests() {

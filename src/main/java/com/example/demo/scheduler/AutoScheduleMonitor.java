@@ -91,6 +91,14 @@ public class AutoScheduleMonitor {
         scheduleJobRepo.save(result);
     }
 
+    private java.sql.Date getDate(int week,int day,int hour){
+        Calendar calendar = java.util.Calendar.getInstance();
+        calendar.set(Calendar.WEEK_OF_YEAR,week);
+        calendar.set(Calendar.DAY_OF_WEEK,day);
+        calendar.set(Calendar.HOUR,hour);
+        return new java.sql.Date(calendar.getTime().getTime());
+    }
+
 
     private int[] getDates(ScheduleJob scheduleJob) {
         Date startDate = new java.util.Date(scheduleJob.getStartDate().getTime());
