@@ -8,10 +8,7 @@ import com.example.demo.db.repo.ScheduleRepo;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -52,8 +49,7 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
             JsonObject object = JsonParser.parseString(privateGson.toJson(p)).getAsJsonObject();
             res.add(object);
         }
-
-
         return res.toString();
     }
+
 }

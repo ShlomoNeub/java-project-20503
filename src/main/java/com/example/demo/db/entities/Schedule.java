@@ -23,6 +23,7 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
     public ShiftsRequests getRequest() {
         return request;
     }
+
     public void setRequest(ShiftsRequests request){
         this.request=request;
     }
