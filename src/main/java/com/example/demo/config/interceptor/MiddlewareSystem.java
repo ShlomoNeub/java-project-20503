@@ -65,6 +65,9 @@ public class MiddlewareSystem {
 
         Method selfMethod = Objects.requireNonNull(handlerMethod).getMethod();
         Auth auth = selfMethod.getAnnotation(Auth.class);
+        if(auth == null){
+            auth = handlerMethod.getBeanType().getAnnotation(Auth.class);
+        }
         String controllerName = handlerMethod.getBeanType().getSimpleName();
         String methodName = selfMethod.getName();
         String authHeader = request.getHeader("Auth");
@@ -99,7 +102,9 @@ public class MiddlewareSystem {
                 Class<? extends Annotation> testAnnotation = entry.getKey();
                 Method method = entry.getValue();
                 // check if the target is annotated with testAnnotation
-                if (handlerMethod.getMethodAnnotation(testAnnotation) != null) {
+                if (handlerMethod.getMethodAnnotation(testAnnotation) != null ||
+                        handlerMethod.getBeanType().getAnnotation(testAnnotation) != null
+                ) {
                     try {
                         // invoke the validation function
                         method.invoke(this, request);

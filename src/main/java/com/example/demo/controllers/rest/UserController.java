@@ -156,22 +156,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
     }
 
 
-    @GetMapping(path = "/jobs")
-    public String schdule(){
-        ScheduleJob j = new ScheduleJob();
-        j.setStartDate(new Date(0){{
-            this.setYear(123);
-            this.setMonth(4-1);
-            this.setDate(9);
-        }});
-        j.setEndDate(new Date(0){{
-            this.setYear(123);
-            this.setMonth(4-1);
-            this.setDate(9);
-        }});
-        autoScheduleMonitor.addJob(j);
-        return  "";
-    }
+
 
     @Override
     public UserRepo getRepo() {
