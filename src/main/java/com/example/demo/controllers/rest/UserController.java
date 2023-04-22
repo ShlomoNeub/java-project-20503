@@ -2,7 +2,10 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.AuthPayload;
 import com.example.demo.config.records.AuthInfo;
-import com.example.demo.db.entities.*;
+import com.example.demo.db.entities.JsonWebToken;
+import com.example.demo.db.entities.Profile;
+import com.example.demo.db.entities.Role;
+import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.JwtRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
@@ -10,13 +13,16 @@ import com.example.demo.db.repo.UserRepo;
 import com.example.demo.scheduler.AutoScheduleMonitor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.apache.logging.log4j.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Date;
 import java.util.Objects;
 
 /**
@@ -155,23 +161,6 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         return object.toString();
     }
 
-
-    @GetMapping(path = "/jobs")
-    public String schdule(){
-        ScheduleJob j = new ScheduleJob();
-        j.setStartDate(new Date(0){{
-            this.setYear(123);
-            this.setMonth(4-1);
-            this.setDate(9);
-        }});
-        j.setEndDate(new Date(0){{
-            this.setYear(123);
-            this.setMonth(4-1);
-            this.setDate(9);
-        }});
-        autoScheduleMonitor.addJob(j);
-        return  "";
-    }
 
     @Override
     public UserRepo getRepo() {

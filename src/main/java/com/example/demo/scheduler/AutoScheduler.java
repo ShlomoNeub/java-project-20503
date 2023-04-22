@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,8 @@ public class AutoScheduler extends Thread {
 
     private boolean stop = false;
     private final AutoScheduleMonitor autoScheduleMonitor;
+
+    private ScheduleJob currentJob;
 
     public AutoScheduler(int id, AutoScheduleMonitor autoScheduleMonitor) {
         super("autoScheduler %s".formatted(id));
@@ -28,8 +31,12 @@ public class AutoScheduler extends Thread {
             try {
                 // get next job from monitor
                 ScheduleJob scheduleJob = autoScheduleMonitor.getJob(this);
+                setCurrentJob(scheduleJob);
+                Date date = Date.from(Instant.now());
                 // run scheduler and save the result
                 ScheduleJob result = doJob(scheduleJob);
+                long waitedFor = Date.from(Instant.now()).getTime() - date.getTime();
+                logger.info("%s finished %d in %s ms".formatted(this, scheduleJob.getId(),waitedFor));
                 // notify the monitor the job is finished
                 autoScheduleMonitor.finishJob(result);
             } catch (InterruptedException e) {
@@ -67,6 +74,7 @@ public class AutoScheduler extends Thread {
             request.setUser(user);
             request.setShift(shift);
             request.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            request.setScheduleJob(getCurrentJob());
             Schedule s = autoScheduleMonitor.createSchedule(request);
             schedules.add(s);
             resultSchedules.add(s);
@@ -100,6 +108,13 @@ public class AutoScheduler extends Thread {
         return scheduleJob;
     }
 
+    public synchronized ScheduleJob getCurrentJob() {
+        return currentJob;
+    }
+
+    public synchronized void setCurrentJob(ScheduleJob currentJob) {
+        this.currentJob = currentJob;
+    }
 
     /**
      * Helper function that receive available user and get the next user that was not already in schedules
@@ -126,6 +141,7 @@ public class AutoScheduler extends Thread {
     private boolean isAlreadyScheduled(User user, Set<User> schedulesUsers) {
         return schedulesUsers.contains(user);
     }
+
 
     @Override
     public String toString() {

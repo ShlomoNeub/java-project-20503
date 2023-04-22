@@ -7,8 +7,6 @@ import java.lang.annotation.*;
  * that it should be authenticated
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Inherited
 public @interface Auth {
     /**
      * @return the minimum role level that can access it;

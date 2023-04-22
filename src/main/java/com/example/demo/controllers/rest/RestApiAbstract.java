@@ -30,7 +30,6 @@ public abstract class RestApiAbstract
 
     protected static Gson gson = new GsonBuilder()
             .setExclusionStrategies(new GsonExcludeStrategy()).create();
-    ;
     protected static Gson privateGson = new GsonBuilder()
             .setExclusionStrategies(
                     new GsonExcludeStrategy(),

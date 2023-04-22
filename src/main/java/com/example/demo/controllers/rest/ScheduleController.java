@@ -2,9 +2,8 @@ package com.example.demo.controllers.rest;
 
 
 import com.example.demo.config.annotation.Auth;
-import com.example.demo.db.entities.*;
-import com.example.demo.db.repo.AvailableShiftsRepo;
-import com.example.demo.db.repo.ProfileRepo;
+import com.example.demo.db.entities.Profile;
+import com.example.demo.db.entities.Schedule;
 import com.example.demo.db.repo.ScheduleRepo;
 import com.example.demo.db.repo.ShiftRequestRepo;
 import com.google.gson.*;
@@ -50,6 +49,13 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+
+    @GetMapping("/job/{id}")
+    @Auth
+    public Collection<Schedule> getJobByUid(@AuthPayload AuthInfo info, @PathVariable Integer id) {
+        return repo.getScheduleJobsByJobId(id);
     }
 
     @Auth

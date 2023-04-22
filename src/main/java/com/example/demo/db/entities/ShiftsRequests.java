@@ -31,6 +31,11 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     java.sql.Timestamp timestamp;
 
+
+    @ManyToOne
+    @JoinColumn(name="job_id",referencedColumnName = "id")
+    private ScheduleJob scheduleJob;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,6 +89,14 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
 
     public void setShift(AvailableShifts shift) {
         this.shift = shift;
+    }
+
+    public ScheduleJob getScheduleJob() {
+        return scheduleJob;
+    }
+
+    public void setScheduleJob(ScheduleJob scheduleJob) {
+        this.scheduleJob = scheduleJob;
     }
 
     @Override

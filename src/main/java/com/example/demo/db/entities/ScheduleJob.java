@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.util.Objects;
 
 /**
- * Entity the represent a job entry in the database
+ * Entity to represent a job entry in the database
  */
 @Entity
 public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
@@ -20,6 +20,10 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
+    @Column(name = "uid")
+    Integer userId;
+
 
     /**
      * Start date of the range that the Job will scan shift
@@ -37,6 +41,18 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
      * Is the job was done
      */
     Boolean done = false;
+
+    Integer hash;
+
+    @OneToOne
+    @JoinColumn(
+            name = "uid",
+            referencedColumnName = "id",
+            columnDefinition = "uid",
+            insertable = false,
+            updatable = false)
+    User requester;
+
 
     public Integer getId() {
         return id;
@@ -73,7 +89,13 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
 
     @Override
     public boolean isValid(ScheduleJob toValidate) {
-        return false;
+        boolean result = startDate != null;
+        result &= endDate != null;
+        result &= startDate.before(endDate) || startDate.equals(endDate);
+        result &= userId != null;
+        result &= userId>=0;
+
+        return result;
     }
 
     @Override
@@ -90,10 +112,25 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
 
     @Override
     public int compareTo(@NonNull ScheduleJob o) {
-        if(this.equals(o)) return 0;
-        if(!this.id.equals(o.id)) return this.id.compareTo(o.id);
-        if(!this.startDate.equals(o.startDate)) return this.startDate.compareTo(o.startDate);
-        if(!this.endDate.equals(o.endDate)) return this.endDate.compareTo(o.endDate);
+        if (this.equals(o)) return 0;
+        if (!this.id.equals(o.id)) return this.id.compareTo(o.id);
+        if (!this.startDate.equals(o.startDate)) return this.startDate.compareTo(o.startDate);
+        if (!this.endDate.equals(o.endDate)) return this.endDate.compareTo(o.endDate);
         return 1;
     }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public Integer getHash() {
+        return this.hashCode();
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+
+
 }
