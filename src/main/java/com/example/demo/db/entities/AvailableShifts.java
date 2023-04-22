@@ -35,7 +35,6 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
 
     @OneToMany(mappedBy = "shift")
     @JsonBackReference
-    @Nullable
     @ExcludeGson
     Collection<ShiftsRequests> requests;
 
