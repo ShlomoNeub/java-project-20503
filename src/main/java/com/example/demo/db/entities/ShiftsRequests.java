@@ -2,6 +2,7 @@ package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,22 +14,23 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "shift_id", insertable = false, updatable = false)
+    @Column(name = "shift_id")
     private Integer shiftId;
 
     @Basic
-    @Column(name = "uid", insertable = false, updatable = false)
+    @Column(name = "uid")
     private Integer uid;
 
     @ManyToOne
-    @JoinColumn(name = "uid", referencedColumnName = "id")
+    @JoinColumn(name = "uid", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "shift_id", referencedColumnName = "id")
+    @JoinColumn(name = "shift_id", referencedColumnName = "id", insertable = false, updatable = false)
     private AvailableShifts shift;
     @Basic
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
     java.sql.Timestamp timestamp;
 
 
