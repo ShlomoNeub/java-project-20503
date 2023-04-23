@@ -6,17 +6,19 @@ import com.example.demo.config.interceptor.GsonExcludeStrategy;
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jakarta.annotation.*;
 import jakarta.validation.constraints.NotNull;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 public abstract class RestApiAbstract
@@ -99,7 +101,7 @@ public abstract class RestApiAbstract
         getRepo().delete(entity1.get());
     }
 
-    @Nullable
+    @NotNull
     public abstract Repo getRepo();
 
     public Logger getLogger() {

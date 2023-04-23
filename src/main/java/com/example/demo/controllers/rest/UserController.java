@@ -91,6 +91,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         response.addProperty("jwt", jwt.getJwt().toString());
         response.addProperty("role", u.getRole().getRoleLevel());
         response.addProperty("id", u.getId());
+        response.add("profile",JsonParser.parseString(privateGson.toJson(u.getProfile())));
         return response.toString();
     }
 

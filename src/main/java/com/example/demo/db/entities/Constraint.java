@@ -1,12 +1,10 @@
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
-import com.example.demo.db.entities.interfaces.Validatable;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.io.Serializable;
 import java.sql.Date;
 import java.util.Objects;
 
@@ -131,7 +129,7 @@ public class Constraint implements IEntity<Constraint, Integer> {
 
     public boolean isValid() {
         boolean retVal = true;
-        retVal &= this.startDate.before(this.endDate);
+        retVal &= this.startDate.before(this.endDate) || this.startDate.equals(this.endDate)  ;
 
         return retVal;
     }
