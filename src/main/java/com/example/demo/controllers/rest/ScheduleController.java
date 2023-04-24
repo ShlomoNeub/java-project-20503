@@ -76,22 +76,28 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     public String addWorker(@RequestBody String request) {
         int shiftId = 0;
         int profileId = 0;
+        long  numOfScheduledWorkers = 0;
         JsonObject jsonRequest;
         try {
             jsonRequest = JsonParser.parseString(request).getAsJsonObject();
             shiftId = jsonRequest.get("sId").getAsInt();
             profileId = jsonRequest.get("pId").getAsInt();
-            User user = profileRepo.findById(profileId).get().getUsers().stream().toList().get(0);
-            AvailableShifts shift = availableShiftsRepo.findById(shiftId).get();
-            ShiftsRequests shiftsRequestsequest = new ShiftsRequests();
-            shiftsRequestsequest.setUser(user);
-            shiftsRequestsequest.setShift(shift);
-            shiftsRequestsequest.setTimestamp(new Timestamp(System.currentTimeMillis()));
-            Schedule s = this.createSchedule(shiftsRequestsequest);
         } catch (Exception e) {
             logger.error(e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        User user = profileRepo.findById(profileId).get().getUsers().stream().toList().get(0);
+        AvailableShifts shift = availableShiftsRepo.findById(shiftId).get();
+        numOfScheduledWorkers = repo.countEmploieesInShift(shiftId);
+        ShiftsRequests shiftsRequestsequest = new ShiftsRequests();
+        shiftsRequestsequest.setUser(user);
+        shiftsRequestsequest.setShift(shift);
+        if(shift.getEmployeeCount() == numOfScheduledWorkers) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This Shift Is Already Full!");
+        }
+        Schedule s = this.createSchedule(shiftsRequestsequest);
+
+
 
         JsonObject response = new JsonObject();
         response.addProperty("result", true);
