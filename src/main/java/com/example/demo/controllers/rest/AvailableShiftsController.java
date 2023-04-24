@@ -3,6 +3,7 @@ package com.example.demo.controllers.rest;
 import com.example.demo.config.annotation.Auth;
 import com.example.demo.db.entities.AvailableShifts;
 import com.example.demo.db.entities.Profile;
+import com.example.demo.db.entities.Schedule;
 import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.AvailableShiftsRepo;
 import com.example.demo.db.repo.ScheduleRepo;
@@ -20,6 +21,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controller that implements the AvailableShifts REST API
@@ -39,13 +41,13 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
     }
 
     @GetMapping("/test")
-    public String getAvailableShiftsStr(){
+    public String getAvailableShiftsStr() {
         Collection<AvailableShifts> availableShifts = getAll();
         JsonArray jsonOutput = new JsonArray();
 
-        for(AvailableShifts as:availableShifts){
+        for (AvailableShifts as : availableShifts) {
             JsonObject o = JsonParser.parseString(privateGson.toJson(as)).getAsJsonObject();
-            o.addProperty("numOfScheduledWorkers",sRepo.findByRequestShiftId(as.getId()).size());
+            o.addProperty("numOfScheduledWorkers", sRepo.findByRequestShiftId(as.getId()).size());
             jsonOutput.add(o);
         }
         return jsonOutput.toString();
@@ -62,7 +64,7 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
         return logger;
     }
 
-    private java.sql.Date getDate(int week,int day,int hour) {
+    private java.sql.Date getDate(int week, int day, int hour) {
         Calendar calendar = java.util.Calendar.getInstance();
         calendar.set(Calendar.WEEK_OF_YEAR, week);
         calendar.set(Calendar.DAY_OF_WEEK, day);
@@ -72,28 +74,32 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
 
     @Auth
     @GetMapping("/{id}/free-workers")
-    public String getFreeWorkers(@PathVariable Integer id){
-           Optional<AvailableShifts> shiftsOptional = repo.findById(id);
-           if(shiftsOptional.isEmpty()){
-               throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-           }
-           java.sql.Date start, end;
-           start = getDate(shiftsOptional.get().getWeekNumber(),shiftsOptional.get().getDayNumber(),shiftsOptional.get().getStartHour());
-           end = new Date(start.getTime()+shiftsOptional.get().getDuration()*(60*1000));
-           Collection<User> freeWorkersList = userRepo.findUsersFreeAt(start,end);
+    public String getFreeWorkers(@PathVariable Integer id) {
+        Optional<AvailableShifts> shiftsOptional = repo.findById(id);
+        if (shiftsOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        java.sql.Date start, end;
+        start = getDate(shiftsOptional.get().getWeekNumber(), shiftsOptional.get().getDayNumber(), shiftsOptional.get().getStartHour());
+        end = new Date(start.getTime() + shiftsOptional.get().getDuration() * (60 * 1000));
+        Collection<User> freeWorkersList = userRepo.findUsersFreeAt(start, end);
 
-           JsonArray res = new JsonArray();
+        Collection<Schedule> schedules = sRepo.findByShiftId(id);
+        Set<User> scheduledUsers = schedules.stream().map(s -> s.getRequest().getUser()).collect(Collectors.toSet());
+        Set<User> freeWorkersSet = freeWorkersList.stream().filter((u)->!scheduledUsers.contains(u)).collect(Collectors.toSet());
+        JsonArray res = new JsonArray();
 
-           for(User worker:freeWorkersList){
-               JsonObject object = JsonParser.parseString(privateGson.toJson(worker.getProfile())).getAsJsonObject();
-               res.add(object);
-           }
-            return res.toString();
+        for (User worker : freeWorkersSet) {
+            JsonObject object = JsonParser.parseString(privateGson.toJson(worker.getProfile())).getAsJsonObject();
+            res.add(object);
+        }
+        return res.toString();
     }
 
 
     /**
      * Find all available shifts for a specific week number
+     *
      * @param weekNumber the week number to search for
      * @return a Collection of available shifts for the given week number
      */
@@ -104,27 +110,29 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
 
     /**
      * Find shifts between days in a given week
+     *
      * @param weekNumber the week number to search for
-     * @param startDay the start day number to search for
-     * @param endDay the end day number to search for
+     * @param startDay   the start day number to search for
+     * @param endDay     the end day number to search for
      * @return a Collection of available shifts between the given start and end days in the specified week
      */
     @GetMapping("/week/{weekNumber}/days/{startDay}/{endDay}")
     public Collection<AvailableShifts> findShiftsBetweenDaysInWeek(@PathVariable Integer weekNumber,
-                                                             @PathVariable Integer startDay,
-                                                             @PathVariable Integer endDay) {
+                                                                   @PathVariable Integer startDay,
+                                                                   @PathVariable Integer endDay) {
         return repo.findShiftsBetweenDaysInWeek(weekNumber, startDay, endDay);
     }
 
     /**
      * Find the shifts with the longest duration for a given day and week
+     *
      * @param weekNumber the week number to search for
-     * @param dayNumber the day number to search for
+     * @param dayNumber  the day number to search for
      * @return a Collection of available shifts with the longest duration for the given day and week
      */
     @GetMapping("/week/{weekNumber}/day/{dayNumber}/longest-duration")
     public Collection<AvailableShifts> findShiftWithLongestDuration(@PathVariable Integer weekNumber,
-                                                              @PathVariable Integer dayNumber) {
+                                                                    @PathVariable Integer dayNumber) {
         return repo.findByWeekNumberAndDayNumberOrderByDurationDesc(weekNumber, dayNumber);
     }
 

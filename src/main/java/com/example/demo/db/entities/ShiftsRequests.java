@@ -82,7 +82,9 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     }
 
     public void setUser(User user) {
+        this.uid = user.getId();
         this.user = user;
+
     }
 
     public AvailableShifts getShift() {
@@ -90,6 +92,7 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     }
 
     public void setShift(AvailableShifts shift) {
+        this.shiftId = shift.id;
         this.shift = shift;
     }
 
