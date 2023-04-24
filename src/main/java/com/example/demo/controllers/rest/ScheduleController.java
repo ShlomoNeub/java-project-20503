@@ -8,14 +8,16 @@ import com.example.demo.db.entities.*;
 import com.example.demo.db.repo.AvailableShiftsRepo;
 import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.ScheduleRepo;
-import com.google.gson.*;
+import com.example.demo.db.repo.ShiftRequestRepo;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
