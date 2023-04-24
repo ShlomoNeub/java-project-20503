@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,6 +22,11 @@ public class ConstraintTypeController extends RestApiAbstract<ConstraintType, Co
 
     public ConstraintTypeController(ConstraintTypeRepo repo) {
         this.repo = repo;
+    }
+
+    @Override
+    public Collection<ConstraintType> getAll() {
+        return super.getAll();
     }
 
     @Override

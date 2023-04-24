@@ -15,7 +15,7 @@ public interface UserRepo extends CrudRepository<User, Integer> {
      * @param pid of the target profile
      * @return all users with this profile
      */
-    @Query("FROM User u where u.pid= :pid")
+    @Query("FROM User u where u.pid= :pid ORDER BY u.role.roleLevel ASC")
     List<User> findByProfile(Integer pid);
 
     @Query("select u from User u " +

@@ -13,11 +13,11 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
     private Integer id;
 
     private Integer weekNumber;
-    @Column(name="request_id",insertable = false,updatable = false)
+    @Column(name="request_id")
     private Integer requestId;
 
     @ManyToOne
-    @JoinColumn(name = "request_id",referencedColumnName = "id")
+    @JoinColumn(name = "request_id",referencedColumnName = "id",insertable = false,updatable = false)
     ShiftsRequests request;
 
     public ShiftsRequests getRequest() {

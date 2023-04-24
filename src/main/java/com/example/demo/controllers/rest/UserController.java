@@ -1,5 +1,6 @@
 package com.example.demo.controllers.rest;
 
+import com.example.demo.config.annotation.Auth;
 import com.example.demo.config.annotation.AuthPayload;
 import com.example.demo.config.records.AuthInfo;
 import com.example.demo.db.entities.JsonWebToken;
@@ -11,18 +12,17 @@ import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.RoleRepo;
 import com.example.demo.db.repo.UserRepo;
 import com.example.demo.scheduler.AutoScheduleMonitor;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -91,7 +91,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         response.addProperty("jwt", jwt.getJwt().toString());
         response.addProperty("role", u.getRole().getRoleLevel());
         response.addProperty("id", u.getId());
-        response.add("profile",JsonParser.parseString(privateGson.toJson(u.getProfile())));
+        response.add("profile", JsonParser.parseString(privateGson.toJson(u.getProfile())));
         return response.toString();
     }
 
@@ -149,6 +149,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
      * @throws ResponseStatusException when cannot execute correctly
      */
     @RequestMapping(path = "/logout", method = RequestMethod.GET, produces = "application/json")
+    @Auth
     public String logout(@AuthPayload AuthInfo authInfo) {
         JsonObject object = new JsonObject();
         if (authInfo == null || !Objects.equals(authInfo.user(), authInfo.token().getUser()))
@@ -162,6 +163,48 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         return object.toString();
     }
 
+
+    @Auth(minLevel = 1)
+    @GetMapping("/users-id/{id}")
+    public String getUserProfileById(@PathVariable Integer id) {
+        Collection<User> users = userRepo.findByProfile(id);
+        if (users.size() == 0) {
+            logger.warn("No user with id " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        JsonArray array = new JsonArray();
+        users.forEach(user -> array.add(JsonParser.parseString(privateGson.toJson(user))));
+
+
+        return array.toString();
+    }
+
+    @Auth(minLevel = 2)
+    @PostMapping("/add-admin/{id}")
+    public String setAsAdmin(@PathVariable Integer id) {
+        User u = userRepo.findById(id).orElse(null);
+        Role role = roleRepo.getRoleByLevel(Role.MANAGER_ROLE_LEVEL).orElse(null);
+        changeUserRole(u, role);
+        return JsonParser.parseString(privateGson.toJson(u)).getAsJsonObject().toString();
+    }
+
+    @Auth(minLevel = 2)
+    @DeleteMapping("/remove-admin/{id}")
+    public String unsetAsAdmin(@PathVariable Integer id) {
+        User u = userRepo.findById(id).orElse(null);
+        Role role = roleRepo.getRoleByLevel(Role.STANDARD_ROLE_LEVEL).orElse(null);
+        changeUserRole(u, role);
+        return JsonParser.parseString(privateGson.toJson(u)).getAsJsonObject().toString();
+    }
+
+    private void changeUserRole(User u, Role role) {
+        if (u == null || role == null) {
+            logger.warn("Send 404 reason user or role were not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        u.setRole_id(role.getId());
+        userRepo.save(u);
+    }
 
     @Override
     public UserRepo getRepo() {
