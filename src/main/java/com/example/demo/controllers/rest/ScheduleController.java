@@ -4,8 +4,9 @@ package com.example.demo.controllers.rest;
 import com.example.demo.config.annotation.Auth;
 import com.example.demo.config.annotation.AuthPayload;
 import com.example.demo.config.records.AuthInfo;
-import com.example.demo.db.entities.Profile;
-import com.example.demo.db.entities.Schedule;
+import com.example.demo.db.entities.*;
+import com.example.demo.db.repo.AvailableShiftsRepo;
+import com.example.demo.db.repo.ProfileRepo;
 import com.example.demo.db.repo.ScheduleRepo;
 import com.example.demo.db.repo.ShiftRequestRepo;
 import com.google.gson.*;
@@ -33,13 +34,10 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     final AvailableShiftsRepo availableShiftsRepo;
     final ShiftRequestRepo shiftRequestRepo;
 
-
-
     public ScheduleController(ScheduleRepo repo, ProfileRepo profileRepo, AvailableShiftsRepo availableShiftsRepo, ShiftRequestRepo shiftRequestRepo) {
         this.repo = repo;
         this.profileRepo = profileRepo;
         this.availableShiftsRepo = availableShiftsRepo;
-
         this.shiftRequestRepo = shiftRequestRepo;
     }
 
