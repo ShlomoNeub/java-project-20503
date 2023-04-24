@@ -4,8 +4,10 @@ import com.example.demo.db.entities.Profile;
 import com.example.demo.db.entities.Schedule;
 import com.example.demo.db.entities.ScheduleJob;
 import com.example.demo.db.entities.ShiftsRequests;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,5 +61,7 @@ public interface ScheduleRepo extends CrudRepository<Schedule,Integer> {
 
     @Query("SELECT s from Schedule s where s.request.scheduleJob IS NOT NULL AND s.request.scheduleJob.userId = ?1")
     Collection<Schedule> getScheduleJobsByJobId(Integer userId);
+
+
 
 }

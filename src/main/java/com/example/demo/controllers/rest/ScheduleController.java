@@ -10,7 +10,9 @@ import com.example.demo.db.repo.ScheduleRepo;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 
@@ -61,4 +63,16 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         return res.toString();
     }
 
+    @Auth()
+    @DeleteMapping ("/reset_shift/{sId}")
+    public String resetShift(@AuthPayload AuthInfo info, @PathVariable Integer sId) {
+        try {
+            Collection<Schedule> scheduleCollection = repo.findByShiftId(sId);
+            repo.deleteAll(scheduleCollection);
+            return "Deleted";
+        } catch (Exception e) {
+            getLogger().error(e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
