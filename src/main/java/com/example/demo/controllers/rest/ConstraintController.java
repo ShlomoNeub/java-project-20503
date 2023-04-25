@@ -40,12 +40,20 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
         return logger;
     }
 
-
+    /**
+     * Add constrain tot the user while making sure the user requesting 
+     * can access it
+     */
     @Auth
     @PostMapping("/user/")
-    public Constraint addToUser(@RequestBody Constraint constraint,@AuthPayload AuthInfo info){
+    public Constraint addToUser(@RequestBody Constraint constraint, @AuthPayload AuthInfo info) {
         // here we make sure that the data is created for user
         constraint.setUserId(info.user().getId());
+        List<Constraint> constraints =
+                repo.findByDateRangeAndUser(info.user().getId(), constraint.getStartDate(), constraint.getEndDate());
+        if (constraints.size() > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already give constraint to this time");
+        }
         return super.createNewEntity(constraint);
     }
 
@@ -84,7 +92,6 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
     }
 
 
-
     /**
      * Get all routes by time
      */
@@ -93,14 +100,13 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
     public String deleteByIdAndUser(@AuthPayload AuthInfo info, @PathVariable Integer id) {
         try {
             JsonObject object = new JsonObject();
-            object.addProperty("deleted",repo.deleteByUserAndId(info.user().getId(), id) > 0);
+            object.addProperty("deleted", repo.deleteByUserAndId(info.user().getId(), id) > 0);
             return object.toString();
         } catch (Exception e) {
             getLogger().error(e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
-
 
 
 }

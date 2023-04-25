@@ -4,7 +4,6 @@ import com.example.demo.config.annotation.ExcludeGson;
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.example.demo.db.entities.interfaces.Validatable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -33,7 +32,7 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
     Integer year;
 
 
-    @OneToMany(mappedBy = "shift")
+    @OneToMany(mappedBy = "shift" , cascade = CascadeType.REMOVE)
     @JsonBackReference
     @ExcludeGson
     Collection<ShiftsRequests> requests;

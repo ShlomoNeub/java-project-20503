@@ -16,9 +16,10 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
     @Column(name="request_id")
     private Integer requestId;
 
-    @ManyToOne
+    @OneToOne(targetEntity = ShiftsRequests.class,cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "request_id",referencedColumnName = "id",insertable = false,updatable = false)
     ShiftsRequests request;
+
 
     public ShiftsRequests getRequest() {
         return request;

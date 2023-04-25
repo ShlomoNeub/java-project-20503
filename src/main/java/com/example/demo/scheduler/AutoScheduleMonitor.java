@@ -91,11 +91,11 @@ public class AutoScheduleMonitor {
         scheduleJobRepo.save(result);
     }
 
-    private java.sql.Date getDate(int week,int day,int hour){
+    private java.sql.Date getDate(int week, int day, int hour) {
         Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(Calendar.WEEK_OF_YEAR,week);
-        calendar.set(Calendar.DAY_OF_WEEK,day);
-        calendar.set(Calendar.HOUR,hour);
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
+        calendar.set(Calendar.DAY_OF_WEEK, day);
+        calendar.set(Calendar.HOUR, hour);
         return new java.sql.Date(calendar.getTime().getTime());
     }
 
@@ -191,6 +191,20 @@ public class AutoScheduleMonitor {
         }
     }
 
+    public List<ShiftsRequests> getRequests(Integer shiftId) {
+        repoAccessLock.lock();
+        try {
+            return shiftRequestRepo.getShiftsRequestsByShiftIdFree(shiftId);
+        } catch (Exception e) {
+            logger.error(e);
+            return new ArrayList<>();
+        } finally {
+            repoAccessLock.unlock();
+        }
+
+
+    }
+
     public long getWorkersInShift(Integer shiftId) {
         repoAccessLock.lock();
         try {
@@ -219,6 +233,9 @@ public class AutoScheduleMonitor {
     public Schedule createSchedule(ShiftsRequests request) {
         repoAccessLock.lock();
         try {
+            AvailableShifts shifts = availableShiftsRepo.findById(request.getShiftId()).orElse(null);
+            if (shifts == null) return null;
+            if (shifts.getEmployeeCount() <= scheduleRepo.countEmploieesInShift(shifts.getId())) return null;
             Schedule schedule = new Schedule();
             request = shiftRequestRepo.save(request);
             schedule.setRequestId(request.getId());

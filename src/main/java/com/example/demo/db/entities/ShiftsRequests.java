@@ -28,6 +28,8 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id", insertable = false, updatable = false)
     private AvailableShifts shift;
+
+
     @Basic
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
@@ -37,6 +39,9 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @ManyToOne
     @JoinColumn(name="job_id",referencedColumnName = "id")
     private ScheduleJob scheduleJob;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "request", orphanRemoval = true)
+    private Schedule schedule;
 
     @Override
     public boolean equals(Object o) {
@@ -127,5 +132,13 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
                 ", timestamp='" + timestamp + '\'' +
                 ", uid='" + uid + '\'' +
                 '}';
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 }

@@ -69,7 +69,10 @@ public class AutoScheduler extends Thread {
         long workerCount = autoScheduleMonitor.getWorkersInShift(shift.getId());
         for (int i = 0; i < Math.max(0, shift.getEmployeeCount() - workerCount); i++) {
             User user = nextUser(userQueue, scheduledUsers);
-            if (user == null) logger.warn("No user can schedule for %s".formatted(shift));
+            if (user == null) {
+                logger.warn("No user can schedule for %s".formatted(shift));
+                return resultSchedules;
+            }
             ShiftsRequests request = new ShiftsRequests();
             request.setUser(user);
             request.setShift(shift);
@@ -92,6 +95,8 @@ public class AutoScheduler extends Thread {
         Collection<AvailableShifts> shifts = autoScheduleMonitor.getShiftsInRange(scheduleJob);
         Set<User> noScheduledUsers = new HashSet<>();
         for (AvailableShifts shift : shifts) {
+            List<ShiftsRequests> requests = autoScheduleMonitor.getRequests(shift.getId());
+            requests.forEach(autoScheduleMonitor::createSchedule);
             Queue<User> userQueue = new LinkedList<>();
             Set<User> freeUsers = new HashSet<>(autoScheduleMonitor.getUsers(shift));
             if (!noScheduledUsers.isEmpty()) {
