@@ -79,7 +79,7 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     @GetMapping("/user/shifts/{week}/")
     public String getUsersSchedules(@AuthPayload AuthInfo info, @PathVariable Integer week) {
         JsonArray schedules = new JsonArray();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i <= 7; i++) {
             schedules.addAll(getUsersSchedules(info.user().getId(), i, week));
         }
         return schedules.toString();
@@ -90,7 +90,10 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         List<Schedule> schedules = repo.findByUsersInRange(userId, week, day);
         JsonArray array = new JsonArray();
         for (Schedule schedule : schedules) {
-            array.add(JsonParser.parseString(privateGson.toJson(schedule)).getAsJsonObject());
+
+            JsonObject object = JsonParser.parseString(privateGson.toJson(schedule)).getAsJsonObject();
+            object.add("request",JsonParser.parseString(privateGson.toJson(schedule.getRequest())).getAsJsonObject());
+            array.add(object);
         }
         return array;
     }

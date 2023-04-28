@@ -24,6 +24,7 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
 
     @ManyToOne
     @JoinColumn(name = "uid", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
