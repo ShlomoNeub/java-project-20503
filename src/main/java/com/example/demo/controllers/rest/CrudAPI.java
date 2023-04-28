@@ -3,6 +3,7 @@
  */
 package com.example.demo.controllers.rest;
 
+import com.example.demo.db.entities.interfaces.IEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +18,7 @@ import java.util.Collection;
  * @param <IndexType> the type of the id of the entity the repository manage
  */
 @RestController
-public interface CrudAPI<T,IndexType extends Serializable> {
+public interface CrudAPI<T extends IEntity<T,IndexType> ,IndexType extends Serializable> {
     /**
      * GET /
      * <p>Get all entire of the object</p>
