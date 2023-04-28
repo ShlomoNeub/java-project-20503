@@ -87,6 +87,7 @@ spring.datasource.url=${Your Postgres jdbc link}
        ```
        mvnw.exe spring-boot:run
        ```
+      If you have multiple JDK installed so to spesify the currect one use `set JAVA_HOME=${JAVA 17 correto dir}` befor running this commands
 
 ### **Adding data to the database**
 
