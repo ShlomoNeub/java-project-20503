@@ -11,10 +11,7 @@ If you already installed it, check that you know it's `username, password, port,
 2. After that initialize Postgres official image
 
 ```bash
-docker run -d \
-	--name some-postgres \
-	-e POSTGRES_PASSWORD=mysecretpassword \
-    -p 5432:5432
+docker run -d --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres
 ```
 
 3. Now your done and the server is running in the background connection creds are
