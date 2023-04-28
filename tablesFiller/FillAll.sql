@@ -5,7 +5,8 @@ TRUNCATE ONLY role,users,constraints,shifts_requests,json_web_token,schedule,pro
 /*ROLE FILLER*/
 INSERT INTO role (role_level, role_name)
 VALUES (0,'BASIC'),
-       (1,'ADMIN');
+       (1,'ADMIN'),
+       (2,'SUPER_ADMIN');
 /*PROFILE FILLER*/
 INSERT INTO profile (id, email, first_name, last_name, phone_number)
 VALUES (DEFAULT, 'dani@gmail.com', 'Dani', 'Cohen', '052-1234567'),
@@ -20,8 +21,8 @@ VALUES (DEFAULT, 'dani@gmail.com', 'Dani', 'Cohen', '052-1234567'),
        (DEFAULT, 'danit22@gmail.com', 'danit', 'yoav', '050-4467223');
 /*USERS FILLER*/
 insert into users (id, password, pid, role_id, username)
-values (DEFAULT, '12345678', 1, 2, 'Dani'),
-       (DEFAULT, '12345678', 2, 1, 'Ron'),
+values (DEFAULT, '12345678', 1, 3, 'Dani'),
+       (DEFAULT, '12345678', 2, 2, 'Ron'),
        (DEFAULT, '12345678', 3, 1, 'liat'),
        (DEFAULT, '12345678', 4, 1, 'michal'),
        (DEFAULT, '12345678', 5, 1, 'yuval'),
@@ -31,46 +32,46 @@ values (DEFAULT, '12345678', 1, 2, 'Dani'),
        (DEFAULT, '12345678', 9, 1, 'geva'),
        (DEFAULT, '12345678', 10, 1, 'danit');
 /*AVAILABLE_SHIFTS FILLER*/
-insert into available_shifts (id, day_number, duration, employee_count, start_hour, week_number, year)
-values (DEFAULT, 1, 4, 4, 7, 14, 2023),
-       (DEFAULT, 0, 4, 4, 11, 14, 2023),
-       (DEFAULT, 1, 6, 5, 9, 15, 2023),
-       (DEFAULT, 2, 3, 3, 7, 15, 2023),
-       (DEFAULT, 3, 3, 3, 10, 15, 2023),
-       (DEFAULT, 4, 3, 3, 13, 15, 2023),
-       (DEFAULT, 5, 6, 5, 9, 15, 2023),
-       (DEFAULT, 6, 6, 5, 9, 15, 2023),
-       (DEFAULT, 7, 6, 5, 9, 15, 2023),
-       (DEFAULT, 1, 6, 5, 9, 15, 2023);
+-- insert into available_shifts (id, day_number, duration, employee_count, start_hour, week_number, year)
+-- values (DEFAULT, 1, 4, 4, 7, 14, 2023),
+--        (DEFAULT, 0, 4, 4, 11, 14, 2023),
+--        (DEFAULT, 1, 6, 5, 9, 15, 2023),
+--        (DEFAULT, 2, 3, 3, 7, 15, 2023),
+--        (DEFAULT, 3, 3, 3, 10, 15, 2023),
+--        (DEFAULT, 4, 3, 3, 13, 15, 2023),
+--        (DEFAULT, 5, 6, 5, 9, 15, 2023),
+--        (DEFAULT, 6, 6, 5, 9, 15, 2023),
+--        (DEFAULT, 7, 6, 5, 9, 15, 2023),
+--        (DEFAULT, 1, 6, 5, 9, 15, 2023);
 /*CONSTRAINT_TYPE FILLER*/
 insert into constraint_type (id, constraint_level, description)
 values (DEFAULT, 1, 'PERSONAL REASON'),
        (DEFAULT, 2, 'VACATION'),
        (DEFAULT, 3, 'SICKNESS');
 /*CONSTRAINTS FILLER*/
-insert into constraints (id, data, end_date, is_permanent, start_date, type_id, user_id, week_number)
-values(DEFAULT, 'I am on vacation at this days', '2023-04-30', false, '2023-04-25', 2, 8, 17);
+-- insert into constraints (id, data, end_date, is_permanent, start_date, type_id, user_id, week_number)
+-- values(DEFAULT, 'I am on vacation at this days', '2023-04-30', false, '2023-04-25', 2, 8, 17);
 /*SHIFTS_REQUESTS FILLER*/
-INSERT INTO shifts_requests (id, shift_id, timestamp, uid)
-VALUES (DEFAULT, 1, DEFAULT, 3),
-       (DEFAULT, 4, DEFAULT, 3),
-       (DEFAULT, 2, DEFAULT, 2),
-       (DEFAULT, 6, DEFAULT, 4),
-       (DEFAULT, 10, DEFAULT, 6),
-       (DEFAULT, 8, DEFAULT, 7),
-       (DEFAULT, 3, DEFAULT, 5),
-       (DEFAULT, 9, DEFAULT, 8),
-       (DEFAULT, 3, DEFAULT, 9),
-       (DEFAULT, 3, DEFAULT, 10);
+-- INSERT INTO shifts_requests (id, shift_id, timestamp, uid)
+-- VALUES (DEFAULT, 1, DEFAULT, 3),
+--        (DEFAULT, 4, DEFAULT, 3),
+--        (DEFAULT, 2, DEFAULT, 2),
+--        (DEFAULT, 6, DEFAULT, 4),
+--        (DEFAULT, 10, DEFAULT, 6),
+--        (DEFAULT, 8, DEFAULT, 7),
+--        (DEFAULT, 3, DEFAULT, 5),
+--        (DEFAULT, 9, DEFAULT, 8),
+--        (DEFAULT, 3, DEFAULT, 9),
+--        (DEFAULT, 3, DEFAULT, 10);
 /*SCHEDULE FILLER*/
-INSERT INTO schedule (id, request_id, week_number)
-VALUES (DEFAULT, 1, 14),
-       (DEFAULT, 2, 15),
-       (DEFAULT, 3, 14),
-       (DEFAULT, 4, 15),
-       (DEFAULT, 5, 15),
-       (DEFAULT, 6, 15),
-       (DEFAULT, 7, 15),
-       (DEFAULT, 8, 15),
-       (DEFAULT, 9, 15),
-       (DEFAULT, 10, 15);
+-- INSERT INTO schedule (id, request_id, week_number)
+-- VALUES (DEFAULT, 1, 14),
+--        (DEFAULT, 2, 15),
+--        (DEFAULT, 3, 14),
+--        (DEFAULT, 4, 15),
+--        (DEFAULT, 5, 15),
+--        (DEFAULT, 6, 15),
+--        (DEFAULT, 7, 15),
+--        (DEFAULT, 8, 15),
+--        (DEFAULT, 9, 15),
+--        (DEFAULT, 10, 15);

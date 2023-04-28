@@ -1,6 +1,7 @@
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.NonNull;
@@ -21,7 +22,7 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "uid")
+    @Column(name = "uid", nullable = false)
     Integer userId;
 
 
@@ -29,12 +30,14 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
      * Start date of the range that the Job will scan shift
      */
     @NotNull
+    @Column(nullable = false)
     java.sql.Date startDate;
 
     /**
      * End date of the range that the Job will scan shift
      */
     @NotNull
+    @Column(nullable = false)
     java.sql.Date endDate;
 
     /**
@@ -42,7 +45,6 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
      */
     Boolean done = false;
 
-    Integer hash;
 
     @OneToOne
     @JoinColumn(
@@ -51,6 +53,7 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
             columnDefinition = "uid",
             insertable = false,
             updatable = false)
+    @JsonBackReference
     User requester;
 
 
@@ -93,7 +96,7 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
         result &= endDate != null;
         result &= startDate.before(endDate) || startDate.equals(endDate);
         result &= userId != null;
-        result &= userId>=0;
+        result &= userId >= 0;
 
         return result;
     }
@@ -130,7 +133,6 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-
 
 
 }

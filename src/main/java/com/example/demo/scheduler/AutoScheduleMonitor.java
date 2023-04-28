@@ -2,8 +2,9 @@ package com.example.demo.scheduler;
 
 import com.example.demo.db.entities.*;
 import com.example.demo.db.repo.*;
-import org.apache.logging.log4j.*;
-import org.springframework.stereotype.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
@@ -13,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * This call implement monitor design pattern for thread management.
  * It is a Component bean so it's initialized once in every spring boot run
  */
-@Component
+@Service
 public class AutoScheduleMonitor {
 
     final Logger logger = LogManager.getLogger(AutoScheduleMonitor.class);
@@ -41,7 +42,7 @@ public class AutoScheduleMonitor {
 
 
         // count how many vCPU the system has and use half of them to use for workers
-        int processor = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
+        int processor = Math.min(1, Runtime.getRuntime().availableProcessors() / 2);
 //        int processor = 0;
         // create new workers
         for (int i = 0; i < processor; i++) {
@@ -149,17 +150,7 @@ public class AutoScheduleMonitor {
         }
     }
 
-    public Collection<User> getUsers(ScheduleJob scheduleJob) {
-        repoAccessLock.lock();
-        try {
-            return userRepo.findUsersFreeAt(scheduleJob.getStartDate(), scheduleJob.getEndDate());
-        } catch (Exception e) {
-            logger.error(e);
-            return new ArrayList<>();
-        } finally {
-            repoAccessLock.unlock();
-        }
-    }
+
 
     public Collection<User> getUsers(AvailableShifts shifts) {
         repoAccessLock.lock();
@@ -170,7 +161,7 @@ public class AutoScheduleMonitor {
 
             java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
             java.sql.Date endDate = new java.sql.Date((startDate.getTime() + shifts.getDuration() * 60 * 1000));
-            return userRepo.findUsersFreeAt(startDate, endDate);
+            return userRepo.findUsersFreeConstraintsAt(startDate, endDate);
         } catch (Exception e) {
             logger.error(e);
             return new ArrayList<>();
@@ -194,7 +185,7 @@ public class AutoScheduleMonitor {
     public List<ShiftsRequests> getRequests(Integer shiftId) {
         repoAccessLock.lock();
         try {
-            return shiftRequestRepo.getShiftsRequestsByShiftIdFree(shiftId);
+            return shiftRequestRepo.getShiftsRequestsByShiftIdFree(shiftId).stream().filter(s -> s.getSchedule() == null).toList();
         } catch (Exception e) {
             logger.error(e);
             return new ArrayList<>();
@@ -239,7 +230,6 @@ public class AutoScheduleMonitor {
             Schedule schedule = new Schedule();
             request = shiftRequestRepo.save(request);
             schedule.setRequestId(request.getId());
-            schedule.setRequest(request);
             schedule.setWeekNumber(request.getShift().getWeekNumber());
             return scheduleRepo.save(schedule);
         } catch (Exception e) {

@@ -130,10 +130,19 @@ public class AutoScheduler extends Thread {
      */
     @Nullable
     private User nextUser(Queue<User> userQueue,  Set<User> schedulesUsers) {
-        return userQueue.stream()
-                .filter(user -> !isAlreadyScheduled(user, schedulesUsers))
-                .findFirst()
-                .orElse(null);
+        LinkedList<User> tmpQueue = new LinkedList<>();
+        User user = null;
+
+        while (!userQueue.isEmpty()){
+            user = userQueue.poll();
+            if(!isAlreadyScheduled(user,schedulesUsers)){
+                break;
+            }
+            tmpQueue.add(user);
+            user  = null;
+        }
+        userQueue.addAll(tmpQueue);
+        return user;
     }
 
     /**

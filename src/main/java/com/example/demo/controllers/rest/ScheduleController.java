@@ -138,7 +138,6 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
             Schedule schedule = new Schedule();
             request = shiftRequestRepo.save(request);
             schedule.setRequestId(request.getId());
-            schedule.setRequest(request);
             schedule.setWeekNumber(request.getShift().getWeekNumber());
             return repo.save(schedule);
         } catch (Exception e) {

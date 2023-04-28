@@ -32,8 +32,10 @@ public interface ShiftRequestRepo extends CrudRepository<ShiftsRequests,Integer>
      */
     List<ShiftsRequests> getShiftsRequestsByTimestamp(java.sql.Timestamp timestamp);
 
-    @Query("select s from ShiftsRequests s where s.shiftId = ?1 and s.schedule is null")
+    @Query("select s from ShiftsRequests s where s.shiftId = ?1")
     List<ShiftsRequests> getShiftsRequestsByShiftIdFree(Integer shiftId);
+
+
 
 
 }

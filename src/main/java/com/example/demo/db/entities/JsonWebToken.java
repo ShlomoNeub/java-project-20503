@@ -13,12 +13,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer> {
+public class JsonWebToken implements Serializable, IEntity<JsonWebToken, Integer> {
 
     /**
      * The duration of the token
      */
-    static  final long VALID_DURATION = 5*60*1000; // 5 Minutes
+    static final long VALID_DURATION = 5 * 60 * 1000; // 5 Minutes
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,17 +33,17 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
     private UUID jwt;
 
     @Basic
-    @Column(name = "valid",unique = false)
+    @Column(name = "valid", unique = false)
     private boolean valid = true;
 
     @Basic
-    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP",insertable = false,
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false,
             updatable = false)
     @CreationTimestamp
     java.sql.Timestamp timestamp;
 
     @ManyToOne
-    @JoinColumn(name = "uid",referencedColumnName = "id",columnDefinition = "uid",insertable = false,
+    @JoinColumn(name = "uid", referencedColumnName = "id", columnDefinition = "uid", insertable = false,
             updatable = false)
     private User user;
 
@@ -54,15 +54,17 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
 
     }
 
-    public void touch(){
-        if(getValid()) {
+    @PostPersist
+    @PostUpdate
+    public void touch() {
+        if (getValid()) {
             timestamp = new java.sql.Timestamp(System.currentTimeMillis());
         }
     }
 
     public boolean getValid() {
         boolean stillValid = timestamp == null ||
-                new Timestamp(System.currentTimeMillis()).before(new Timestamp(timestamp.getTime()+VALID_DURATION));
+                new Timestamp(System.currentTimeMillis()).before(new Timestamp(timestamp.getTime() + VALID_DURATION));
         return valid && stillValid;
     }
 
@@ -101,7 +103,6 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,7 +113,7 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
     @Override
     public int hashCode() {
         return Objects.hash(getUid(), getJwt(), getTimestamp());
-   }
+    }
 
     @Override
     public String toString() {
@@ -127,13 +128,12 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken,Integer>
     @Override
     public int compareTo(JsonWebToken o) {
         if (o != null) {
-            try{
-                return equals(o)?0:this.getId().compareTo(o.getId());
-            }catch (Exception e){
+            try {
+                return equals(o) ? 0 : this.getId().compareTo(o.getId());
+            } catch (Exception e) {
                 return 1;
             }
-        }
-        else return 1;
+        } else return 1;
     }
 
     @Override

@@ -58,4 +58,7 @@ public interface AvailableShiftsRepo extends CrudRepository<AvailableShifts, Int
                                             @NonNull Integer dayNumberEnd);
 
 
+
+
+
 }

@@ -15,6 +15,7 @@ import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -49,8 +50,6 @@ public class User implements Serializable, IEntity<User,Integer> {
     @Nullable
     private Collection<Constraint> constraints;
 
-
-
     @ManyToOne
     @JoinColumn(name = "pid",
             referencedColumnName = "id",
@@ -65,6 +64,11 @@ public class User implements Serializable, IEntity<User,Integer> {
             insertable = false,
             updatable = false)
     Role role;
+
+
+    @OneToMany(mappedBy = "user")
+    List<ShiftsRequests> requests;
+
 
     public User() {
     }

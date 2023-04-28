@@ -12,6 +12,7 @@ public interface UserRepo extends CrudRepository<User, Integer> {
 
     /**
      * Get user by its profile
+     *
      * @param pid of the target profile
      * @return all users with this profile
      */
@@ -22,7 +23,7 @@ public interface UserRepo extends CrudRepository<User, Integer> {
             "LEFT join u.constraints constraints " +
             "where constraints IS NULL OR not ((?1 BETWEEN constraints.startDate AND constraints.endDate) " +
             "OR NOT (?2 BETWEEN constraints.startDate AND constraints.endDate) )")
-    List<User> findUsersFreeAt(Date startDate, Date EndDate);
+    List<User> findUsersFreeConstraintsAt(Date startDate, Date EndDate);
 
 
 }

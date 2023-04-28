@@ -3,6 +3,7 @@ package com.example.demo.controllers.rest;
 import com.example.demo.config.annotation.Auth;
 import com.example.demo.config.annotation.PrivateGson;
 import com.example.demo.config.interceptor.GsonExcludeStrategy;
+import com.example.demo.config.interceptor.TimestampTypeAdapter;
 import com.example.demo.db.entities.interfaces.IEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -31,8 +33,10 @@ public abstract class RestApiAbstract
 
 
     protected static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter())
             .setExclusionStrategies(new GsonExcludeStrategy()).create();
     protected static Gson privateGson = new GsonBuilder()
+            .registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter())
             .setExclusionStrategies(
                     new GsonExcludeStrategy(),
                     new GsonExcludeStrategy(PrivateGson.class)

@@ -2,7 +2,6 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.Auth;
 import com.example.demo.db.entities.AvailableShifts;
-import com.example.demo.db.entities.Profile;
 import com.example.demo.db.entities.Schedule;
 import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.AvailableShiftsRepo;
@@ -18,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.*;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +39,9 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
         this.sRepo = sRepo;
         this.userRepo = userRepo;
     }
+
+
+
 
     @GetMapping("/test")
     public String getAvailableShiftsStr() {
@@ -82,7 +85,7 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
         java.sql.Date start, end;
         start = getDate(shiftsOptional.get().getWeekNumber(), shiftsOptional.get().getDayNumber(), shiftsOptional.get().getStartHour());
         end = new Date(start.getTime() + shiftsOptional.get().getDuration() * (60 * 1000));
-        Collection<User> freeWorkersList = userRepo.findUsersFreeAt(start, end);
+        Collection<User> freeWorkersList = userRepo.findUsersFreeConstraintsAt(start, end);
 
         Collection<Schedule> schedules = sRepo.findByShiftId(id);
         Set<User> scheduledUsers = schedules.stream().map(s -> s.getRequest().getUser()).collect(Collectors.toSet());
@@ -169,7 +172,6 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
             availableShifts.setDuration(duration);
             availableShifts.setEmployeeCount(employeeCount);
             availableShifts.setYear(year);
-
             repo.save(availableShifts);
         } catch (Exception e) {
             logger.error(e);

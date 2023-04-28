@@ -4,13 +4,16 @@ import com.example.demo.db.entities.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
 import java.util.Objects;
+
 @Entity
-public class ConstraintType implements IEntity<ConstraintType,Integer> {
+public class ConstraintType implements IEntity<ConstraintType, Integer> {
     public static final int MAX_DESCRIPTION_LENGTH = 100;
     public static final int MIN_CONSTRAINT_LEVEL = 1;
     public static final int MAX_CONSTRAINT_LEVEL = 5;
@@ -19,7 +22,8 @@ public class ConstraintType implements IEntity<ConstraintType,Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Size(min = MIN_CONSTRAINT_LEVEL, max = MAX_CONSTRAINT_LEVEL)
+    @Min(MIN_CONSTRAINT_LEVEL)
+    @Max(MAX_CONSTRAINT_LEVEL)
     private Integer constraintLevel;
 
 

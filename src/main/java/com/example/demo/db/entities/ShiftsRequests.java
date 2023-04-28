@@ -1,6 +1,7 @@
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,15 +15,16 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "shift_id")
+    @Column(name = "shift_id", nullable = false)
     private Integer shiftId;
 
     @Basic
-    @Column(name = "uid")
+    @Column(name = "uid", nullable = false)
     private Integer uid;
 
     @ManyToOne
     @JoinColumn(name = "uid", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
