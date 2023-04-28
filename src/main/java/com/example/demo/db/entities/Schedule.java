@@ -1,32 +1,34 @@
 package com.example.demo.db.entities;
 
+import com.example.demo.config.annotation.ExcludeGson;
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class Schedule implements Serializable , IEntity<Schedule,Integer> {
+public class Schedule implements Serializable, IEntity<Schedule, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Integer weekNumber;
-    @Column(name="request_id",insertable = false,updatable = false)
+    @Column(name = "request_id",nullable = false)
     private Integer requestId;
 
-    @ManyToOne
-    @JoinColumn(name = "request_id",referencedColumnName = "id")
+    @OneToOne(targetEntity = ShiftsRequests.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "request_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ExcludeGson
+    @JsonBackReference
     ShiftsRequests request;
+
 
     public ShiftsRequests getRequest() {
         return request;
     }
 
-    public void setRequest(ShiftsRequests request){
-        this.request=request;
-    }
 
     public Integer getWeekNumber() {
         return weekNumber;
@@ -78,8 +80,8 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
     @Override
     public int compareTo(Schedule o) {
         try {
-            return this.equals(o)?0:this.id.compareTo(o.id);
-        }catch (Exception e){
+            return this.equals(o) ? 0 : this.id.compareTo(o.id);
+        } catch (Exception e) {
             return 1;
         }
     }
@@ -90,9 +92,7 @@ public class Schedule implements Serializable , IEntity<Schedule,Integer> {
                 "id=" + id +
                 ", requestId='" + requestId + '\'' +
                 ", weekNumber='" + weekNumber + '\'' +
-                ", user='" + request.getUser() + '\'' +
-                ", shift='" + request.getShift() + '\'' +
-
+                ", request='" + request +
                 '}';
     }
 }

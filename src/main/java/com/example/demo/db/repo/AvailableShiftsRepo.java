@@ -34,7 +34,9 @@ public interface AvailableShiftsRepo extends CrudRepository<AvailableShifts, Int
      * @param dayNumberEnd    end of day range
      * @return all shifts that in range
      */
-    @Query("select a from AvailableShifts a where a.weekNumber between ?1 and ?2 and a.dayNumber between ?3 and ?4")
+    @Query("select a from AvailableShifts a " +
+            "where a.weekNumber between ?1 and ?2 and" +
+            "(a.dayNumber between ?3 and ?4 OR a.dayNumber between ?4 and ?3)")
     Collection<AvailableShifts> findShiftsInRange(@NonNull Integer weekNumberStart,
                                                   @NonNull Integer weekNumberEnd,
                                                   @NonNull Integer dayNumberStart,
@@ -54,6 +56,8 @@ public interface AvailableShiftsRepo extends CrudRepository<AvailableShifts, Int
                                             @NonNull Integer weekNumberEnd,
                                             @NonNull Integer dayNumberStart,
                                             @NonNull Integer dayNumberEnd);
+
+
 
 
 

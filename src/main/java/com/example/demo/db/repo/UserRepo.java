@@ -12,17 +12,18 @@ public interface UserRepo extends CrudRepository<User, Integer> {
 
     /**
      * Get user by its profile
+     *
      * @param pid of the target profile
      * @return all users with this profile
      */
-    @Query("FROM User u where u.pid= :pid")
+    @Query("FROM User u where u.pid= :pid ORDER BY u.role.roleLevel ASC")
     List<User> findByProfile(Integer pid);
 
     @Query("select u from User u " +
             "LEFT join u.constraints constraints " +
             "where constraints IS NULL OR not ((?1 BETWEEN constraints.startDate AND constraints.endDate) " +
             "OR NOT (?2 BETWEEN constraints.startDate AND constraints.endDate) )")
-    List<User> findUsersFreeAt(Date startDate, Date EndDate);
+    List<User> findUsersFreeConstraintsAt(Date startDate, Date EndDate);
 
 
 }

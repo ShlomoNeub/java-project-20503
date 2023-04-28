@@ -2,30 +2,32 @@ package com.example.demo.db.entities;
 
 import com.example.demo.config.annotation.ExcludeGson;
 import com.example.demo.db.entities.interfaces.IEntity;
-import com.example.demo.db.entities.interfaces.Validatable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 
-import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class AvailableShifts implements Serializable , Comparable<AvailableShifts>, IEntity<AvailableShifts,Integer> , Validatable<AvailableShifts> {
+public class AvailableShifts implements IEntity<AvailableShifts, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
+    @Max(56)
     Integer weekNumber;
 
+    @Max(7)
     Integer dayNumber;
-
+    @Max(23)
     Integer startHour;
-
+    @Max(12)
     Integer duration;
 
     Integer employeeCount;
@@ -33,11 +35,19 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
     Integer year;
 
 
-    @OneToMany(mappedBy = "shift")
+    Timestamp startTime;
+    Timestamp endTime;
+    Date startDate;
+
+    @OneToMany(mappedBy = "shift", cascade = CascadeType.REMOVE)
     @JsonBackReference
-    @Nullable
     @ExcludeGson
     Collection<ShiftsRequests> requests;
+
+
+    public Date getDate() {
+        return new Date(System.currentTimeMillis());
+    }
 
     public Collection<ShiftsRequests> getRequests() {
         return requests;
@@ -92,7 +102,7 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
     }
 
 
-    public Integer getYear(){
+    public Integer getYear() {
         return year;
     }
 
@@ -102,7 +112,7 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
 
     public boolean isValid() {
         boolean retVal = true;
-        retVal &= 0 <= this.startHour ; // min is 0
+        retVal &= 0 <= this.startHour; // min is 0
         retVal &= this.startHour < 24; // max is 23
         retVal &= this.getEmployeeCount() > 0;
         retVal &= this.getDuration() > 0; // min is
@@ -147,24 +157,56 @@ public class AvailableShifts implements Serializable , Comparable<AvailableShift
 
     @Override
     public int compareTo(@NotNull AvailableShifts o) {
-        if(this.equals(o)) return 0;
-        if(!this.year.equals(o.year))
+        if (this.equals(o)) return 0;
+        if (!this.year.equals(o.year))
             return this.year.compareTo(o.year);
-        if(!this.weekNumber.equals(o.weekNumber))
+        if (!this.weekNumber.equals(o.weekNumber))
             return this.weekNumber.compareTo(o.weekNumber);
-        if(!this.dayNumber.equals(o.dayNumber))
+        if (!this.dayNumber.equals(o.dayNumber))
             return dayNumber.compareTo(o.dayNumber);
-        if(!this.startHour.equals(o.startHour))
+        if (!this.startHour.equals(o.startHour))
             return this.startHour.compareTo(o.startHour);
-        if(!this.duration.equals(o.duration))
+        if (!this.duration.equals(o.duration))
             return this.duration.compareTo(o.duration);
-        if(!this.employeeCount.equals(o.employeeCount))
+        if (!this.employeeCount.equals(o.employeeCount))
             return this.employeeCount.compareTo(o.employeeCount);
-        if(!this.id.equals(o.id))
+        if (!this.id.equals(o.id))
             return this.id.compareTo(o.id);
         return 1;
     }
 
+
+    @PostPersist
+    @PostUpdate
+    public void autoGenField() {
+        Calendar calendar = Calendar.getInstance();
+        if (this.startDate == null) {
+            calendar.set(Calendar.WEEK_OF_YEAR, this.weekNumber);
+            calendar.set(Calendar.DAY_OF_WEEK, this.dayNumber);
+            this.startDate = new Date(calendar.getTime().getTime());
+        }
+        calendar = Calendar.getInstance();
+        if (this.startTime == null) {
+            calendar.set(Calendar.WEEK_OF_YEAR, this.weekNumber);
+            calendar.set(Calendar.DAY_OF_WEEK, this.dayNumber);
+            calendar.set(Calendar.HOUR, this.startHour);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            this.startTime = new Timestamp(calendar.getTime().getTime());
+        }
+        calendar = Calendar.getInstance();
+        if (this.endTime == null) {
+            calendar.set(Calendar.WEEK_OF_YEAR, this.weekNumber);
+            calendar.set(Calendar.DAY_OF_WEEK, this.dayNumber);
+            calendar.set(Calendar.HOUR, this.startHour + this.duration);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            this.endTime = new Timestamp(calendar.getTime().getTime());
+        }
+    }
 
 }
 

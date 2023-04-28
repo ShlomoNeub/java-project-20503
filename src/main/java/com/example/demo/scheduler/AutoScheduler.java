@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,8 @@ public class AutoScheduler extends Thread {
 
     private boolean stop = false;
     private final AutoScheduleMonitor autoScheduleMonitor;
+
+    private ScheduleJob currentJob;
 
     public AutoScheduler(int id, AutoScheduleMonitor autoScheduleMonitor) {
         super("autoScheduler %s".formatted(id));
@@ -28,8 +31,12 @@ public class AutoScheduler extends Thread {
             try {
                 // get next job from monitor
                 ScheduleJob scheduleJob = autoScheduleMonitor.getJob(this);
+                setCurrentJob(scheduleJob);
+                Date date = Date.from(Instant.now());
                 // run scheduler and save the result
                 ScheduleJob result = doJob(scheduleJob);
+                long waitedFor = Date.from(Instant.now()).getTime() - date.getTime();
+                logger.info("%s finished %d in %s ms".formatted(this, scheduleJob.getId(),waitedFor));
                 // notify the monitor the job is finished
                 autoScheduleMonitor.finishJob(result);
             } catch (InterruptedException e) {
@@ -62,11 +69,15 @@ public class AutoScheduler extends Thread {
         long workerCount = autoScheduleMonitor.getWorkersInShift(shift.getId());
         for (int i = 0; i < Math.max(0, shift.getEmployeeCount() - workerCount); i++) {
             User user = nextUser(userQueue, scheduledUsers);
-            if (user == null) logger.warn("No user can schedule for %s".formatted(shift));
+            if (user == null) {
+                logger.warn("No user can schedule for %s".formatted(shift));
+                return resultSchedules;
+            }
             ShiftsRequests request = new ShiftsRequests();
             request.setUser(user);
             request.setShift(shift);
             request.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            request.setScheduleJob(getCurrentJob());
             Schedule s = autoScheduleMonitor.createSchedule(request);
             schedules.add(s);
             resultSchedules.add(s);
@@ -84,6 +95,8 @@ public class AutoScheduler extends Thread {
         Collection<AvailableShifts> shifts = autoScheduleMonitor.getShiftsInRange(scheduleJob);
         Set<User> noScheduledUsers = new HashSet<>();
         for (AvailableShifts shift : shifts) {
+            List<ShiftsRequests> requests = autoScheduleMonitor.getRequests(shift.getId());
+            requests.forEach(autoScheduleMonitor::createSchedule);
             Queue<User> userQueue = new LinkedList<>();
             Set<User> freeUsers = new HashSet<>(autoScheduleMonitor.getUsers(shift));
             if (!noScheduledUsers.isEmpty()) {
@@ -100,6 +113,13 @@ public class AutoScheduler extends Thread {
         return scheduleJob;
     }
 
+    public synchronized ScheduleJob getCurrentJob() {
+        return currentJob;
+    }
+
+    public synchronized void setCurrentJob(ScheduleJob currentJob) {
+        this.currentJob = currentJob;
+    }
 
     /**
      * Helper function that receive available user and get the next user that was not already in schedules
@@ -110,10 +130,19 @@ public class AutoScheduler extends Thread {
      */
     @Nullable
     private User nextUser(Queue<User> userQueue,  Set<User> schedulesUsers) {
-        return userQueue.stream()
-                .filter(user -> !isAlreadyScheduled(user, schedulesUsers))
-                .findFirst()
-                .orElse(null);
+        LinkedList<User> tmpQueue = new LinkedList<>();
+        User user = null;
+
+        while (!userQueue.isEmpty()){
+            user = userQueue.poll();
+            if(!isAlreadyScheduled(user,schedulesUsers)){
+                break;
+            }
+            tmpQueue.add(user);
+            user  = null;
+        }
+        userQueue.addAll(tmpQueue);
+        return user;
     }
 
     /**
@@ -126,6 +155,7 @@ public class AutoScheduler extends Thread {
     private boolean isAlreadyScheduled(User user, Set<User> schedulesUsers) {
         return schedulesUsers.contains(user);
     }
+
 
     @Override
     public String toString() {

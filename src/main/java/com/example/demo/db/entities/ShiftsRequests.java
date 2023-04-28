@@ -1,7 +1,9 @@
 package com.example.demo.db.entities;
 
 import com.example.demo.db.entities.interfaces.IEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,23 +15,35 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "shift_id", insertable = false, updatable = false)
+    @Column(name = "shift_id", nullable = false)
     private Integer shiftId;
 
     @Basic
-    @Column(name = "uid", insertable = false, updatable = false)
+    @Column(name = "uid", nullable = false)
     private Integer uid;
 
     @ManyToOne
-    @JoinColumn(name = "uid", referencedColumnName = "id")
+    @JoinColumn(name = "uid", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "shift_id", referencedColumnName = "id")
+    @JoinColumn(name = "shift_id", referencedColumnName = "id", insertable = false, updatable = false)
     private AvailableShifts shift;
+
+
     @Basic
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
     java.sql.Timestamp timestamp;
+
+
+    @ManyToOne
+    @JoinColumn(name="job_id",referencedColumnName = "id")
+    private ScheduleJob scheduleJob;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "request", orphanRemoval = true)
+    private Schedule schedule;
 
     @Override
     public boolean equals(Object o) {
@@ -75,7 +89,9 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     }
 
     public void setUser(User user) {
+        this.uid = user.getId();
         this.user = user;
+
     }
 
     public AvailableShifts getShift() {
@@ -83,7 +99,16 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     }
 
     public void setShift(AvailableShifts shift) {
+        this.shiftId = shift.id;
         this.shift = shift;
+    }
+
+    public ScheduleJob getScheduleJob() {
+        return scheduleJob;
+    }
+
+    public void setScheduleJob(ScheduleJob scheduleJob) {
+        this.scheduleJob = scheduleJob;
     }
 
     @Override
@@ -109,5 +134,13 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
                 ", timestamp='" + timestamp + '\'' +
                 ", uid='" + uid + '\'' +
                 '}';
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 }

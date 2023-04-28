@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Basic middleware.
@@ -46,8 +45,9 @@ public class MiddlewareSystem {
      * Hash of all the annotation and the methode used for the annotation
      */
     HashMap<Class<? extends Annotation>, Method> validators = new HashMap<>() {{
+
         try {
-            put(Auth.class, MiddlewareSystem.class.getMethod("doAuth", WebRequest.class));
+            put(Auth.class, MiddlewareSystem.class.getMethod("doAuth", WebRequest.class, Auth.class));
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -59,18 +59,15 @@ public class MiddlewareSystem {
      * @param request that is being made to the server
      * @throws ResponseStatusException on Authorization error
      */
-    public void doAuth(WebRequest request) throws ResponseStatusException {
+    public void doAuth(WebRequest request, Auth auth) throws ResponseStatusException {
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(
                 HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE, WebRequest.SCOPE_REQUEST);
-
         Method selfMethod = Objects.requireNonNull(handlerMethod).getMethod();
-        Auth auth = selfMethod.getAnnotation(Auth.class);
+
         String controllerName = handlerMethod.getBeanType().getSimpleName();
         String methodName = selfMethod.getName();
         String authHeader = request.getHeader("Auth");
         String[] authSplit = authHeader != null ? authHeader.split(":") : new String[0];
-
-
         logger.debug("Executing @Auth on " + methodName + " in " + controllerName);
 
         if (authSplit.length != 2) {
@@ -99,10 +96,14 @@ public class MiddlewareSystem {
                 Class<? extends Annotation> testAnnotation = entry.getKey();
                 Method method = entry.getValue();
                 // check if the target is annotated with testAnnotation
-                if (handlerMethod.getMethodAnnotation(testAnnotation) != null) {
+                Annotation annotation = handlerMethod.getMethodAnnotation(testAnnotation);
+                if (annotation == null) {
+                    annotation = handlerMethod.getBeanType().getAnnotation(testAnnotation);
+                }
+                if (annotation != null) {
                     try {
                         // invoke the validation function
-                        method.invoke(this, request);
+                        method.invoke(this, request,annotation);
                     } catch (InvocationTargetException e) {
                         if (e.getTargetException() instanceof ResponseStatusException)
                             throw (ResponseStatusException) e.getTargetException();
@@ -133,7 +134,7 @@ public class MiddlewareSystem {
         JsonWebToken token = jwtRepo.getTokenByUser(userID).orElse(null);
         if (token == null || token.getJwt() == null) return false;
 
-        boolean isValidToUse =  token.getJwt().toString().equals(jwt) &&
+        boolean isValidToUse = token.getJwt().toString().equals(jwt) &&
                 token.getUser().getRole().getRoleLevel() >= level &&
                 token.getUser().getId().equals(userID); // have higher or equal access
         if (isValidToUse) {

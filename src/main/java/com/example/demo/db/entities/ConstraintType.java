@@ -1,27 +1,29 @@
 package com.example.demo.db.entities;
 
+import com.example.demo.db.entities.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
-import com.example.demo.db.entities.interfaces.IEntity;
-import com.example.demo.db.entities.interfaces.Validatable;
 @Entity
-public class ConstraintType implements Serializable , Comparable<ConstraintType>, IEntity<ConstraintType,Integer>, Validatable<ConstraintType> {
+public class ConstraintType implements IEntity<ConstraintType, Integer> {
     public static final int MAX_DESCRIPTION_LENGTH = 100;
     public static final int MIN_CONSTRAINT_LEVEL = 1;
     public static final int MAX_CONSTRAINT_LEVEL = 5;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Size(min = MIN_CONSTRAINT_LEVEL, max = MAX_CONSTRAINT_LEVEL)
+    @Min(MIN_CONSTRAINT_LEVEL)
+    @Max(MAX_CONSTRAINT_LEVEL)
     private Integer constraintLevel;
 
 

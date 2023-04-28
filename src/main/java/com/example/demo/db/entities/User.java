@@ -15,6 +15,7 @@ import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -35,6 +36,9 @@ public class User implements Serializable, IEntity<User,Integer> {
     @Column(name = "role_id",nullable = false)
     private Integer roleId;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @Size(min = PASSWORD_MIN_LENGTH,max=PASSWORD_MAX_LENGTH)
     @Column(nullable = false)
     @PrivateGson
@@ -45,11 +49,6 @@ public class User implements Serializable, IEntity<User,Integer> {
     @JsonBackReference
     @Nullable
     private Collection<Constraint> constraints;
-
-
-
-    @Column(nullable = false)
-    private String username;
 
     @ManyToOne
     @JoinColumn(name = "pid",
@@ -65,6 +64,11 @@ public class User implements Serializable, IEntity<User,Integer> {
             insertable = false,
             updatable = false)
     Role role;
+
+
+    @OneToMany(mappedBy = "user")
+    List<ShiftsRequests> requests;
+
 
     public User() {
     }
