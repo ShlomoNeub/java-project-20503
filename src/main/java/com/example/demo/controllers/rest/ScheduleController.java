@@ -53,12 +53,6 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     }
 
 
-    @GetMapping("/job/{id}")
-    @Auth
-    public Collection<Schedule> getJobByUid(@AuthPayload AuthInfo info, @PathVariable Integer id) {
-        return repo.getScheduleJobsByJobId(id);
-    }
-
     @Auth
     @GetMapping("/shifts_from_schedule")
     public String getAvailableShiftsStr(@RequestParam Integer id) {
@@ -146,9 +140,9 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         }
     }
 
-    @Auth()
+    @Auth
     @DeleteMapping ("/reset_shift/{sId}")
-    public String resetShift(@AuthPayload AuthInfo info, @PathVariable Integer sId) {
+    public String resetShift( @PathVariable Integer sId) {
         try {
             Collection<Schedule> scheduleCollection = repo.findByShiftId(sId);
             repo.deleteAll(scheduleCollection);
