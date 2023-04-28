@@ -67,6 +67,7 @@ public class User implements Serializable, IEntity<User,Integer> {
 
 
     @OneToMany(mappedBy = "user")
+    @JsonBackReference
     List<ShiftsRequests> requests;
 
 
