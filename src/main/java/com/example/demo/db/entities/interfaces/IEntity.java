@@ -7,11 +7,13 @@ import java.io.Serializable;
 
 /**
  * This interface help "basing" th differences between every JDBC Entity
- * @param <Entity> JDBC entity
+ *
+ * @param <Entity>    JDBC entity
  * @param <IndexType> The index type of the entity
  */
-public interface IEntity<Entity,IndexType> extends Comparable<Entity>, Serializable, Validatable<Entity> {
+public interface IEntity<Entity, IndexType> extends Comparable<Entity>, Serializable, Validatable<Entity> {
     IndexType getId();
+
     void setId(IndexType id);
 
 

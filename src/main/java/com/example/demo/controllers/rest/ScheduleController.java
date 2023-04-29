@@ -72,7 +72,7 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     @GetMapping("/user/shifts/{week}/{day}")
     public String getUsersSchedules(@AuthPayload AuthInfo info, @PathVariable Integer day, @PathVariable Integer week) {
 
-        return getUsersSchedules(info.user().getId(), day,week).toString();
+        return getUsersSchedules(info.user().getId(), day, week).toString();
     }
 
     @Auth
@@ -86,13 +86,13 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     }
 
 
-    private  JsonArray getUsersSchedules(Integer userId,Integer day, Integer week){
+    private JsonArray getUsersSchedules(Integer userId, Integer day, Integer week) {
         List<Schedule> schedules = repo.findByUsersInRange(userId, week, day);
         JsonArray array = new JsonArray();
         for (Schedule schedule : schedules) {
 
             JsonObject object = JsonParser.parseString(privateGson.toJson(schedule)).getAsJsonObject();
-            object.add("request",JsonParser.parseString(privateGson.toJson(schedule.getRequest())).getAsJsonObject());
+            object.add("request", JsonParser.parseString(privateGson.toJson(schedule.getRequest())).getAsJsonObject());
             array.add(object);
         }
         return array;
@@ -102,7 +102,7 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     public String addWorker(@RequestBody String request) {
         int shiftId = 0;
         int profileId = 0;
-        long  numOfScheduledWorkers = 0;
+        long numOfScheduledWorkers = 0;
         JsonObject jsonRequest;
         try {
             jsonRequest = JsonParser.parseString(request).getAsJsonObject();
@@ -118,11 +118,10 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         ShiftsRequests shiftsRequestsequest = new ShiftsRequests();
         shiftsRequestsequest.setUser(user);
         shiftsRequestsequest.setShift(shift);
-        if(shift.getEmployeeCount() == numOfScheduledWorkers) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This Shift Is Already Full!");
+        if (shift.getEmployeeCount() == numOfScheduledWorkers) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Shift Is Already Full!");
         }
         Schedule s = this.createSchedule(shiftsRequestsequest);
-
 
 
         JsonObject response = new JsonObject();
@@ -144,8 +143,8 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     }
 
     @Auth
-    @DeleteMapping ("/reset_shift/{sId}")
-    public String resetShift( @PathVariable Integer sId) {
+    @DeleteMapping("/reset_shift/{sId}")
+    public String resetShift(@PathVariable Integer sId) {
         try {
             Collection<Schedule> scheduleCollection = repo.findByShiftId(sId);
             repo.deleteAll(scheduleCollection);

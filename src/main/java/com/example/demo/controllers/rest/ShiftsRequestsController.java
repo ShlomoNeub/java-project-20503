@@ -2,7 +2,6 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.Auth;
 import com.example.demo.db.entities.ShiftsRequests;
-import com.example.demo.db.entities.User;
 import com.example.demo.db.repo.ShiftRequestRepo;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,19 +26,22 @@ public class ShiftsRequestsController extends RestApiAbstract<ShiftsRequests, Sh
     final Logger logger = LogManager.getLogger(ShiftsRequestsController.class);
     final ShiftRequestRepo repo;
 
+    public ShiftsRequestsController(ShiftRequestRepo repo) {
+        this.repo = repo;
+    }
+
     @GetMapping(path = "/admin")
-    public String getAllRequestsAdmin(){
+    public String getAllRequestsAdmin() {
         Collection<ShiftsRequests> shiftsRequestsCollection = super.getAll();
         JsonArray array = new JsonArray();
-        for (ShiftsRequests s:shiftsRequestsCollection
-             ) {
+        for (ShiftsRequests s : shiftsRequestsCollection
+        ) {
             JsonObject jsonObject = JsonParser.parseString(gson.toJson(s)).getAsJsonObject();
             jsonObject.add("user", JsonParser.parseString(gson.toJson(s.getUser())).getAsJsonObject());
             array.add(jsonObject);
         }
         return array.toString();
     }
-
 
     @Override
     @Auth
@@ -50,10 +52,6 @@ public class ShiftsRequestsController extends RestApiAbstract<ShiftsRequests, Sh
         } else {
             return super.createNewEntity(entity);
         }
-    }
-
-    public ShiftsRequestsController(ShiftRequestRepo repo) {
-        this.repo = repo;
     }
 
     @Override

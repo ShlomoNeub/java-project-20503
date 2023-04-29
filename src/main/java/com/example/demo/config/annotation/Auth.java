@@ -1,5 +1,7 @@
 package com.example.demo.config.annotation;
-import java.lang.annotation.*;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 
 /**

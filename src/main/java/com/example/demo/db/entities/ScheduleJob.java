@@ -126,12 +126,12 @@ public class ScheduleJob implements IEntity<ScheduleJob, Integer> {
         return userId;
     }
 
-    public Integer getHash() {
-        return this.hashCode();
-    }
-
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getHash() {
+        return this.hashCode();
     }
 
 

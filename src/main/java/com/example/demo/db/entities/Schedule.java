@@ -10,20 +10,17 @@ import java.util.Objects;
 
 @Entity
 public class Schedule implements Serializable, IEntity<Schedule, Integer> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private Integer weekNumber;
-    @Column(name = "request_id",nullable = false)
-    private Integer requestId;
-
     @OneToOne(targetEntity = ShiftsRequests.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "request_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ExcludeGson
     @JsonBackReference
     ShiftsRequests request;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer weekNumber;
+    @Column(name = "request_id", nullable = false)
+    private Integer requestId;
 
     public ShiftsRequests getRequest() {
         return request;

@@ -18,17 +18,14 @@ import java.util.concurrent.locks.ReentrantLock;
 public class AutoScheduleMonitor {
 
     final Logger logger = LogManager.getLogger(AutoScheduleMonitor.class);
-
-    ArrayList<AutoScheduler> workers = new ArrayList<>();
-    Queue<ScheduleJob> scheduleJobs = new LinkedList<>();
-
     final ScheduleJobRepo scheduleJobRepo;
     final AvailableShiftsRepo availableShiftsRepo;
     final ScheduleRepo scheduleRepo;
     final UserRepo userRepo;
     private final ShiftRequestRepo shiftRequestRepo;
-
     private final ReentrantLock repoAccessLock = new ReentrantLock();
+    ArrayList<AutoScheduler> workers = new ArrayList<>();
+    Queue<ScheduleJob> scheduleJobs = new LinkedList<>();
 
 
     public AutoScheduleMonitor(ScheduleJobRepo repo, AvailableShiftsRepo availableShiftsRepo, ScheduleRepo scheduleRepo, UserRepo userRepo,
@@ -92,14 +89,6 @@ public class AutoScheduleMonitor {
         scheduleJobRepo.save(result);
     }
 
-    private java.sql.Date getDate(int week, int day, int hour) {
-        Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(Calendar.WEEK_OF_YEAR, week);
-        calendar.set(Calendar.DAY_OF_WEEK, day);
-        calendar.set(Calendar.HOUR, hour);
-        return new java.sql.Date(calendar.getTime().getTime());
-    }
-
 
     private int[] getDates(ScheduleJob scheduleJob) {
         Date startDate = new java.util.Date(scheduleJob.getStartDate().getTime());
@@ -132,25 +121,6 @@ public class AutoScheduleMonitor {
         }
     }
 
-    public Collection<Integer> getShiftsIdInRange(ScheduleJob scheduleJob) {
-        repoAccessLock.lock();
-        try {
-            int[] dateValues = getDates(scheduleJob);
-            int startWeek = dateValues[0];
-            int startDay = dateValues[1];
-            int endWeek = dateValues[2];
-            int endDay = dateValues[3];
-
-            return availableShiftsRepo.findShiftsIdInRange(startWeek, endWeek, startDay, endDay);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ArrayList<>();
-        } finally {
-            repoAccessLock.unlock();
-        }
-    }
-
-
 
     public Collection<User> getUsers(AvailableShifts shifts) {
         repoAccessLock.lock();
@@ -170,17 +140,6 @@ public class AutoScheduleMonitor {
         }
     }
 
-    public Collection<Schedule> getSchedules(ScheduleJob j) {
-        repoAccessLock.lock();
-        try {
-            return scheduleRepo.findByRequest_Shift_IdIn(getShiftsIdInRange(j));
-        } catch (Exception e) {
-            logger.error(e);
-            return new ArrayList<>();
-        } finally {
-            repoAccessLock.unlock();
-        }
-    }
 
     public List<ShiftsRequests> getRequests(Integer shiftId) {
         repoAccessLock.lock();

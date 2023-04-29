@@ -2,7 +2,6 @@ package com.example.demo.controllers.rest;
 
 import com.example.demo.config.annotation.Auth;
 import com.example.demo.config.annotation.PrivateGson;
-import com.example.demo.config.interceptor.DateTypeAdapter;
 import com.example.demo.config.interceptor.GsonExcludeStrategy;
 import com.example.demo.config.interceptor.TimestampTypeAdapter;
 import com.example.demo.db.entities.interfaces.IEntity;
@@ -21,7 +20,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.sql.Date;
 import java.util.Optional;
 
 @RestController

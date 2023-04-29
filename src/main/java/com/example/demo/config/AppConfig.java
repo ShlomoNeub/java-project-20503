@@ -24,6 +24,7 @@ public class AppConfig implements WebMvcConfigurer {
 
     /**
      * Here we add the needed resolver in any call if needed
+     *
      * @param resolvers list that been used by spring boot
      */
     @Override

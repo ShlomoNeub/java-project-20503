@@ -13,15 +13,8 @@ import java.lang.annotation.Target;
 public class PhoneValidator implements ConstraintValidator<PhoneValidator.Validate, String> {
 
     /**
-     * @param constraintAnnotation annotation instance for a given constraint declaration
-     */
-    @Override
-    public void initialize(Validate constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
-
-    /**
      * Method for validation the phone number
+     *
      * @param phoneNumber string to be validated
      * @return {@code true} if valid {@code false} otherwise
      */
@@ -33,12 +26,17 @@ public class PhoneValidator implements ConstraintValidator<PhoneValidator.Valida
         return matcher.matches();
     }
 
+    /**
+     * @param constraintAnnotation annotation instance for a given constraint declaration
+     */
+    @Override
+    public void initialize(Validate constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
 
     /**
-     *
-     * @param value object to validate
+     * @param value   object to validate
      * @param context context in which the constraint is evaluated
-     *
      * @return if the constraint is valid
      */
     @Override

@@ -1,7 +1,6 @@
 package com.example.demo.db.repo;
 
 import com.example.demo.db.entities.JsonWebToken;
-
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,6 +14,7 @@ public interface JwtRepo extends CrudRepository<JsonWebToken, Integer> {
 
     /**
      * invalidate all jwts of given user by its id
+     *
      * @param uid the target user
      */
     @Transactional
@@ -24,6 +24,7 @@ public interface JwtRepo extends CrudRepository<JsonWebToken, Integer> {
 
     /**
      * Retrieve the latest jwt for a user
+     *
      * @param uid of the target user
      * @return An optional jwt object
      */
@@ -32,6 +33,7 @@ public interface JwtRepo extends CrudRepository<JsonWebToken, Integer> {
 
     /**
      * Gets a JWT object by its UUID
+     *
      * @param jwt unique id
      * @return An optional jwt object
      */
@@ -40,6 +42,7 @@ public interface JwtRepo extends CrudRepository<JsonWebToken, Integer> {
 
     /**
      * Deletes all the JWTs of given user
+     *
      * @param uid of the target user
      * @return the amount if deleted objects
      */

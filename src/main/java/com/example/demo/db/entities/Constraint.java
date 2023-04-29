@@ -11,35 +11,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "constraints")
 public class Constraint implements IEntity<Constraint, Integer> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private Integer weekNumber;
-    private String data;
-
-    @Basic
-    private Integer typeId;
-
-    @Basic
-    private Integer userId;
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-
-    private boolean isPermanent;
-
-    private java.sql.Date startDate;
-
-    private java.sql.Date endDate;
-
-
     @ManyToOne
     @JoinColumn(
             name = "userId",
@@ -48,7 +19,6 @@ public class Constraint implements IEntity<Constraint, Integer> {
             insertable = false,
             updatable = false)
     User users;
-
     @ManyToOne
     @JoinColumn(name = "typeId",
             referencedColumnName = "id",
@@ -56,6 +26,28 @@ public class Constraint implements IEntity<Constraint, Integer> {
             insertable = false,
             updatable = false)
     ConstraintType constraintType;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Integer weekNumber;
+    private String data;
+    @Basic
+    private Integer typeId;
+    @Basic
+    private Integer userId;
+    private boolean isPermanent;
+
+    private java.sql.Date startDate;
+
+    private java.sql.Date endDate;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     @Nullable
     public Integer getId() {
@@ -129,7 +121,7 @@ public class Constraint implements IEntity<Constraint, Integer> {
 
     public boolean isValid() {
         boolean retVal = true;
-        retVal &= this.startDate.before(this.endDate) || this.startDate.equals(this.endDate)  ;
+        retVal &= this.startDate.before(this.endDate) || this.startDate.equals(this.endDate);
 
         return retVal;
     }

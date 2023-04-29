@@ -41,8 +41,6 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
     }
 
 
-
-
     @GetMapping("/test")
     public String getAvailableShiftsStr() {
         Collection<AvailableShifts> availableShifts = getAll();
@@ -89,7 +87,7 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
 
         Collection<Schedule> schedules = sRepo.findByShiftId(id);
         Set<User> scheduledUsers = schedules.stream().map(s -> s.getRequest().getUser()).collect(Collectors.toSet());
-        Set<User> freeWorkersSet = freeWorkersList.stream().filter((u)->!scheduledUsers.contains(u)).collect(Collectors.toSet());
+        Set<User> freeWorkersSet = freeWorkersList.stream().filter((u) -> !scheduledUsers.contains(u)).collect(Collectors.toSet());
         JsonArray res = new JsonArray();
 
         for (User worker : freeWorkersSet) {

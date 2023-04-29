@@ -19,55 +19,46 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="users")
-public class User implements Serializable, IEntity<User,Integer> {
+@Table(name = "users")
+public class User implements Serializable, IEntity<User, Integer> {
 
     public static final int PASSWORD_MIN_LENGTH = 8;
     public static final int PASSWORD_MAX_LENGTH = 16;
-
+    @ManyToOne
+    @JoinColumn(name = "role_id",
+            referencedColumnName = "id",
+            columnDefinition = "role_id",
+            insertable = false,
+            updatable = false)
+    Role role;
+    @OneToMany(mappedBy = "user")
+    List<ShiftsRequests> requests;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Basic
-    @Column(name = "pid",nullable = false)
+    @Column(name = "pid", nullable = false)
     private Integer pid;
     @Basic
-    @Column(name = "role_id",nullable = false)
+    @Column(name = "role_id", nullable = false)
     private Integer roleId;
-
     @Column(nullable = false, unique = true)
     private String username;
-
-    @Size(min = PASSWORD_MIN_LENGTH,max=PASSWORD_MAX_LENGTH)
+    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
     @Column(nullable = false)
     @PrivateGson
     @ExcludeGson
     private String password;
-
     @OneToMany(mappedBy = "users")
     @JsonBackReference
     @Nullable
     private Collection<Constraint> constraints;
-
     @ManyToOne
     @JoinColumn(name = "pid",
             referencedColumnName = "id",
             columnDefinition = "pid",
-            insertable = false,updatable = false)
+            insertable = false, updatable = false)
     private Profile profile;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id",
-            referencedColumnName = "id",
-            columnDefinition="role_id",
-            insertable = false,
-            updatable = false)
-    Role role;
-
-
-    @OneToMany(mappedBy = "user")
-    List<ShiftsRequests> requests;
 
 
     public User() {
@@ -100,7 +91,7 @@ public class User implements Serializable, IEntity<User,Integer> {
         return pid;
     }
 
-    public void setPid(Integer pid){
+    public void setPid(Integer pid) {
         this.pid = pid;
     }
 
@@ -128,6 +119,7 @@ public class User implements Serializable, IEntity<User,Integer> {
     public void setUsername(String username) {
         this.username = username;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -146,10 +138,10 @@ public class User implements Serializable, IEntity<User,Integer> {
     }
 
 
-    private boolean validatePassword(String password){
+    private boolean validatePassword(String password) {
         boolean retVal = true;
         retVal &= password.length() > User.PASSWORD_MIN_LENGTH;
-        retVal &= password.length() <  User.PASSWORD_MAX_LENGTH;
+        retVal &= password.length() < User.PASSWORD_MAX_LENGTH;
         return retVal;
     }
 
@@ -161,14 +153,14 @@ public class User implements Serializable, IEntity<User,Integer> {
     @Override
     public int compareTo(@NonNull User o) {
         if (o != null) {
-            try{
-                return equals(o)?0:this.getId().compareTo(o.getId());
-            }catch (Exception e){
+            try {
+                return equals(o) ? 0 : this.getId().compareTo(o.getId());
+            } catch (Exception e) {
                 return 1;
             }
-        }
-        else return 1;
+        } else return 1;
     }
+
     public Integer getRoleId() {
         return roleId;
     }
@@ -176,6 +168,7 @@ public class User implements Serializable, IEntity<User,Integer> {
     public void setRole_id(Integer roleId) {
         this.roleId = roleId;
     }
+
     @Override
     public String toString() {
         return "Users{" +
@@ -184,7 +177,6 @@ public class User implements Serializable, IEntity<User,Integer> {
                 ", roleId=" + roleId +
                 '}';
     }
-
 
 
 }

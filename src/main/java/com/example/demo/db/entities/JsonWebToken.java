@@ -19,29 +19,23 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken, Integer
      * The duration of the token
      */
     static final long VALID_DURATION = 5 * 60 * 1000; // 5 Minutes
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Basic
-    @Column(name = "uid")
-    private Integer uid;
-
-    @Basic
-    @Column(name = "jwt")
-    private UUID jwt;
-
-    @Basic
-    @Column(name = "valid", unique = false)
-    private boolean valid = true;
-
     @Basic
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false,
             updatable = false)
     @CreationTimestamp
     java.sql.Timestamp timestamp;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Basic
+    @Column(name = "uid")
+    private Integer uid;
+    @Basic
+    @Column(name = "jwt")
+    private UUID jwt;
+    @Basic
+    @Column(name = "valid", unique = false)
+    private boolean valid = true;
     @ManyToOne
     @JoinColumn(name = "uid", referencedColumnName = "id", columnDefinition = "uid", insertable = false,
             updatable = false)
@@ -54,13 +48,6 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken, Integer
 
     }
 
-    @PostPersist
-    @PostUpdate
-    public void touch() {
-        if (getValid()) {
-            timestamp = new java.sql.Timestamp(System.currentTimeMillis());
-        }
-    }
 
     public boolean getValid() {
         boolean stillValid = timestamp == null ||
@@ -139,5 +126,13 @@ public class JsonWebToken implements Serializable, IEntity<JsonWebToken, Integer
     @Override
     public boolean isValid(JsonWebToken toValidate) {
         return true;
+    }
+
+    @PostPersist
+    @PostUpdate
+    public void touch() {
+        if (getValid()) {
+            timestamp = new java.sql.Timestamp(System.currentTimeMillis());
+        }
     }
 }

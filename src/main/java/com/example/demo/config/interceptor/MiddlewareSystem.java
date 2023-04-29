@@ -35,12 +35,6 @@ public class MiddlewareSystem {
     final Logger logger = LogManager.getLogger(MiddlewareSystem.class);
     final JwtRepo jwtRepo;
     final UserRepo userRepo;
-
-    public MiddlewareSystem(JwtRepo jwtRepo, UserRepo userRepo) {
-        this.jwtRepo = jwtRepo;
-        this.userRepo = userRepo;
-    }
-
     /**
      * Hash of all the annotation and the methode used for the annotation
      */
@@ -52,6 +46,11 @@ public class MiddlewareSystem {
             throw new RuntimeException(e);
         }
     }};
+
+    public MiddlewareSystem(JwtRepo jwtRepo, UserRepo userRepo) {
+        this.jwtRepo = jwtRepo;
+        this.userRepo = userRepo;
+    }
 
     /**
      * This methode validates that the request Auth is valid in the database
@@ -103,7 +102,7 @@ public class MiddlewareSystem {
                 if (annotation != null) {
                     try {
                         // invoke the validation function
-                        method.invoke(this, request,annotation);
+                        method.invoke(this, request, annotation);
                     } catch (InvocationTargetException e) {
                         if (e.getTargetException() instanceof ResponseStatusException)
                             throw (ResponseStatusException) e.getTargetException();

@@ -10,39 +10,32 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Integer> {
+public class ShiftsRequests implements Serializable, IEntity<ShiftsRequests, Integer> {
+    @Basic
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    java.sql.Timestamp timestamp;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
     @Column(name = "shift_id", nullable = false)
     private Integer shiftId;
-
     @Basic
     @Column(name = "uid", nullable = false)
     private Integer uid;
-
     @ManyToOne
     @JoinColumn(name = "uid", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonBackReference
     private User user;
-
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id", insertable = false, updatable = false)
     private AvailableShifts shift;
-
-
-    @Basic
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @CreationTimestamp
-    java.sql.Timestamp timestamp;
-
-
     @ManyToOne
-    @JoinColumn(name="job_id",referencedColumnName = "id")
+    @JoinColumn(name = "job_id", referencedColumnName = "id")
     private ScheduleJob scheduleJob;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "request", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "request", orphanRemoval = true)
     private Schedule schedule;
 
     @Override
@@ -120,8 +113,8 @@ public class ShiftsRequests implements Serializable , IEntity<ShiftsRequests,Int
     @Override
     public int compareTo(ShiftsRequests o) {
         try {
-            return this.equals(o)?0:this.id.compareTo(o.id);
-        }catch (Exception e){
+            return this.equals(o) ? 0 : this.id.compareTo(o.id);
+        } catch (Exception e) {
             return 1;
         }
     }

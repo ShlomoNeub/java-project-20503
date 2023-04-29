@@ -8,19 +8,15 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 public class EmailValidator implements ConstraintValidator<EmailValidator.Validate, String> {
     /**
-     * @param constraintAnnotation annotation instance for a given constraint declaration
-     */
-    @Override
-    public void initialize(Validate constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
-
-    /**
      * Method for validation if given mail is from a valid format
+     *
      * @param email string ti be tested
      * @return {@code true} if valid {@code false} otherwise
      */
@@ -33,10 +29,16 @@ public class EmailValidator implements ConstraintValidator<EmailValidator.Valida
     }
 
     /**
-     *
-     * @param value object to validate
+     * @param constraintAnnotation annotation instance for a given constraint declaration
+     */
+    @Override
+    public void initialize(Validate constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+
+    /**
+     * @param value   object to validate
      * @param context context in which the constraint is evaluated
-     *
      * @return if the constraint is valid
      */
     @Override

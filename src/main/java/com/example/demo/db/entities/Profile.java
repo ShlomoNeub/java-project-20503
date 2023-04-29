@@ -10,7 +10,6 @@ import com.example.demo.db.entities.validator.PhoneValidator;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import org.springframework.beans.InvalidPropertyException;
@@ -24,21 +23,21 @@ import java.util.Objects;
 @Entity
 public class Profile implements Serializable, IEntity<Profile, Integer> {
 
+    @ExcludeGson
+    @OneToMany(mappedBy = "profile")
+    @JsonBackReference
+    @Nullable
+    Collection<User> users;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column(nullable = false)
     private String firstName;
-
-
     @Column(nullable = false)
     private String lastName;
-
     @Column(nullable = false, unique = true)
     @EmailValidator.Validate
     private String email;
-
     @Column(nullable = false, unique = true)
     @PhoneValidator.Validate
     private String phoneNumber;
@@ -53,11 +52,22 @@ public class Profile implements Serializable, IEntity<Profile, Integer> {
         this.phoneNumber = phoneNumber;
     }
 
-    @ExcludeGson
-    @OneToMany(mappedBy = "profile")
-    @JsonBackReference
-    @Nullable
-    Collection<User> users;
+    public static Profile fromJson(JsonObject object) throws InvalidPropertyException {
+        JsonElement _firstName = object.get("firstName");
+        JsonElement _lastName = object.get("lastName");
+        JsonElement _email = object.get("email");
+        JsonElement _phoneNumber = object.get("phoneNumber");
+
+        if (_firstName == null || _lastName == null || _email == null || _phoneNumber == null)
+            throw new MissingFormatArgumentException("Missing argument");
+
+        String firstName = _firstName.getAsString();
+        String lastName = _lastName.getAsString();
+        String email = _email.getAsString();
+        String phoneNumber = _phoneNumber.getAsString();
+        return new Profile(firstName, lastName, email, phoneNumber
+        );
+    }
 
     @Nullable
     public Integer getId() {
@@ -78,24 +88,20 @@ public class Profile implements Serializable, IEntity<Profile, Integer> {
         return firstName;
     }
 
-
     @Nullable
     public String getLastName() {
         return lastName;
     }
-
 
     @Nullable
     public String getEmail() {
         return email;
     }
 
-
     @Nullable
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -141,22 +147,5 @@ public class Profile implements Serializable, IEntity<Profile, Integer> {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
-    }
-
-    public static Profile fromJson(JsonObject object) throws InvalidPropertyException {
-        JsonElement _firstName = object.get("firstName");
-        JsonElement _lastName = object.get("lastName");
-        JsonElement _email = object.get("email");
-        JsonElement _phoneNumber = object.get("phoneNumber");
-
-        if (_firstName == null || _lastName == null || _email == null || _phoneNumber == null)
-            throw new MissingFormatArgumentException("Missing argument");
-
-        String firstName = _firstName.getAsString();
-        String lastName = _lastName.getAsString();
-        String email = _email.getAsString();
-        String phoneNumber = _phoneNumber.getAsString();
-        return new Profile(firstName, lastName, email, phoneNumber
-        );
     }
 }

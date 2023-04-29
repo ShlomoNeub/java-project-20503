@@ -41,7 +41,7 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
     }
 
     /**
-     * Add constrain tot the user while making sure the user requesting 
+     * Add constrain tot the user while making sure the user requesting
      * can access it
      */
     @Auth

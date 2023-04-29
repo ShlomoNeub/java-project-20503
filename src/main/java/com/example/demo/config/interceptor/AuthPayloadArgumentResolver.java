@@ -1,7 +1,6 @@
 /**
  * This file contains the implantation of the AuthInfo resolver.
  * Based on HandlerMethodArgumentResolver
- *
  */
 package com.example.demo.config.interceptor;
 
@@ -29,11 +28,9 @@ import java.util.UUID;
 @Component
 public class AuthPayloadArgumentResolver implements HandlerMethodArgumentResolver {
 
-    final UserRepo userRepo;
-
-    final JwtRepo jwtRepo;
-
     final static Logger logger = LogManager.getLogger(AuthPayloadArgumentResolver.class);
+    final UserRepo userRepo;
+    final JwtRepo jwtRepo;
 
     public AuthPayloadArgumentResolver(UserRepo userRepo, JwtRepo jwtRepo) {
         this.userRepo = userRepo;
@@ -66,7 +63,7 @@ public class AuthPayloadArgumentResolver implements HandlerMethodArgumentResolve
                                   ModelAndViewContainer mavContainer,
                                   @NonNull NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
-        if(!supportsParameter(parameter))
+        if (!supportsParameter(parameter))
             throw new IllegalArgumentException("Parameter must be of type AuthInfo");
         try {
             HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);

@@ -13,10 +13,8 @@ import java.util.stream.Collectors;
 public class AutoScheduler extends Thread {
     final Logger logger = LogManager.getLogger(AutoScheduler.class);
     private final int id;
-
-    private boolean stop = false;
     private final AutoScheduleMonitor autoScheduleMonitor;
-
+    private boolean stop = false;
     private ScheduleJob currentJob;
 
     public AutoScheduler(int id, AutoScheduleMonitor autoScheduleMonitor) {
@@ -36,7 +34,7 @@ public class AutoScheduler extends Thread {
                 // run scheduler and save the result
                 ScheduleJob result = doJob(scheduleJob);
                 long waitedFor = Date.from(Instant.now()).getTime() - date.getTime();
-                logger.info("%s finished %d in %s ms".formatted(this, scheduleJob.getId(),waitedFor));
+                logger.info("%s finished %d in %s ms".formatted(this, scheduleJob.getId(), waitedFor));
                 // notify the monitor the job is finished
                 autoScheduleMonitor.finishJob(result);
             } catch (InterruptedException e) {
@@ -64,7 +62,7 @@ public class AutoScheduler extends Thread {
      */
     private Collection<Schedule> scheduleShift(Queue<User> userQueue, AvailableShifts shift) {
         Collection<Schedule> schedules = autoScheduleMonitor.getSchedulesByShift(shift.getId());
-        Set<User> scheduledUsers = schedules.stream().map(s->s.getRequest().getUser()).collect(Collectors.toSet());
+        Set<User> scheduledUsers = schedules.stream().map(s -> s.getRequest().getUser()).collect(Collectors.toSet());
         Collection<Schedule> resultSchedules = new ArrayList<>();
         long workerCount = autoScheduleMonitor.getWorkersInShift(shift.getId());
         for (int i = 0; i < Math.max(0, shift.getEmployeeCount() - workerCount); i++) {
@@ -124,22 +122,22 @@ public class AutoScheduler extends Thread {
     /**
      * Helper function that receive available user and get the next user that was not already in schedules
      *
-     * @param userQueue with the user
+     * @param userQueue      with the user
      * @param schedulesUsers that already were scheduled
      * @return the next available user or null
      */
     @Nullable
-    private User nextUser(Queue<User> userQueue,  Set<User> schedulesUsers) {
+    private User nextUser(Queue<User> userQueue, Set<User> schedulesUsers) {
         LinkedList<User> tmpQueue = new LinkedList<>();
         User user = null;
 
-        while (!userQueue.isEmpty()){
+        while (!userQueue.isEmpty()) {
             user = userQueue.poll();
-            if(!isAlreadyScheduled(user,schedulesUsers)){
+            if (!isAlreadyScheduled(user, schedulesUsers)) {
                 break;
             }
             tmpQueue.add(user);
-            user  = null;
+            user = null;
         }
         userQueue.addAll(tmpQueue);
         return user;
@@ -148,7 +146,7 @@ public class AutoScheduler extends Thread {
     /**
      * Helper function that checks if a given user is in the given usersSet
      *
-     * @param user      to search for
+     * @param user           to search for
      * @param schedulesUsers to search in
      * @return if the user is in any of the scheduled schedules
      */

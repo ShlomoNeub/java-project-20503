@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class Role implements Serializable, IEntity<Role,Integer> {
+public class Role implements Serializable, IEntity<Role, Integer> {
     // TODO: Think about making it Enum
     public static final int STANDARD_ROLE_LEVEL = 0;
     public static final int MANAGER_ROLE_LEVEL = 1;
@@ -25,13 +25,14 @@ public class Role implements Serializable, IEntity<Role,Integer> {
 
 
     @Column(nullable = false)
-    private String roleName=STANDARD_ROLE_NAME;
+    private String roleName = STANDARD_ROLE_NAME;
     @Column(nullable = false)
-    private Integer roleLevel=STANDARD_ROLE_LEVEL;
+    private Integer roleLevel = STANDARD_ROLE_LEVEL;
 
     @OneToMany(mappedBy = "role")
     @JsonBackReference
     private Collection<User> users;
+
     public Integer getId() {
         return id;
     }
@@ -43,7 +44,7 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     public String getRoleName() {
         return roleName;
     }
-    
+
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
@@ -62,7 +63,7 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     }
 
 
-    private boolean validateRoleInfo(String role_name,Integer role_level){
+    private boolean validateRoleInfo(String role_name, Integer role_level) {
         boolean retVal = false;
         boolean[] atLeastOne =
                 { // here we put all the conditions where we need at least one to be true
@@ -97,8 +98,8 @@ public class Role implements Serializable, IEntity<Role,Integer> {
     @Override
     public int compareTo(@NonNull Role o) {
         try {
-            return this.equals(o)?0:this.id.compareTo(o.id);
-        }catch (Exception e){
+            return this.equals(o) ? 0 : this.id.compareTo(o.id);
+        } catch (Exception e) {
             return 1;
         }
     }

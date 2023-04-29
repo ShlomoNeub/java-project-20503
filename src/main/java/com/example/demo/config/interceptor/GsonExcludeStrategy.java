@@ -22,11 +22,11 @@ public class GsonExcludeStrategy implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(FieldAttributes f) {
 
-        return f.getAnnotation(clazz) != null ||f.getAnnotation(JsonBackReference.class) != null  ;
+        return f.getAnnotation(clazz) != null || f.getAnnotation(JsonBackReference.class) != null;
     }
 
     @Override
     public boolean shouldSkipClass(Class<?> clazz) {
-        return clazz.getAnnotation(ExcludeGson.class) != null ;
+        return clazz.getAnnotation(ExcludeGson.class) != null;
     }
 }
