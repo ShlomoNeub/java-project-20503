@@ -2,7 +2,7 @@
 
 ## Install Database
 
-Thi part will guide you how to install Postgres DB on you local computer.
+This part will guide you how to install Postgres DB on you local computer.
 If you already installed it, check that you know it's `username, password, port, DB name`. and skip to IntelliJ installation
 
 ### **Using docker**
@@ -51,7 +51,7 @@ else
 
 ### [Download link](https://www.jetbrains.com/idea/download/)
 
-### [Video link](TODO:somelinkhere)
+### [Video link](https://drive.google.com/file/d/1RSMm1W-Q1KINsFxoEV9ucSTZG-qGnp5t/view?usp=share_link)
 
 We recommend using the ultimate version that is free for `30-day trial` and for students and educator are free using [`github pro for students`](https://education.github.com/pack).
 
@@ -90,6 +90,6 @@ spring.datasource.url=${Your Postgres jdbc link}
       If you have multiple JDK installed so to spesify the currect one use `set JAVA_HOME=${JAVA 17 correto dir}` befor running this commands
 
 ### **Adding data to the database**
-
+### [Video link](https://drive.google.com/file/d/1RSMm1W-Q1KINsFxoEV9ucSTZG-qGnp5t/view?usp=share_link)
 After running the backend server once all the tables will be created.
 Under the `tableFiller` folder you will have multiple sql scripts that populate the db with data. see video to how to run them inside the IntelliJ
