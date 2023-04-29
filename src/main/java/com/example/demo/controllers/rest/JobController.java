@@ -33,26 +33,33 @@ public class JobController extends RestApiAbstract<ScheduleJob, ScheduleJobRepo,
     }
 
 
-    @Override
-    public ScheduleJob createNewEntity(ScheduleJob entity) {
-        ScheduleJob job = super.createNewEntity(entity);
-        autoScheduleMonitor.addJob(job);
-        return job;
-    }
-
-
+    /**
+     * <b>Get /user/</b>
+     * <p>Retrieves all users job</p>
+     *
+     * @param info of the caller user
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @GetMapping("/user/")
     @Auth
     public Collection<ScheduleJob> getJobByUid(@AuthPayload AuthInfo info) {
         return scheduleJobRepo.findByUserId(info.user().getId());
     }
 
+    //region Override to default CRUD calls
     @Override
     public ScheduleJob updateById(Integer id, ScheduleJob entity) {
         // Job can not be updated they can only be deleted
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
+    @Override
+    public ScheduleJob createNewEntity(ScheduleJob entity) {
+        ScheduleJob job = super.createNewEntity(entity);
+        autoScheduleMonitor.addJob(job);
+        return job;
+    }
+    //endregion
 
     @Override
     public Logger getLogger() {
@@ -60,7 +67,7 @@ public class JobController extends RestApiAbstract<ScheduleJob, ScheduleJobRepo,
     }
 
     @Override
-    public ScheduleJobRepo getRepo() {
+    public ScheduleJobRepo getAvailableShiftsRepo() {
         return scheduleJobRepo;
     }
 }

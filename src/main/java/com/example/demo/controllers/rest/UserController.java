@@ -163,7 +163,13 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         return object.toString();
     }
 
-
+    /**
+     * <b>GET /users-id/{id}</b>
+     * <p>Manger call to get all users of profile</p>
+     *
+     * @param id of the profile
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth(minLevel = 1)
     @GetMapping("/users-id/{id}")
     public String getUserProfileById(@PathVariable Integer id) {
@@ -174,11 +180,16 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         }
         JsonArray array = new JsonArray();
         users.forEach(user -> array.add(JsonParser.parseString(privateGson.toJson(user))));
-
-
         return array.toString();
     }
 
+    /**
+     * <b>Post /users-id/{id}</b>
+     * <p>Super Admin call to promote user</p>
+     *
+     * @param id user to promote
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth(minLevel = 2)
     @PostMapping("/add-admin/{id}")
     public String setAsAdmin(@PathVariable Integer id) {
@@ -188,6 +199,13 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         return JsonParser.parseString(privateGson.toJson(u)).getAsJsonObject().toString();
     }
 
+    /**
+     * <b>DELETE /users-id/{id}</b>
+     * <p>Super Admin call to demote user</p>
+     *
+     * @param id user to promote
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth(minLevel = 2)
     @DeleteMapping("/remove-admin/{id}")
     public String unsetAsAdmin(@PathVariable Integer id) {
@@ -197,6 +215,12 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
         return JsonParser.parseString(privateGson.toJson(u)).getAsJsonObject().toString();
     }
 
+    /**
+     * Helper function to change the role of user
+     *
+     * @param u    target user
+     * @param role target role
+     */
     private void changeUserRole(User u, Role role) {
         if (u == null || role == null) {
             logger.warn("Send 404 reason user or role were not found");
@@ -207,7 +231,7 @@ public class UserController extends RestApiAbstract<User, UserRepo, Integer> {
     }
 
     @Override
-    public UserRepo getRepo() {
+    public UserRepo getAvailableShiftsRepo() {
         return userRepo;
     }
 

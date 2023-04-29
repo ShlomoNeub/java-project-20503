@@ -22,7 +22,7 @@ public class RoleController extends RestApiAbstract<Role, RoleRepo, Integer> {
     }
 
     @Override
-    public RoleRepo getRepo() {
+    public RoleRepo getAvailableShiftsRepo() {
         return repo;
     }
 

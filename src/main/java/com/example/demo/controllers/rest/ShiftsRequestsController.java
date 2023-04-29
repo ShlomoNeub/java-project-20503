@@ -30,6 +30,12 @@ public class ShiftsRequestsController extends RestApiAbstract<ShiftsRequests, Sh
         this.repo = repo;
     }
 
+    /**
+     * <b>Get /admin</b>
+     * <p>Gets all the shift requests</p>
+     *
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @GetMapping(path = "/admin")
     public String getAllRequestsAdmin() {
         Collection<ShiftsRequests> shiftsRequestsCollection = super.getAll();
@@ -55,7 +61,7 @@ public class ShiftsRequestsController extends RestApiAbstract<ShiftsRequests, Sh
     }
 
     @Override
-    public ShiftRequestRepo getRepo() {
+    public ShiftRequestRepo getAvailableShiftsRepo() {
         return repo;
     }
 

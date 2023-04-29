@@ -1,3 +1,7 @@
+/**
+ * Type adapter to be used by Gson serializer
+ * It tell the Gson how it should serialize java.sql.Date objects
+ */
 package com.example.demo.config.interceptor;
 
 import com.google.gson.TypeAdapter;
@@ -13,6 +17,13 @@ import java.util.Date;
 public class DateTypeAdapter extends TypeAdapter<Date> {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * Here we override the write method, so we tell the json what to write
+     *
+     * @param out   writer that holds the serialized json
+     * @param value the Java object to write. May be null.
+     * @throws IOException when unable to write using the writer {@code out}
+     */
     @Override
     public void write(JsonWriter out, Date value) throws IOException {
         if (value == null) {
@@ -22,6 +33,13 @@ public class DateTypeAdapter extends TypeAdapter<Date> {
         }
     }
 
+    /**
+     * Here we override the write method, so we tell the json what to read the data
+     *
+     * @param in Json reader that holds the data to be deserialized
+     * @return the deserialized data
+     * @throws IOException when error occurred by the {@code JsonReader}
+     */
     @Override
     public Date read(JsonReader in) throws IOException {
         if (in.peek() == JsonToken.NULL) {
@@ -29,8 +47,7 @@ public class DateTypeAdapter extends TypeAdapter<Date> {
             return null;
         }
         try {
-            Date date = dateFormat.parse(in.nextString());
-            return date;
+            return dateFormat.parse(in.nextString());
         } catch (ParseException e) {
             throw new IOException(e);
         }

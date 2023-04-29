@@ -30,17 +30,22 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/available-shifts")
 public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, AvailableShiftsRepo, Integer> {
     final Logger logger = LogManager.getLogger(AvailableShiftsController.class);
-    final AvailableShiftsRepo repo;
+    final AvailableShiftsRepo availableShiftsRepo;
     final ScheduleRepo sRepo;
     final UserRepo userRepo;
 
     public AvailableShiftsController(AvailableShiftsRepo repo, ScheduleRepo sRepo, UserRepo userRepo) {
-        this.repo = repo;
+        this.availableShiftsRepo = repo;
         this.sRepo = sRepo;
         this.userRepo = userRepo;
     }
 
-
+    /**
+     * <b>Get /test</b>
+     * <p>Get all the shifts in the database</p>
+     *
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @GetMapping("/test")
     public String getAvailableShiftsStr() {
         Collection<AvailableShifts> availableShifts = getAll();
@@ -55,28 +60,17 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
     }
 
 
-    @Override
-    public AvailableShiftsRepo getRepo() {
-        return repo;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
-
-    private java.sql.Date getDate(int week, int day, int hour) {
-        Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(Calendar.WEEK_OF_YEAR, week);
-        calendar.set(Calendar.DAY_OF_WEEK, day);
-        calendar.set(Calendar.HOUR, hour);
-        return new java.sql.Date(calendar.getTime().getTime());
-    }
-
+    /**
+     * <b>Get /{id}/free-workers</b>
+     * <p>Search all that are free to work this shift</p>
+     *
+     * @param id of the shift
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth
     @GetMapping("/{id}/free-workers")
     public String getFreeWorkers(@PathVariable Integer id) {
-        Optional<AvailableShifts> shiftsOptional = repo.findById(id);
+        Optional<AvailableShifts> shiftsOptional = availableShiftsRepo.findById(id);
         if (shiftsOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -132,10 +126,10 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
             availableShifts.setDuration(duration);
             availableShifts.setEmployeeCount(employeeCount);
             availableShifts.setYear(year);
-            repo.save(availableShifts);
+            availableShiftsRepo.save(availableShifts);
         } catch (Exception e) {
             logger.error(e);
-            if (availableShifts != null && availableShifts.getId() != null) repo.delete(availableShifts);
+            if (availableShifts != null && availableShifts.getId() != null) availableShiftsRepo.delete(availableShifts);
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -147,4 +141,30 @@ public class AvailableShiftsController extends RestApiAbstract<AvailableShifts, 
         return response.toString();
     }
 
+
+    /**
+     * Helper function that converts week day hour date to java.sql.Date
+     *
+     * @param week of the target date
+     * @param day  of the target date
+     * @param hour of the target date
+     * @return Date object representation of the given time
+     */
+    private java.sql.Date getDate(int week, int day, int hour) {
+        Calendar calendar = java.util.Calendar.getInstance();
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
+        calendar.set(Calendar.DAY_OF_WEEK, day);
+        calendar.set(Calendar.HOUR, hour);
+        return new java.sql.Date(calendar.getTime().getTime());
+    }
+
+    @Override
+    public AvailableShiftsRepo getAvailableShiftsRepo() {
+        return availableShiftsRepo;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
 }

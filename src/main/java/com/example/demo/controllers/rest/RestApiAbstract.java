@@ -34,11 +34,10 @@ public abstract class RestApiAbstract
 
     protected static Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss")
             .registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter())
-//            .registerTypeAdapter(Date.class, new DateTypeAdapter())
+
             .setExclusionStrategies(new GsonExcludeStrategy()).create();
     protected static Gson privateGson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss")
             .registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter())
-//            .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .setExclusionStrategies(
                     new GsonExcludeStrategy(),
                     new GsonExcludeStrategy(PrivateGson.class)
@@ -49,7 +48,7 @@ public abstract class RestApiAbstract
     public Collection<Entity> getAll() {
         getLogger().info("Get all has been called");
         ArrayList<Entity> entities = new ArrayList<>();
-        for (Entity e : getRepo().findAll()) {
+        for (Entity e : getAvailableShiftsRepo().findAll()) {
             entities.add(e);
         }
         if (entities.size() == 0)
@@ -74,7 +73,7 @@ public abstract class RestApiAbstract
     @Auth
     public Entity getById(IndexType id) {
         getLogger().info("Get entity by id was called with id:" + id);
-        Optional<Entity> e = getRepo().findById(id);
+        Optional<Entity> e = getAvailableShiftsRepo().findById(id);
         if (e.isEmpty()) {
             getLogger().warn("Unable to find entity with id:" + id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
@@ -86,7 +85,7 @@ public abstract class RestApiAbstract
     @Auth
     public Entity updateById(IndexType id, Entity entity) {
         getLogger().info("Update entity by id was called with id:" + id + " With:" + entity);
-        Optional<Entity> entity1 = getRepo().findById(id);
+        Optional<Entity> entity1 = getAvailableShiftsRepo().findById(id);
         if (entity1.isEmpty()) {
             getLogger().warn("Unable to find entity with id:" + id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
@@ -99,16 +98,21 @@ public abstract class RestApiAbstract
     @Auth
     public void deleteByID(IndexType id) {
         getLogger().info("Delete entity by id was called with id:" + id);
-        Optional<Entity> entity1 = getRepo().findById(id);
+        Optional<Entity> entity1 = getAvailableShiftsRepo().findById(id);
         if (entity1.isEmpty()) {
             getLogger().warn("Unable to find entity with id:" + id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
         }
-        getRepo().delete(entity1.get());
+        getAvailableShiftsRepo().delete(entity1.get());
     }
 
+    /**
+     * This forces the implementer to create a repo to be used
+     *
+     * @return the used repo to this CRUD api
+     */
     @NotNull
-    public abstract Repo getRepo();
+    public abstract Repo getAvailableShiftsRepo();
 
     public Logger getLogger() {
         return LogManager.getLogger(RestApiAbstract.class);
@@ -124,7 +128,7 @@ public abstract class RestApiAbstract
     @NotNull
     private Entity saveEntity(@NotNull Entity entity) {
         try {
-            return getRepo().save(entity);
+            return getAvailableShiftsRepo().save(entity);
         } catch (DataIntegrityViolationException e) {
             getLogger().error("Error while handling insert reason:" + e.getMostSpecificCause());
             getLogger().debug(e);

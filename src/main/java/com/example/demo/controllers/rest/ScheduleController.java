@@ -42,17 +42,13 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         this.shiftRequestRepo = shiftRequestRepo;
     }
 
-    @Override
-    public ScheduleRepo getRepo() {
-        return repo;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
-
-
+    /**
+     * <b>Get /shifts_from_schedule</b>
+     * <p>Add worker schedule</p>
+     *
+     * @param id of the request id
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth
     @GetMapping("/shifts_from_schedule")
     public String getAvailableShiftsStr(@RequestParam Integer id) {
@@ -68,6 +64,15 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     }
 
 
+    /**
+     * <b>Get /user/shifts/{week}/{day}</b>
+     * <p>get user schedule by week and day</p>
+     *
+     * @param info of the caller user
+     * @param week to search in
+     * @param day  to search in
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth
     @GetMapping("/user/shifts/{week}/{day}")
     public String getUsersSchedules(@AuthPayload AuthInfo info, @PathVariable Integer day, @PathVariable Integer week) {
@@ -75,6 +80,14 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         return getUsersSchedules(info.user().getId(), day, week).toString();
     }
 
+    /**
+     * <b>Get /user/shifts/{week}/</b>
+     * <p>get user schedule but by week</p>
+     *
+     * @param info of the caller user
+     * @param week to search in
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @Auth
     @GetMapping("/user/shifts/{week}/")
     public String getUsersSchedules(@AuthPayload AuthInfo info, @PathVariable Integer week) {
@@ -86,18 +99,13 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
     }
 
 
-    private JsonArray getUsersSchedules(Integer userId, Integer day, Integer week) {
-        List<Schedule> schedules = repo.findByUsersInRange(userId, week, day);
-        JsonArray array = new JsonArray();
-        for (Schedule schedule : schedules) {
-
-            JsonObject object = JsonParser.parseString(privateGson.toJson(schedule)).getAsJsonObject();
-            object.add("request", JsonParser.parseString(privateGson.toJson(schedule.getRequest())).getAsJsonObject());
-            array.add(object);
-        }
-        return array;
-    }
-
+    /**
+     * <b>POST /addWorker</b>
+     * <p>Add worker schedule</p>
+     *
+     * @param request json string with the request
+     * @throws ResponseStatusException when cannot execute correctly
+     */
     @RequestMapping(method = RequestMethod.POST, path = "/addWorker", produces = "application/json")
     public String addWorker(@RequestBody String request) {
         int shiftId = 0;
@@ -129,7 +137,54 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         return response.toString();
     }
 
-    public Schedule createSchedule(ShiftsRequests request) {
+
+    /**
+     * <b>DELETE /reset_shift/{sId}</b>
+     * <p>reset all schedules for a shift</p>
+     *
+     * @param sId of the target {@code AvailableShit}
+     * @throws ResponseStatusException when cannot execute correctly
+     */
+    @Auth
+    @DeleteMapping("/reset_shift/{sId}")
+    public String resetShift(@PathVariable Integer sId) {
+        try {
+            Collection<Schedule> scheduleCollection = repo.findByShiftId(sId);
+            repo.deleteAll(scheduleCollection);
+            return "Deleted";
+        } catch (Exception e) {
+            getLogger().error(e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Helper function to get all schedules in JsonArray form
+     *
+     * @param userId who schedules we search for
+     * @param day    who schedules we want
+     * @param week   who schedules we want
+     * @return array of all the schedules and with request field populated
+     */
+    private JsonArray getUsersSchedules(Integer userId, Integer day, Integer week) {
+        List<Schedule> schedules = repo.findByUsersInRange(userId, week, day);
+        JsonArray array = new JsonArray();
+        for (Schedule schedule : schedules) {
+
+            JsonObject object = JsonParser.parseString(privateGson.toJson(schedule)).getAsJsonObject();
+            object.add("request", JsonParser.parseString(privateGson.toJson(schedule.getRequest())).getAsJsonObject());
+            array.add(object);
+        }
+        return array;
+    }
+
+    /**
+     * Helper that creates a schedule from a ShiftRequest
+     *
+     * @param request source to create schedule form
+     * @return the created scheduled of null if not successful
+     */
+    private Schedule createSchedule(ShiftsRequests request) {
         try {
             Schedule schedule = new Schedule();
             request = shiftRequestRepo.save(request);
@@ -142,16 +197,13 @@ public class ScheduleController extends RestApiAbstract<Schedule, ScheduleRepo, 
         }
     }
 
-    @Auth
-    @DeleteMapping("/reset_shift/{sId}")
-    public String resetShift(@PathVariable Integer sId) {
-        try {
-            Collection<Schedule> scheduleCollection = repo.findByShiftId(sId);
-            repo.deleteAll(scheduleCollection);
-            return "Deleted";
-        } catch (Exception e) {
-            getLogger().error(e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+    @Override
+    public ScheduleRepo getAvailableShiftsRepo() {
+        return repo;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
     }
 }

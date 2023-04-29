@@ -7,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-
 /**
  * Controller that implements the ConstraintType REST API
  */
@@ -23,12 +21,7 @@ public class ConstraintTypeController extends RestApiAbstract<ConstraintType, Co
     }
 
     @Override
-    public Collection<ConstraintType> getAll() {
-        return super.getAll();
-    }
-
-    @Override
-    public ConstraintTypeRepo getRepo() {
+    public ConstraintTypeRepo getAvailableShiftsRepo() {
         return repo;
     }
 

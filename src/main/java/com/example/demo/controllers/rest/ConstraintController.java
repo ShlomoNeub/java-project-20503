@@ -30,19 +30,12 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
         this.repo = repo;
     }
 
-    @Override
-    public ConstraintRepo getRepo() {
-        return repo;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
 
     /**
-     * Add constrain tot the user while making sure the user requesting
-     * can access it
+     * <b>Get /user</b>
+     * <p>Add constrain tot the user while making sure the user requesting <br/> can access it</p>
+     *
+     * @throws ResponseStatusException when cannot execute correctly
      */
     @Auth
     @PostMapping("/user/")
@@ -59,7 +52,13 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
 
 
     /**
-     * Get all routes by time
+     * <b>Get /user/range/{week}/{endWeek}</b>
+     * <p>Get all routes by time</p>
+     *
+     * @param info    of the caller user
+     * @param week    start value of the range
+     * @param endWeek value of the range
+     * @throws ResponseStatusException when cannot execute correctly
      */
     @Auth
     @GetMapping("/user/range/{week}/{endWeek}")
@@ -72,8 +71,17 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
         }
     }
 
+
     /**
-     * Get all routes by time
+     * <b>Get /user/range/{week}/{endWeek}</b>
+     * <p>Get all routes by time</p>
+     * <p>Same to {@link #findByRangeWeek(AuthInfo, Integer, Integer)}</p>
+     * <p>Main difference is the search uses Date instead of weeks</p>
+     *
+     * @param info    of the caller user
+     * @param week    start value of the range
+     * @param endWeek value of the range
+     * @throws ResponseStatusException when cannot execute correctly
      */
     @Auth
     @GetMapping("/user/range/{week}/{endWeek}/date")
@@ -93,7 +101,12 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
 
 
     /**
-     * Get all routes by time
+     * <b>Delete /user/{id}</b>
+     * <p>Deletes users constraint</p>
+     *
+     * @param info of the caller user
+     * @param id   of the target constraint
+     * @throws ResponseStatusException when cannot execute correctly
      */
     @Auth
     @DeleteMapping("/user/{id}")
@@ -108,5 +121,14 @@ public class ConstraintController extends RestApiAbstract<Constraint, Constraint
         }
     }
 
+    @Override
+    public ConstraintRepo getAvailableShiftsRepo() {
+        return repo;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
 
 }

@@ -24,7 +24,7 @@ public class ProfileController extends RestApiAbstract<Profile, ProfileRepo, Int
     }
 
     @Override
-    public ProfileRepo getRepo() {
+    public ProfileRepo getAvailableShiftsRepo() {
         return repo;
     }
 
